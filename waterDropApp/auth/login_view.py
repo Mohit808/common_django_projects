@@ -11,7 +11,6 @@ from rest_framework.authtoken.models import Token
 from waterDropApp.models import UserWater
 
 
-
 class LoginView(APIView):
     def post(self, request):
         email = request.data.get('email')
