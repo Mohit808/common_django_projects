@@ -28,8 +28,8 @@ def index(request):
     </head>
     <body>
         <div class="demo">
-            <h1>Demo</h1>
-            <p>This is a demo HTML page. You can edit the HTML, SCSS and see the changes in real-time.</p>
+            <h1>Welcome to Common Django projects</h1>
+            <p>Code Editing and project management made easy</p>
             <p>Access to full source code editing and all functionalities is available in the paid version.</p>
         </div>
     </body>
