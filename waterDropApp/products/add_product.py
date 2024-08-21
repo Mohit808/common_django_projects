@@ -26,4 +26,8 @@ class GetProduct(APIView):
         query=UserWater.objects.get(email=request.user.username)
         querySet=ProductWater.objects.filter(userId=query)
         serializer = ProductWaterSerializer(querySet,context={'request': request}, many=True)
-        return customResponse(message= 'Invalid data', status=400  ,data=serializer.data)
+        return customResponse(message= 'Fetch data successfully', status=200  ,data=serializer.data)
+    
+    def delete(self, request,pk=None):
+        querySet=ProductWater.objects.delete(id=pk)
+        return customResponse(message= 'Delete data successfully', status=200  ,data=None)
