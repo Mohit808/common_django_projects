@@ -28,14 +28,14 @@ urlpatterns = [
     path('',index),
     path('api-auth/', include('rest_framework.urls')),
     
-    path('send-otp/', login_view.LoginView.as_view()),
-    path('verify-otp/', login_view.VerifyOTPView.as_view()),
-    path('add-email/', add_email.AddEmailFunction.as_view()),
-    path('add-store-name/', add_store_name.AddStoreNameFunction.as_view()),
-    path('add-owner-detail/', add_owner_detail.AddOwnerDetailFunction.as_view()),
-    path('add-business-detail/', add_business_detail.AddBusinessDetailFunction.as_view()),
-    path('add-categories/', add_categories.AddCategoriesFunction.as_view()),
-    path('add-address/', add_address.AddAddressFunction.as_view()),
+    path('send-otp', login_view.LoginView.as_view()),
+    path('verify-otp', login_view.VerifyOTPView.as_view()),
+    path('add-email', add_email.AddEmailFunction.as_view()),
+    path('add-store-name', add_store_name.AddStoreNameFunction.as_view()),
+    path('add-owner-detail', add_owner_detail.AddOwnerDetailFunction.as_view()),
+    path('add-business-detail', add_business_detail.AddBusinessDetailFunction.as_view()),
+    path('add-categories', add_categories.AddCategoriesFunction.as_view()),
+    path('add-address', add_address.AddAddressFunction.as_view()),
 
-    path('social-login/', water_login.LoginView.as_view()),
+    path('social-login', water_login.LoginView.as_view()),
 ]
