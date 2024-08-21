@@ -13,7 +13,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 
-class LoginView(APIView):
+class LoginView(APIView):   
     def post(self, request):
         email = request.data.get('email')
         id_token = request.data.get('id_token')
@@ -55,9 +55,10 @@ class UpdateUser(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     def post(self, request):
-        user_instance = UserWater.objects.get(id=request.data.get('id'))
-        serializer = UserWaterSerializer(user_instance,data=request.data,context={'request': request}, partial=True)
+        # user_instance = UserWater.objects.get(id=request.data.get('id'))
+        serializer = UserWaterSerializer(data=request.data,context={'request': request}, partial=True)
         if serializer.is_valid():
+            serializer.validated_data['id'] = UserWater.objects.get(email=request.user.username)
             serializer.save()
             return customResponse(message= 'User updated successfully', status=status.HTTP_200_OK)
         return customResponse(message= 'Invalid data', status=400  ,data=serializer.data)
