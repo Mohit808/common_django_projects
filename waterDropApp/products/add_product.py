@@ -4,6 +4,8 @@ from rest_framework.permissions import IsAuthenticated
 from globalStoreApp.custom_response import *
 from waterDropApp.serializers_water import ProductWaterSerializer
 from waterDropApp.models import UserWater, ProductWater
+from rest_framework.pagination import PageNumberPagination
+
 
 
 
@@ -26,16 +28,20 @@ class GetProduct(APIView):
 
         if pk:
             try:
-                product = ProductWater.objects.get(id=pk, userId=request.user)
+                product = ProductWater.objects.get(id=pk)
                 serializer = ProductWaterSerializer(product, context={'request': request})
-                return Response({'message': 'Fetch data successfully', 'data': serializer.data}, status=status.HTTP_200_OK)
+                return customResponse(message= 'Fetch data successfully', status=200  ,data=serializer.data)
             except ProductWater.DoesNotExist:
-                return Response({'message': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
+                return customResponse(message= 'Product not found', status=status.HTTP_404_NOT_FOUND  )
         
         query=UserWater.objects.get(email=request.user.username)
         querySet=ProductWater.objects.filter(userId=query)
-        serializer = ProductWaterSerializer(querySet,context={'request': request}, many=True)
-        return customResponse(message= 'Fetch data successfully', status=200  ,data=serializer.data)
+        paginator = PageNumberPagination()
+        paginated_products = paginator.paginate_queryset(querySet, request)
+        serializer = ProductWaterSerializer(paginated_products,context={'request': request}, many=True)
+        
+        return customResponse(message= 'Fetch data successfully', status=200  ,data=paginator.get_paginated_response(serializer.data).data)
+    
     
     def delete(self, request,pk=None):
         print(pk)
