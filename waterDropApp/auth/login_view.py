@@ -21,7 +21,6 @@ class LoginView(APIView):
         last_name = request.data.get('last_name')
         profile_image = request.data.get('profile_image')
 
-
         if email is None:
             return customResponse(message= 'email required', status=status.HTTP_400_BAD_REQUEST)
         if id_token is None:
