@@ -29,6 +29,7 @@ class GetProduct(APIView):
         return customResponse(message= 'Fetch data successfully', status=200  ,data=serializer.data)
     
     def delete(self, request,pk=None):
+        print(pk)
         querySet=ProductWater.objects.filter(id=pk)
         querySet.delete()
         return customResponse(message= 'Delete data successfully', status=200  ,data=None)

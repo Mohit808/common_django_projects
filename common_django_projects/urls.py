@@ -42,4 +42,5 @@ urlpatterns = [
     path('updateUserWater', water_login.UpdateUser.as_view()),
     path('createProductWater', add_product.CreateProduct.as_view()),
     path('getProduct', add_product.GetProduct.as_view()),
+    path('getProduct/<int:pk>', add_product.GetProduct.as_view()),
 ]
