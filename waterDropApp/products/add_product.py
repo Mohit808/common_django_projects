@@ -17,3 +17,13 @@ class CreateProduct(APIView):
             serializer.save()
             return customResponse(message= 'Product created successfully', status=status.HTTP_200_OK)
         return customResponse(message= 'Invalid data', status=400  ,data=serializer.data)
+
+
+class GetProduct(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        query=UserWater.objects.get(email=request.user.username)
+        querySet=ProductWater.objects.filter(userId=query)
+        serializer = ProductWaterSerializer(querySet,context={'request': request}, many=True)
+        return customResponse(message= 'Invalid data', status=400  ,data=serializer.data)
