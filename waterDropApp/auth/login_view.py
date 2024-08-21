@@ -42,3 +42,21 @@ def updateDatabase(request,email,first_name,last_name,profile_image):
         ser.save()
     print(ser.data)
     return customResponse(message= 'User updated successfully', status=status.HTTP_200_OK)
+
+
+
+
+
+
+
+class UpdateUser(APIView):
+    def post(self, request):
+        user_instance = UserWater.objects.get(id=request.data.get('id'))
+        serializer = UserWaterSerializer(user_instance,data=request.data,context={'request': request}, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return customResponse(message= 'User updated successfully', status=status.HTTP_200_OK)
+        return customResponse(message= 'Invalid data', status=400  ,data=serializer.data)
+
+
+

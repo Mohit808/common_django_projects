@@ -38,4 +38,5 @@ urlpatterns = [
     path('add-address', add_address.AddAddressFunction.as_view()),
 
     path('social-login', water_login.LoginView.as_view()),
+    path('updateUserWater', water_login.UpdateUser.as_view()),
 ]
