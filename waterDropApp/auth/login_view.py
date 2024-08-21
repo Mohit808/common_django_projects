@@ -9,6 +9,8 @@ from globalStoreApp.custom_response import *
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from waterDropApp.models import UserWater
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 
 class LoginView(APIView):
@@ -50,6 +52,8 @@ def updateDatabase(request,email,first_name,last_name,profile_image):
 
 
 class UpdateUser(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request):
         user_instance = UserWater.objects.get(id=request.data.get('id'))
         serializer = UserWaterSerializer(user_instance,data=request.data,context={'request': request}, partial=True)
