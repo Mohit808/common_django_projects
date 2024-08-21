@@ -54,7 +54,7 @@ class UpdateUser(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     def post(self, request):
-        user_instance = UserWater.objects.get(email=request.user.username))
+        user_instance = UserWater.objects.get(email=request.user.username)
         serializer = UserWaterSerializer(user_instance,data=request.data,context={'request': request}, partial=True)
         if serializer.is_valid():
             serializer.save()
