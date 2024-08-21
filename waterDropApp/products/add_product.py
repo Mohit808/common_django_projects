@@ -22,7 +22,16 @@ class CreateProduct(APIView):
 class GetProduct(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    def get(self, request):
+    def get(self, request,pk=None):
+
+        if pk:
+            try:
+                product = ProductWater.objects.get(id=pk, userId=request.user)
+                serializer = ProductWaterSerializer(product, context={'request': request})
+                return Response({'message': 'Fetch data successfully', 'data': serializer.data}, status=status.HTTP_200_OK)
+            except ProductWater.DoesNotExist:
+                return Response({'message': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
+        
         query=UserWater.objects.get(email=request.user.username)
         querySet=ProductWater.objects.filter(userId=query)
         serializer = ProductWaterSerializer(querySet,context={'request': request}, many=True)
@@ -30,6 +39,8 @@ class GetProduct(APIView):
     
     def delete(self, request,pk=None):
         print(pk)
-        querySet=ProductWater.objects.filter(id=pk)
-        querySet.delete()
-        return customResponse(message= 'Delete data successfully', status=200  ,data=None)
+        if pk:
+            querySet=ProductWater.objects.filter(id=pk)
+            querySet.delete()
+            return customResponse(message= 'Delete data successfully', status=200  ,data=None)
+        return customResponse(message= 'Id Not Provided', status=400  ,data=None)
