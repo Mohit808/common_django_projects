@@ -78,7 +78,6 @@ class UpdateOrderWater(APIView):
         else:
             return customResponse(message= 'Id Not Provided', status=400  ,data=None)
         if serializer.is_valid():
-            serializer.validated_data['fromUser'] = UserWater.objects.get(email=request.user.username)
             serializer.save()
             return customResponse(message= 'Order placed successfully', status=status.HTTP_200_OK)
         return customResponse(message= 'Invalid data', status=400  ,data=serializer.errors)
