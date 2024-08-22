@@ -1,6 +1,6 @@
 from rest_framework import serializers, status
 from rest_framework.response import Response
-from .models import UserWater, ProductWater
+from .models import UserWater, ProductWater, OrderWater
 
 class UserWaterSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,4 +11,9 @@ class UserWaterSerializer(serializers.ModelSerializer):
 class ProductWaterSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductWater
+        fields = '__all__' 
+
+class OrderWaterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderWater
         fields = '__all__' 

@@ -21,7 +21,7 @@ class CreateProduct(APIView):
         return customResponse(message= 'Invalid data', status=400  ,data=serializer.data)
 
 
-class GetProduct(APIView):
+class GetMyProduct(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request,pk=None):
@@ -50,3 +50,21 @@ class GetProduct(APIView):
             querySet.delete()
             return customResponse(message= 'Delete data successfully', status=200  ,data=None)
         return customResponse(message= 'Id Not Provided', status=400  ,data=None)
+    
+
+
+
+
+
+class GetAllProduct(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def get(self, request,pk=None):
+
+        querySet=ProductWater.objects.all()
+        paginator = PageNumberPagination()
+        paginated_products = paginator.paginate_queryset(querySet, request)
+        serializer = ProductWaterSerializer(paginated_products,context={'request': request}, many=True)
+        
+        return customResponse(message= 'Fetch data successfully', status=200  ,data=paginator.get_paginated_response(serializer.data).data)
+    

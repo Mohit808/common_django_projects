@@ -40,3 +40,18 @@ class ProductWater(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+class OrderWater(models.Model):
+    fromUser = models.ForeignKey(UserWater, on_delete=models.CASCADE,related_name='orders_from_user')
+    toUser = models.ForeignKey(UserWater, on_delete=models.CASCADE,related_name='orders_to_user')
+    product=models.ForeignKey(ProductWater, on_delete=models.CASCADE)
+    status=models.CharField(max_length=100)
+    remarkCustomer=models.CharField(max_length=100)
+    remarkSeller=models.CharField(max_length=100)
+    paid=models.BooleanField()
+    created_at=models.DateTimeField(auto_now_add=True)
+    updated_at=models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name

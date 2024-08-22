@@ -21,7 +21,7 @@ from globalStoreApp.views import index
 from globalStoreApp.auth import login_view
 from globalStoreApp.onboarding import add_email, add_store_name, add_owner_detail, add_business_detail,add_categories,add_address
 from waterDropApp.auth import login_view as water_login
-from waterDropApp.products import add_product
+from waterDropApp.products import add_product_water, order_water
 
 
 urlpatterns = [
@@ -40,7 +40,10 @@ urlpatterns = [
 
     path('social-login', water_login.LoginView.as_view()),
     path('updateUserWater', water_login.UpdateUser.as_view()),
-    path('createProductWater', add_product.CreateProduct.as_view()),
-    path('getProduct', add_product.GetProduct.as_view()),
-    path('getProduct/<int:pk>', add_product.GetProduct.as_view()),
+    path('createProductWater', add_product_water.CreateProduct.as_view()),
+    path('getMyProductWater', add_product_water.GetMyProduct.as_view()),
+    path('getMyProductWater/<int:pk>', add_product_water.GetMyProduct.as_view()),
+    path('getAllProduct', add_product_water.GetAllProduct.as_view()),
+    path('getOrderSellerWater', order_water.GetOrderSeller.as_view()),
+    path('getOrderCustomer', order_water.GetOrderSeller.as_view()),
 ]
