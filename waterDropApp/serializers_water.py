@@ -21,19 +21,27 @@ class OrderWaterSerializer(serializers.ModelSerializer):
         fields = '__all__' 
     
     def get_fromUser(self, obj):
-        # Example condition to check if 'fromUser' details should be included
-        if self.context.get('include_fromUser', True):
+        """
+        Conditionally include 'fromUser' details in the serialized data.
+        """
+        if self.context.get('include_fromUser', True) and obj.fromUser:
             return UserWaterSerializer(obj.fromUser).data
         return None
 
     def get_toUser(self, obj):
-        # Example condition to check if 'toUser' details should be included
-        if self.context.get('include_toUser', True):
+        """
+        Conditionally include 'toUser' details in the serialized data.
+        """
+        if self.context.get('include_toUser', True) and obj.toUser:
             return UserWaterSerializer(obj.toUser).data
         return None
-    
+
     def to_representation(self, instance):
+        """
+        Custom representation of the model instance.
+        """
         representation = super().to_representation(instance)
+        # Remove fields if the condition is not met
         if not self.context.get('include_fromUser', True):
             representation.pop('fromUser', None)
         if not self.context.get('include_toUser', True):
