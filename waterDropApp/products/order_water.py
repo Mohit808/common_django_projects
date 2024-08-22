@@ -64,4 +64,4 @@ class OrderNowWater(APIView):
             serializer.validated_data['fromUser'] = UserWater.objects.get(email=request.user.username)
             serializer.save()
             return customResponse(message= 'Order placed successfully', status=status.HTTP_200_OK)
-        return customResponse(message= 'Invalid data', status=400  ,data=serializer.data)
+        return customResponse(message= 'Invalid data', status=400  ,data=serializer.errors)
