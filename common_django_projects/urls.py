@@ -22,6 +22,8 @@ from globalStoreApp.auth import login_view
 from globalStoreApp.onboarding import add_email, add_store_name, add_owner_detail, add_business_detail,add_categories,add_address
 from waterDropApp.auth import login_view as water_login
 from waterDropApp.products import add_product_water, order_water
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
@@ -47,4 +49,4 @@ urlpatterns = [
     path('getOrderSellerWater', order_water.GetOrderSeller.as_view()),
     path('getOrderCustomer', order_water.GetOrderSeller.as_view()),
     path('orderNowWater', order_water.OrderNowWater.as_view()),
-]
+]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

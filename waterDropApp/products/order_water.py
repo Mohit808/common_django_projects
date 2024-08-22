@@ -53,8 +53,6 @@ class GetOrderCustomer(APIView):
     
 
 
-    
-
 class OrderNowWater(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
