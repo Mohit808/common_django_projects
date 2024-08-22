@@ -19,3 +19,23 @@ class OrderWaterSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderWater
         fields = '__all__' 
+    
+    def get_fromUser(self, obj):
+        # Example condition to check if 'fromUser' details should be included
+        if self.context.get('include_fromUser', True):
+            return UserWaterSerializer(obj.fromUser).data
+        return None
+
+    def get_toUser(self, obj):
+        # Example condition to check if 'toUser' details should be included
+        if self.context.get('include_toUser', True):
+            return UserWaterSerializer(obj.toUser).data
+        return None
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if not self.context.get('include_fromUser', True):
+            representation.pop('fromUser', None)
+        if not self.context.get('include_toUser', True):
+            representation.pop('toUser', None)
+        return representation
