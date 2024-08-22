@@ -46,7 +46,7 @@ class OrderWater(models.Model):
     fromUser = models.ForeignKey(UserWater, on_delete=models.CASCADE,related_name='orders_from_user')
     toUser = models.ForeignKey(UserWater, on_delete=models.CASCADE,related_name='orders_to_user')
     product=models.ForeignKey(ProductWater, on_delete=models.CASCADE)
-    status=models.CharField(max_length=100) #1= ordered #2=cancelled #3=accepted #4=delivered
+    status=models.CharField(max_length=100) #1= ordered #2=cancelled by customer #3 cancelled by seller #4=accepted #5=delivered
     remarkCustomer=models.CharField(max_length=100,blank=True)
     remarkSeller=models.CharField(max_length=100,blank=True)
     paid=models.BooleanField(default=False)

@@ -38,7 +38,7 @@ class GetOrderCustomer(APIView):
         querySet=OrderWater.objects.filter(fromUser=query)
         paginator = PageNumberPagination()
         paginated_products = paginator.paginate_queryset(querySet, request)
-        serializer = OrderWaterSerializer(paginated_products,context={'include_fromUser':True,}, many=True)
+        serializer = OrderWaterSerializer(paginated_products,context={'include_fromUser':True,'include_toUser':False}, many=True)
         
         return customResponse(message= f'Fetch data successfully', status=200  ,data=paginator.get_paginated_response(serializer.data).data)
     
@@ -58,6 +58,25 @@ class OrderNowWater(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request):
         serializer = OrderWaterSerializer(data=request.data,context={'request': request}, partial=True)
+        if serializer.is_valid():
+            serializer.validated_data['fromUser'] = UserWater.objects.get(email=request.user.username)
+            serializer.save()
+            return customResponse(message= 'Order placed successfully', status=status.HTTP_200_OK)
+        return customResponse(message= 'Invalid data', status=400  ,data=serializer.errors)
+    
+
+
+class UpdateOrderWater(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        id=request.data['id']
+        status=request.data['status']
+        if id:
+            querySet=OrderWater.objects.filter(id=id)
+            serializer = OrderWaterSerializer(querySet,data=request.data,context={'request': request}, partial=True)
+        else:
+            return customResponse(message= 'Id Not Provided', status=400  ,data=None)
         if serializer.is_valid():
             serializer.validated_data['fromUser'] = UserWater.objects.get(email=request.user.username)
             serializer.save()

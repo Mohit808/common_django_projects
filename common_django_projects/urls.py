@@ -51,6 +51,7 @@ urlpatterns = [
     path('getOrderSellerWater', order_water.GetOrderSeller.as_view()),
     path('getOrderCustomer', order_water.GetOrderCustomer.as_view()),
     path('orderNowWater', order_water.OrderNowWater.as_view()),
+    path('updateOrderWater', order_water.UpdateOrderWater.as_view()),
 ]
 
 # + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
