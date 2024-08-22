@@ -40,7 +40,7 @@ class GetOrderCustomer(APIView):
         paginated_products = paginator.paginate_queryset(querySet, request)
         serializer = OrderWaterSerializer(paginated_products,context={'request': request}, many=True)
         
-        return customResponse(message= f'Fetch data successfully {query} {querySet}', status=200  ,data=paginator.get_paginated_response(serializer.data).data)
+        return customResponse(message= f'Fetch data successfully', status=200  ,data=paginator.get_paginated_response(serializer.data).data)
     
     
     def delete(self, request,pk=None):
