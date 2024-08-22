@@ -15,7 +15,7 @@ class GetOrderSeller(APIView):
         querySet=OrderWater.objects.filter(toUser=query)
         paginator = PageNumberPagination()
         paginated_products = paginator.paginate_queryset(querySet, request)
-        serializer = OrderWaterSerializer(paginated_products,context={'request': request,'include_toUser':True,'include_fromUser':False,}, many=True)
+        serializer = OrderWaterSerializer(paginated_products,context={'request': request,'include_toUser':True,}, many=True)
         
         return customResponse(message= 'Fetch data successfully', status=200  ,data=paginator.get_paginated_response(serializer.data).data)
     
