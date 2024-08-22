@@ -49,7 +49,7 @@ class OrderWater(models.Model):
     status=models.CharField(max_length=100) #1= ordered #2=delivered #3=cancelled
     remarkCustomer=models.CharField(max_length=100,blank=True)
     remarkSeller=models.CharField(max_length=100,blank=True)
-    paid=models.BooleanField()
+    paid=models.BooleanField(default=False)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
 
