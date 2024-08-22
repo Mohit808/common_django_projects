@@ -49,7 +49,7 @@ urlpatterns = [
     path('getMyProductWater/<int:pk>', add_product_water.GetMyProduct.as_view()),
     path('getAllProduct', add_product_water.GetAllProduct.as_view()),
     path('getOrderSellerWater', order_water.GetOrderSeller.as_view()),
-    path('getOrderCustomer', order_water.GetOrderSeller.as_view()),
+    path('getOrderCustomer', order_water.GetOrderCustomer.as_view()),
     path('orderNowWater', order_water.OrderNowWater.as_view()),
 ]
 
