@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from globalStoreApp.custom_response import *
-from waterDropApp.serializers_water import OrderWaterSerializer
+from waterDropApp.serializers_water import OrderWaterSerializer, OrderWaterSerializerForSave
 from waterDropApp.models import UserWater, ProductWater,OrderWater
 from rest_framework.pagination import PageNumberPagination
 
@@ -52,12 +52,35 @@ class GetOrderCustomer(APIView):
         return customResponse(message= 'Id Not Provided', status=400  ,data=None)
     
 
+# class OrderNowWater(APIView):
+#     authentication_classes = [TokenAuthentication]
+#     permission_classes = [IsAuthenticated]
+
+#     def post(self, request):
+#         # Ensure required fields are present in request data
+#         # required_fields = ['toUser', 'status']
+#         # for field in required_fields: 
+#         #     if field not in request.data:
+#         #         return customResponse(message=f'{field} is required', status=status.HTTP_400_BAD_REQUEST)
+        
+#         # Initialize the serializer with request data
+#         serializer = OrderWaterSerializer(data=request.data, context={'request': request})
+
+#         if serializer.is_valid():
+#             # Set the 'fromUser' field based on the current authenticated user
+#             serializer.validated_data['fromUser'] = UserWater.objects.get(email=request.user.username)
+            
+#             # Save the instance
+#             serializer.save()
+#             return customResponse(message='Order placed successfully', status=status.HTTP_200_OK)
+        
+#         return customResponse(message='Invalid data', status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
 
 class OrderNowWater(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     def post(self, request):
-        serializer = OrderWaterSerializer(data=request.data,context={'request': request}, partial=True)
+        serializer = OrderWaterSerializerForSave(data=request.data,context={'request': request}, partial=True)
         if serializer.is_valid():
             serializer.validated_data['fromUser'] = UserWater.objects.get(email=request.user.username)
             serializer.save()
@@ -82,7 +105,7 @@ class UpdateOrderWater(APIView):
             return customResponse(message='Order not found', status=status.HTTP_404_NOT_FOUND)
 
         # Initialize the serializer with the instance and request data
-        serializer = OrderWaterSerializer(order, data=request.data, context={'request': request}, partial=True)
+        serializer = OrderWaterSerializerForSave(order, data=request.data, context={'request': request}, partial=True)
 
         # Validate and save
         if serializer.is_valid():

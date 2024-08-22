@@ -13,6 +13,14 @@ class ProductWaterSerializer(serializers.ModelSerializer):
         model = ProductWater
         fields = '__all__' 
 
+
+class OrderWaterSerializerForSave(serializers.ModelSerializer):
+    class Meta:
+        model = OrderWater
+        fields = '__all__' 
+
+
+
 class OrderWaterSerializer(serializers.ModelSerializer):
     fromUser = serializers.SerializerMethodField()
     toUser = serializers.SerializerMethodField()
