@@ -69,15 +69,27 @@ class OrderNowWater(APIView):
 class UpdateOrderWater(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+
     def post(self, request):
-        id=request.data['id']
-        status=request.data['status']
-        if id:
-            querySet=OrderWater.objects.filter(id=id)
-            serializer = OrderWaterSerializer(querySet,data=request.data,context={'request': request}, partial=True)
-        else:
-            return customResponse(message= 'Id Not Provided', status=400  ,data=None)
+        # Ensure 'id' is provided in request data
+        if 'id' not in request.data:
+            return customResponse(message='ID is required', status=status.HTTP_400_BAD_REQUEST)
+
+        # Retrieve the single OrderWater instance
+        try:
+            order = OrderWater.objects.get(id=request.data['id'])
+        except OrderWater.DoesNotExist:
+            return customResponse(message='Order not found', status=status.HTTP_404_NOT_FOUND)
+
+        # Initialize the serializer with the instance and request data
+        serializer = OrderWaterSerializer(order, data=request.data, context={'request': request}, partial=True)
+
+        # Validate and save
         if serializer.is_valid():
-            serializer.save()
-            return customResponse(message= 'Order placed successfully', status=status.HTTP_200_OK)
-        return customResponse(message= 'Invalid data', status=400  ,data=serializer.errors)
+            try:
+                serializer.save()
+                return customResponse(message='Order updated successfully', status=status.HTTP_200_OK)
+            except Exception as e:
+                return customResponse(message='Error saving order', status=status.HTTP_400_BAD_REQUEST, data={'error': str(e)})
+        else:
+            return customResponse(message='Invalid data', status=status.HTTP_400_BAD_REQUEST, data=serializer.errors)
