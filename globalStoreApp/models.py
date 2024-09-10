@@ -75,4 +75,70 @@ class Store(models.Model):
 
 
 
+class MainCategory(models.Model):
+    name = models.CharField(max_length=100)
+    image =  models.ImageField(upload_to="product_images",blank=True,)
+    description = models.TextField(blank=True)
+    def __str__(self):
+        return self.name
     
+    class Meta:
+        verbose_name = "MainCategory"
+        verbose_name_plural = "MainCategories"
+
+class Category(models.Model):
+    main_category = models.ForeignKey(MainCategory, blank=True, null=True, on_delete=models.SET_NULL,related_name='categories')
+    name = models.CharField(max_length=100)
+    image =  models.ImageField(upload_to="product_images")
+    description = models.TextField()
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        verbose_name = "Category"
+        verbose_name_plural = "Categories"
+
+
+class Variant(models.Model):
+    category = models.ForeignKey(Category, blank=True, null=True, on_delete=models.SET_NULL)
+    name = models.CharField(max_length=100)
+    image =  models.ImageField(upload_to="product_images")
+    description = models.TextField()
+    def __str__(self):
+        return self.name
+
+
+class Brand(models.Model):
+    name = models.CharField(max_length=100)
+    image =  models.ImageField(upload_to="product_images")
+    description = models.TextField()
+    def __str__(self):
+        return self.name
+
+class Tags(models.Model):
+    name = models.CharField(max_length=100)
+    def __str__(self):
+        return self.name
+
+class Product(models.Model):
+    name= models.CharField(max_length=100)
+    description=models.TextField()
+    image= models.ImageField(upload_to="product_images")
+    price= models.FloatField()
+    discountedPrice= models.FloatField(null=True,blank=True)
+    main_category= models.ForeignKey(MainCategory,on_delete=models.CASCADE,null=True, blank=True)
+    category= models.ForeignKey(Category,on_delete=models.CASCADE)
+    variant= models.ForeignKey(Variant,on_delete=models.CASCADE,null=True, blank=True)
+    brand = models.ForeignKey(Brand,on_delete=models.CASCADE, null=True, blank= True)
+    tag =models.ForeignKey(Tags, on_delete=models.CASCADE, null=True, blank= True)
+    origin=models.TextField(blank= True)
+    tips= models.TextField(blank= True)
+    additional_info = models.TextField(blank=True)
+    created_at=models.DateTimeField(auto_now_add=True)
+    updated_at=models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+
+

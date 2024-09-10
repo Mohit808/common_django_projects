@@ -1,6 +1,10 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.http import HttpResponse
+from rest_framework.views import APIView
+from globalStoreApp.custom_response import *
+from globalStoreApp.models import MainCategory,Category
+from globalStoreApp.my_serializers import *
 
 
 # Create your views here.
@@ -37,3 +41,15 @@ def index(request):
     '''
     return HttpResponse(html_content)
 
+
+
+
+class GetMainCategories(APIView):
+    def get(self, request,pk=None):
+        
+        query=MainCategory.objects.all()
+
+        serializer = MainCategorySerializer(query, many=True,context={'request': request})
+        return customResponse(message= f'Fetch data successfully', status=200  ,data=serializer.data)
+    
+    
