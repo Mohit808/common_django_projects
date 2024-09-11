@@ -123,6 +123,7 @@ class Tags(models.Model):
 class Product(models.Model):
     name= models.CharField(max_length=100)
     description=models.TextField()
+    highlight=models.TextField(blank=True)
     image= models.ImageField(upload_to="product_images")
     price= models.FloatField()
     discountedPrice= models.FloatField(null=True,blank=True)
