@@ -61,4 +61,13 @@ class GetProducts(APIView):
         serializer = ProductSerializer(query, many=True,context={'request': request})
         return customResponse(message= f'Fetch data successfully', status=200  ,data=serializer.data)
     
+
+class GetVariants(APIView):
+    def get(self, request,pk=None):
+
+        query=Variant.objects.filter(category=pk)
+
+        serializer = VariantSerializer(query, many=True,context={'request': request})
+        return customResponse(message= f'Fetch data successfully', status=200  ,data=serializer.data)
+    
     

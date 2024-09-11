@@ -76,6 +76,19 @@ class BrandSerializer(serializers.ModelSerializer):
             representation['image'] = request.build_absolute_uri(instance.image.url)
         return representation
     
+
+class VariantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Variant
+        fields = "__all__"
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        request = self.context.get('request')
+        if request is not None:
+            representation['image'] = request.build_absolute_uri(instance.image.url)
+        return representation
+    
         
 class MainCategorySerializer(serializers.ModelSerializer):
     categories = CategorySerializer(many=True, read_only=True)
