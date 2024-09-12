@@ -42,7 +42,7 @@ urlpatterns = [
     path('add-categories', add_categories.AddCategoriesFunction.as_view()),
     path('add-address', add_address.AddAddressFunction.as_view()),
     path('getMainCategories', GetMainCategories.as_view()),
-    path('getProducts', GetProducts.as_view()),
+    path('getProducts/<int:pk>', GetProducts.as_view()),
     path('getVariants/<int:pk>', GetVariants.as_view()),
 
     path('social-login', water_login.LoginView.as_view()),
