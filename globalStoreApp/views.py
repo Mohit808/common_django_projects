@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from globalStoreApp.custom_response import *
-from globalStoreApp.models import MainCategory,Category
+from globalStoreApp.models import MainCategory,Category, FeatureListModel
 from globalStoreApp.my_serializers import *
 
 
@@ -76,5 +76,29 @@ class GetVariants(APIView):
 
         serializer = VariantSerializer(query, many=True,context={'request': request})
         return customResponse(message= f'Fetch data successfully', status=200  ,data=serializer.data)
+    
+    
+
+class GetDashboard(APIView):
+    def get(self, request,pk=None):
+
+        try:
+            feature_list_models = FeatureListModel.objects.all()
+
+            distinct_categories = Category.objects.filter(featurelistmodel__in=feature_list_models).distinct()
+
+            response_data = []
+
+            for category in distinct_categories:
+                products = Product.objects.filter(category=category)[:10]
+                products_data = ProductSerializer(products, many=True).data
+                category_data = CategorySerializer(category).data
+                category_data['products'] = products_data
+                response_data.append(category_data)
+            
+            return customResponse(message= f'Fetch data successfully', status=200  ,data=response_data)
+            # return Response(response_data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     

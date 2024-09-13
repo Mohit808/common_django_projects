@@ -143,3 +143,19 @@ class Product(models.Model):
 
 
 
+class FeatureListModel(models.Model):
+    name= models.CharField(max_length=100)
+    highlight=models.TextField(blank=True)
+    image= models.ImageField(upload_to="product_images",blank=True)
+    main_category= models.ForeignKey(MainCategory,on_delete=models.CASCADE,null=True, blank=True)
+    category= models.ForeignKey(Category,on_delete=models.CASCADE)
+    variant= models.ForeignKey(Variant,on_delete=models.CASCADE,null=True, blank=True)
+    brand = models.ForeignKey(Brand,on_delete=models.CASCADE, null=True, blank= True)
+    priority= models.IntegerField(default=0,blank=True)
+    created_at=models.DateTimeField(auto_now_add=True)
+    updated_at=models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+
