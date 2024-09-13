@@ -95,8 +95,8 @@ class GetDashboard(APIView):
                     "feature_list": products_data
                 }
                 if feature.image:
-                    feature_data["image"] = feature.image.url
-                    
+                    feature_data["image"] = f"CommonModule.pythonanywhere.com{feature.image.url}"
+
                 response_data.append(feature_data)
 
 
