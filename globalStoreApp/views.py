@@ -110,7 +110,11 @@ class GetHotDeals(APIView):
             discount_difference=ExpressionWrapper(
                 F('price') - F('discountedPrice'),
                 output_field=FloatField()
+            ),
+            discount_percentage=ExpressionWrapper(
+                (F('price') - F('discountedPrice')) / F('price') * 100,
+                output_field=FloatField()
             )
-        ).filter(discountedPrice__isnull=False).order_by('-discount_difference')
+        ).filter(discountedPrice__isnull=False).order_by('-discount_percentage')
         serializer = ProductSerializer(query, many=True,context={'request': request})
         return customResponse(message= f'Fetch data successfully', status=200  ,data=serializer.data)
