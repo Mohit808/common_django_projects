@@ -142,7 +142,6 @@ class Product(models.Model):
         return self.name
 
 
-
 class FeatureListModel(models.Model):
     name= models.CharField(max_length=100)
     highlight=models.TextField(blank=True)

@@ -107,6 +107,8 @@ class MainCategorySerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     brand = BrandSerializer(read_only=True)
+    discount_percentage = serializers.SerializerMethodField()
+
     class Meta:
         model = Product
         fields = "__all__"
@@ -117,6 +119,11 @@ class ProductSerializer(serializers.ModelSerializer):
         if request is not None:
             representation['image'] = request.build_absolute_uri(instance.image.url)
         return representation
+    
+    def get_discount_percentage(self, obj):
+        if obj.price and obj.discountedPrice:
+            return (obj.price - obj.discountedPrice) / obj.price * 100
+        return 0
     
 
 

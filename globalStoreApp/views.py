@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from globalStoreApp.custom_response import *
 from globalStoreApp.models import MainCategory,Category, FeatureListModel
 from globalStoreApp.my_serializers import *
+from django.db.models import F, FloatField, ExpressionWrapper
 
 
 # Create your views here.
@@ -102,3 +103,18 @@ class GetDashboard(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     
+
+class GetHotDeals(APIView):
+    def get(self, request,pk=None):
+        query = Product.objects.annotate(
+            discount_difference=ExpressionWrapper(
+                F('price') - F('discountedPrice'),
+                output_field=FloatField()
+            ),
+            discount_percentage=ExpressionWrapper(
+                (F('price') - F('discountedPrice')) / F('price') * 100,
+                output_field=FloatField()
+            )
+        ).filter(discountedPrice__isnull=False).order_by('-discount_difference')
+        serializer = ProductSerializer(query, many=True,context={'request': request})
+        return customResponse(message= f'Fetch data successfully', status=200  ,data=serializer.data)
