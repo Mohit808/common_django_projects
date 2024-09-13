@@ -83,21 +83,24 @@ class GetDashboard(APIView):
     def get(self, request,pk=None):
 
         try:
-            feature_list_models = FeatureListModel.objects.all()
-
-            distinct_categories = Category.objects.filter(featurelistmodel__in=feature_list_models).distinct()
-
+            querySet = FeatureListModel.objects.all()
             response_data = []
 
-            for category in distinct_categories:
-                products = Product.objects.filter(category=category)[:10]
+            for feature in querySet:
+                products = Product.objects.filter(category=feature.category)[:10]
                 products_data = ProductSerializer(products, many=True).data
-                category_data = CategorySerializer(category).data
-                category_data['products'] = products_data
-                response_data.append(category_data)
-            
+                feature_data = {
+                    "name": feature.name,
+                    "highlight": feature.highlight,
+                    "feature_list": products_data
+                }
+                if feature.image:
+                    feature_data["image"] = feature.image.url
+                    
+                response_data.append(feature_data)
+
+
             return customResponse(message= f'Fetch data successfully', status=200  ,data=response_data)
-            # return Response(response_data, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
