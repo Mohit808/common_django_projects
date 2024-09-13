@@ -83,7 +83,7 @@ class GetDashboard(APIView):
     def get(self, request,pk=None):
 
         try:
-            querySet = FeatureListModel.objects.all()
+            querySet = FeatureListModel.objects.all().order_by('-priority')
             response_data = []
 
             for feature in querySet:
