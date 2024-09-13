@@ -131,7 +131,7 @@ class Product(models.Model):
     category= models.ForeignKey(Category,on_delete=models.CASCADE)
     variant= models.ForeignKey(Variant,on_delete=models.CASCADE,null=True, blank=True)
     brand = models.ForeignKey(Brand,on_delete=models.CASCADE, null=True, blank= True)
-    tag =models.ForeignKey(Tags, on_delete=models.CASCADE, null=True, blank= True)
+    tag =models.ManyToManyField(Tags,  null=True, blank= True)
     origin=models.TextField(blank= True)
     tips= models.TextField(blank= True)
     additional_info = models.TextField(blank=True)
