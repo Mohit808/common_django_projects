@@ -55,10 +55,15 @@ class GetMainCategories(APIView):
     
 class GetProducts(APIView):
     def get(self, request,pk=None):
-        if pk is None:
-             query=Product.objects.all()
+        variantId= request.GET.get("variantId")
+        categoryId= request.GET.get("categoryId")
+        if variantId:
+            query=Product.objects.filter(variant=variantId)
         else:
-            query=Product.objects.filter(variant=pk)
+            if categoryId:
+                query=Product.objects.filter(category=categoryId)
+            else:
+                query=Product.objects.all()
 
         serializer = ProductSerializer(query, many=True,context={'request': request})
         return customResponse(message= f'Fetch data successfully', status=200  ,data=serializer.data)
