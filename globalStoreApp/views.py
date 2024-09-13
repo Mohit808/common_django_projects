@@ -57,10 +57,10 @@ class GetProducts(APIView):
     def get(self, request,pk=None):
         variantId= request.GET.get("variantId")
         categoryId= request.GET.get("categoryId")
-        if variantId:
+        if variantId is not None and str(variantId)!="":
             query=Product.objects.filter(variant=variantId)
         else:
-            if categoryId:
+            if categoryId  is not None and str(categoryId)!="":
                 query=Product.objects.filter(category=categoryId)
             else:
                 query=Product.objects.all()
