@@ -88,15 +88,12 @@ class GetDashboard(APIView):
 
             for feature in querySet:
                 products = Product.objects.filter(category=feature.category)[:10]
-                products_data = ProductSerializer(products, many=True).data
+                products_data = ProductSerializer(products, many=True,context={'request': request}).data
                 feature_data = {
                     "name": feature.name,
                     "highlight": feature.highlight,
                     "feature_list": products_data
                 }
-                if feature.image:
-                    feature_data["image"] = f"CommonModule.pythonanywhere.com{feature.image.url}"
-
                 response_data.append(feature_data)
 
 
