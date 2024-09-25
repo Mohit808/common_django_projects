@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import OtpModel, Seller, Store, Category ,Brand, Tags , Product, MainCategory, Variant, FeatureListModel
+from .models import OtpModel, Seller, Store, Category ,Brand, Tags , Product, MainCategory, Variant, FeatureListModel, Order
 
 admin.site.register(OtpModel)
 admin.site.register(Seller)
@@ -11,3 +11,4 @@ admin.site.register(Brand)
 admin.site.register(Tags)
 admin.site.register(Product)
 admin.site.register(FeatureListModel)
+admin.site.register(Order)

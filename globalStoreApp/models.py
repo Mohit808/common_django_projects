@@ -163,3 +163,15 @@ class FeatureListModel(models.Model):
         return self.name
 
 
+class Order(models.Model):
+    store= models.ForeignKey(Store,on_delete=models.CASCADE)
+    product= models.ManyToManyField(Product,)
+    otp=models.CharField(blank=True,max_length=10)
+    status=models.CharField(blank=True,max_length=10)
+    created_at=models.DateTimeField(auto_now_add=True)
+    updated_at=models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+
