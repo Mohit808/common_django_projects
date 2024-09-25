@@ -128,6 +128,8 @@ class CreateOrders(APIView):
         print(productList)
         print(qtyList)
         print(storeList)
+
+        return customResponse(message='Order created successfully', status=200)
         # productList= [1,2,3]
         # qtyList= [1,2,3]
         # storeList=[1,2,1]
