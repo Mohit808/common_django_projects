@@ -108,6 +108,7 @@ class MainCategorySerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     brand = BrandSerializer(read_only=True)
     discount_percentage = serializers.SerializerMethodField()
+    store_name = serializers.CharField(source='store.store_name', read_only=True)
 
     class Meta:
         model = Product

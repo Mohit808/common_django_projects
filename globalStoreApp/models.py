@@ -32,6 +32,8 @@ class Seller(models.Model):
     deleted_at=models.CharField(max_length=100,blank=True)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
+    def __str__(self):
+        return self.username
 
     
 
@@ -72,6 +74,8 @@ class Store(models.Model):
     store_refund_policy= models.CharField(max_length=100)
     is_pickup= models.BooleanField(default=False)
     is_deleted= models.BooleanField(default=False)
+    def __str__(self):
+        return self.store_name
 
 
 
@@ -127,6 +131,7 @@ class Product(models.Model):
     image= models.ImageField(upload_to="product_images")
     price= models.FloatField()
     discountedPrice= models.FloatField(null=True,blank=True)
+    store= models.ForeignKey(Store,on_delete=models.CASCADE,null=True, blank=True)
     main_category= models.ForeignKey(MainCategory,on_delete=models.CASCADE,null=True, blank=True)
     category= models.ForeignKey(Category,on_delete=models.CASCADE)
     variant= models.ForeignKey(Variant,on_delete=models.CASCADE,null=True, blank=True)
