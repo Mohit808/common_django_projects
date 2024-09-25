@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from globalStoreApp.models import OtpModel, Seller, Store, MainCategory, Category,Product,Brand,Tags,Variant, FeatureListModel
+from globalStoreApp.models import OtpModel, Seller, Store, MainCategory, Category,Product,Brand,Tags,Variant, FeatureListModel, OrderItem, Order
 
 class AbsoluteImageField(serializers.ImageField):
     def to_representation(self, value):
@@ -135,6 +135,21 @@ class FeaturedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FeatureListModel
+        fields = "__all__"
+
+
+    
+class OrderItemSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = OrderItem
+        fields = "__all__"
+
+
+class OrderSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Order
         fields = "__all__"
     
 

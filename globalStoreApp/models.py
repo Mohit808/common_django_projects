@@ -162,16 +162,29 @@ class FeatureListModel(models.Model):
     def __str__(self):
         return self.name
 
+class OrderItem(models.Model):
+    product= models.ForeignKey(Product,on_delete=models.CASCADE)
+    qty=models.PositiveSmallIntegerField(default=1)
+    store=models.ForeignKey(Store,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.product.name} (x{self.qty})"
+    
 
 class Order(models.Model):
     store= models.ForeignKey(Store,on_delete=models.CASCADE)
-    product= models.ManyToManyField(Product,)
+    orderItem= models.ManyToManyField(OrderItem,null=True)
     otp=models.CharField(blank=True,max_length=10)
     status=models.CharField(blank=True,max_length=10)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.store.store_name}"
+
+
+    # def __str__(self):
+        # product_names = ", ".join([product.name for product in self.product.all()])
+        # return f"{self.store.store_name[:15]} : {product_names}"
 
 

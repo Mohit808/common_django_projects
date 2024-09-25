@@ -118,3 +118,73 @@ class GetHotDeals(APIView):
         ).filter(discountedPrice__isnull=False).order_by('-discount_percentage')
         serializer = ProductSerializer(query, many=True,context={'request': request})
         return customResponse(message= f'Fetch data successfully', status=200  ,data=serializer.data)
+    
+
+class CreateOrders(APIView):
+    def get(self,request,pk=None):
+        productList=request.data.get("products")
+        qtyList=request.data.get("qty")
+        storeList=request.data.get("store")
+        print(productList)
+        print(qtyList)
+        print(storeList)
+        # productList= [1,2,3]
+        # qtyList= [1,2,3]
+        # storeList=[1,2,1]
+        
+        order_data = []
+
+        for  x in range(len(productList)):
+            order_data.append({
+                'product': productList[x],
+                'qty': qtyList[x],
+                'store': storeList[x]
+            })
+
+        # print(order_data)
+        created_order_items = [] 
+        # created_order_items_map = {} 
+
+        for item_data in order_data:
+            serializer = OrderItemSerializer(data=item_data)
+            if serializer.is_valid():
+                order_item = serializer.save() 
+                created_order_items.append(order_item)
+            else:
+                return customResponse(message='Order Failed to create', status=400, data=serializer.errors)
+        
+        itemIds=[item.id for item in created_order_items]
+
+        finalList=[]
+        finalMap={}
+        for x in range(len(storeList)):
+            if storeList[x] in finalList:
+                finalMap[storeList[x]]=f"{finalMap[storeList[x]]},{itemIds[x]}"
+            
+            else:
+                finalList.append(storeList[x])
+                finalMap[storeList[x]]=itemIds[x]
+        
+        # print(finalMap)
+
+        for key, value in finalMap.items():
+            print(f"Key: {key}, Value: {value}")
+            serializer=OrderSerializer(data={"store":key,"orderItem":str(value).split(","),"otp":"123456","status":"Ordered"})
+            if serializer.is_valid():
+                order = serializer.save() 
+            else:
+                return customResponse(message='Order Failed to create', status=400, data=serializer.errors)
+
+
+        # for x in range(len(storeList)):
+        #     serializer=OrderSerializer({"store":storeList[x],"orderItem":created_order_items[x],"otp":"123456","status":"Ordered"})
+        #     if serializer.is_valid():
+        #         order_item = serializer.save() 
+        #     else:
+        #         return customResponse(message='Order Failed to create', status=400, data=serializer.errors)
+
+
+        return customResponse(message='Order created successfully', status=200, data=itemIds)
+
+
+        
