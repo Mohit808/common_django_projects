@@ -121,7 +121,7 @@ class GetHotDeals(APIView):
     
 
 class CreateOrders(APIView):
-    def get(self,request,pk=None):
+    def post(self,request,pk=None):
         productList=request.data.get("products")
         qtyList=request.data.get("qty")
         storeList=request.data.get("store")
