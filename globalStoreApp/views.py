@@ -129,11 +129,7 @@ class CreateOrders(APIView):
         print(qtyList)
         print(storeList)
 
-        return customResponse(message='Order created successfully', status=200)
-        # productList= [1,2,3]
-        # qtyList= [1,2,3]
-        # storeList=[1,2,1]
-        
+
         order_data = []
 
         for  x in range(len(productList)):
@@ -189,4 +185,8 @@ class CreateOrders(APIView):
         return customResponse(message='Order created successfully', status=200, data=itemIds)
 
 
-        
+class GetOrders(APIView):
+    def get(self,request,pk=None):
+        querySet=Order.objects.all()
+        serializer=OrderSerializer(querySet,many=True,context={'request': request})
+        return customResponse(message='Order Fetched sucessfully', status=200, data=serializer.data)

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from globalStoreApp.models import OtpModel, Seller, Store, MainCategory, Category,Product,Brand,Tags,Variant, FeatureListModel, OrderItem, Order
+from django.conf import settings
 
 class AbsoluteImageField(serializers.ImageField):
     def to_representation(self, value):
@@ -140,13 +141,23 @@ class FeaturedSerializer(serializers.ModelSerializer):
 
     
 class OrderItemSerializer(serializers.ModelSerializer):
-    
+    product_name = serializers.CharField(source='product.name', read_only=True)
+    product_image = serializers.SerializerMethodField() 
     class Meta:
         model = OrderItem
         fields = "__all__"
+    
+    def get_product_image(self, obj):
+        request = self.context.get('request')
+        if obj.product.image:
+            return request.build_absolute_uri(obj.product.image.url) if request else f'{settings.MEDIA_URL}{obj.product.image.url}'
+        return None
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    store_name = serializers.CharField(source='store.store_name', read_only=True)
+    store_logo = serializers.CharField(source='store.store_logo', read_only=True)
+    orderItem = OrderItemSerializer(many=True) 
 
     class Meta:
         model = Order
