@@ -142,6 +142,8 @@ class FeaturedSerializer(serializers.ModelSerializer):
     
 class OrderItemSerializer(serializers.ModelSerializer):
     product_name = serializers.CharField(source='product.name', read_only=True)
+    discounted_price = serializers.CharField(source='product.discountedPrice', read_only=True)
+    price = serializers.CharField(source='product.price', read_only=True)
     product_image = serializers.SerializerMethodField() 
     class Meta:
         model = OrderItem
