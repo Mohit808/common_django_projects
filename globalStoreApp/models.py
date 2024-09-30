@@ -201,7 +201,6 @@ class Customer(models.Model):
 class Address(models.Model):
     customer=models.ForeignKey(Customer,on_delete=models.CASCADE)
     address_type=models.CharField(max_length=10)
-    address_title=models.CharField(max_length=200)
     full_address=models.CharField(max_length=200)
     house_no=models.CharField(max_length=100,blank=True)
     area=models.CharField(max_length=100,blank=True)

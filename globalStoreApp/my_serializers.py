@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from globalStoreApp.models import OtpModel, Seller, Store, MainCategory, Category,Product,Brand,Tags,Variant, FeatureListModel, OrderItem, Order
+from globalStoreApp.models import OtpModel, Seller, Store, MainCategory, Category,Product,Brand,Tags,Variant, FeatureListModel, OrderItem, Order,Address,Customer
 from django.conf import settings
 
 class AbsoluteImageField(serializers.ImageField):
@@ -163,6 +163,13 @@ class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
+        fields = "__all__"
+    
+
+class AddressSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Address
         fields = "__all__"
     
 

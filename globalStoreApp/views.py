@@ -127,9 +127,6 @@ class CreateOrders(APIView):
         productList=request.data.get("product")
         qtyList=request.data.get("qty")
         storeList=request.data.get("store")
-        # print(productList)
-        # print(qtyList)
-        # print(storeList)
 
         if productList is None or qtyList is None or storeList is None:
             return customResponse(message='product or qty or store is null', status=400,)
@@ -145,7 +142,6 @@ class CreateOrders(APIView):
             })
 
         created_order_items = [] 
-        # print(order_data)
 
         for item_data in order_data:
             serializer = OrderItemSerializer(data=item_data)
@@ -167,8 +163,6 @@ class CreateOrders(APIView):
                 finalList.append(storeList[x])
                 finalMap[storeList[x]]=itemIds[x]
         
-        # print(finalMap)
-        
         for key, value in finalMap.items():
             print(f"Key: {key}, Value: {value}")
             serializer=OrderSerializer(data={"store":key,"orderItem":str(value).split(","),"otp":random.randint(100000, 999999),"status":"Ordered"})
@@ -185,3 +179,12 @@ class GetOrders(APIView):
         querySet=Order.objects.all()
         serializer=OrderSerializer(querySet,many=True,context={'request': request})
         return customResponse(message='Order Fetched sucessfully', status=200, data=serializer.data)
+
+
+class AddAddress(APIView):
+    def post(self,request,pk=None):
+        serializer=AddressSerializer(data=request.data)
+        if(serializer.is_valid()):
+            serializer.save()
+            return customResponse(message='Address Saved sucessfully', status=200, data=serializer.data)
+        return customResponse(message='Failed to save address', status=2400, data=serializer.errors)
