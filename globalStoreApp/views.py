@@ -138,6 +138,7 @@ class CreateOrders(APIView):
         latitude=request.data.get("latitude")
         longitude=request.data.get("longitude")
 
+        return customResponse(message="Hiiiii", status=200,)
         if productList is None or qtyList is None or storeList is None:
             return customResponse(message='product or qty or store is null', status=400,)
 
