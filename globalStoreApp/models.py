@@ -210,5 +210,5 @@ class Address(models.Model):
     longitude=models.FloatField()
 
     def __str__(self) :
-        return self.address_title
+        return self.full_address
 
