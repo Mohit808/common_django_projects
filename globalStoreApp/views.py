@@ -6,6 +6,8 @@ from globalStoreApp.custom_response import *
 from globalStoreApp.models import MainCategory,Category, FeatureListModel
 from globalStoreApp.my_serializers import *
 from django.db.models import F, FloatField, ExpressionWrapper
+import random
+
 
 
 # Create your views here.
@@ -125,9 +127,12 @@ class CreateOrders(APIView):
         productList=request.data.get("products")
         qtyList=request.data.get("qty")
         storeList=request.data.get("store")
-        print(productList)
-        print(qtyList)
-        print(storeList)
+        # print(productList)
+        # print(qtyList)
+        # print(storeList)
+
+        if productList is None or qtyList is None or storeList is None:
+            return customResponse(message='products or qty or store is null', status=400,)
 
 
         order_data = []
@@ -139,9 +144,8 @@ class CreateOrders(APIView):
                 'store': storeList[x]
             })
 
-        # print(order_data)
         created_order_items = [] 
-        # created_order_items_map = {} 
+        # print(order_data)
 
         for item_data in order_data:
             serializer = OrderItemSerializer(data=item_data)
@@ -164,23 +168,14 @@ class CreateOrders(APIView):
                 finalMap[storeList[x]]=itemIds[x]
         
         # print(finalMap)
-
+        
         for key, value in finalMap.items():
             print(f"Key: {key}, Value: {value}")
-            serializer=OrderSerializer(data={"store":key,"orderItem":str(value).split(","),"otp":"123456","status":"Ordered"})
+            serializer=OrderSerializer(data={"store":key,"orderItem":str(value).split(","),"otp":random.randint(100000, 999999),"status":"Ordered"})
             if serializer.is_valid():
                 order = serializer.save() 
             else:
                 return customResponse(message='Order Failed to create', status=400, data=serializer.errors)
-
-
-        # for x in range(len(storeList)):
-        #     serializer=OrderSerializer({"store":storeList[x],"orderItem":created_order_items[x],"otp":"123456","status":"Ordered"})
-        #     if serializer.is_valid():
-        #         order_item = serializer.save() 
-        #     else:
-        #         return customResponse(message='Order Failed to create', status=400, data=serializer.errors)
-
 
         return customResponse(message='Order created successfully', status=200, data=itemIds)
 
