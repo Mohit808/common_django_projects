@@ -142,7 +142,7 @@ class CreateOrders(APIView):
         if productList is None or qtyList is None or storeList is None:
             return customResponse(message='product or qty or store is null', status=400,)
         
-        if tip is None:
+        if tip is None or not tip:
             tip=0
 
         order_data = []
