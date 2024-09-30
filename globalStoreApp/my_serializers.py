@@ -159,7 +159,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     store_name = serializers.CharField(source='store.store_name', read_only=True)
     store_logo = serializers.CharField(source='store.store_logo', read_only=True)
-    orderItem = serializers.PrimaryKeyRelatedField(many=True,queryset=OrderItem.objects.all())
+    orderItem = serializers.PrimaryKeyRelatedField(many=True,)
 
     class Meta:
         model = Order
