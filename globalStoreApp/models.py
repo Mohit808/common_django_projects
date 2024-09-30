@@ -204,6 +204,7 @@ class Order(models.Model):
     orderItem= models.ManyToManyField(OrderItem,null=True)
     otp=models.CharField(blank=True,max_length=10)
     status=models.CharField(blank=True,max_length=10)
+    tip=models.FloatField(blank=True,max_length=9,default=0)
     customer=models.ForeignKey(Customer,on_delete=models.CASCADE,null=True)
     address_type=models.CharField(max_length=10,blank=True)
     address_title=models.CharField(max_length=100,blank=True)
