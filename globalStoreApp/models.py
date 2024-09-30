@@ -10,6 +10,34 @@ class OtpModel(models.Model):
     def __str__(self):
         return self.phone_number
     
+
+
+class Customer(models.Model):
+    name=models.CharField(max_length=50)
+    image=models.ImageField(blank=True)
+    mobile=models.CharField(max_length=20,blank=True)
+    email=models.CharField(max_length=50,blank=True)
+    
+    def __str__(self) :
+        return self.name
+
+
+class Address(models.Model):
+    customer=models.ForeignKey(Customer,on_delete=models.CASCADE)
+    address_type=models.CharField(max_length=10)
+    full_address=models.CharField(max_length=200)
+    house_no=models.CharField(max_length=100,blank=True)
+    area=models.CharField(max_length=100,blank=True)
+    landmark=models.CharField(max_length=100,blank=True)
+    instruction=models.CharField(max_length=200,blank=True)
+    latitude=models.FloatField()
+    longitude=models.FloatField()
+
+    def __str__(self) :
+        return self.full_address
+
+
+
 class Seller(models.Model):
     username = models.CharField(max_length=100)
     password = models.CharField(max_length=100)
@@ -176,6 +204,17 @@ class Order(models.Model):
     orderItem= models.ManyToManyField(OrderItem,null=True)
     otp=models.CharField(blank=True,max_length=10)
     status=models.CharField(blank=True,max_length=10)
+    customer=models.ForeignKey(Customer,on_delete=models.CASCADE)
+    address_type=models.CharField(max_length=10,blank=True)
+    address_title=models.CharField(max_length=10,blank=True)
+    full_address=models.CharField(max_length=200)
+    house_no=models.CharField(max_length=100,blank=True)
+    area=models.CharField(max_length=100,blank=True)
+    landmark=models.CharField(max_length=100,blank=True)
+    instruction=models.CharField(max_length=200,blank=True)
+    latitude=models.FloatField()
+    longitude=models.FloatField()
+    
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
 
@@ -186,29 +225,3 @@ class Order(models.Model):
     # def __str__(self):
         # product_names = ", ".join([product.name for product in self.product.all()])
         # return f"{self.store.store_name[:15]} : {product_names}"
-
-
-class Customer(models.Model):
-    name=models.CharField(max_length=50)
-    image=models.ImageField(blank=True)
-    mobile=models.CharField(max_length=20,blank=True)
-    email=models.CharField(max_length=50,blank=True)
-    
-    def __str__(self) :
-        return self.name
-
-
-class Address(models.Model):
-    customer=models.ForeignKey(Customer,on_delete=models.CASCADE)
-    address_type=models.CharField(max_length=10)
-    full_address=models.CharField(max_length=200)
-    house_no=models.CharField(max_length=100,blank=True)
-    area=models.CharField(max_length=100,blank=True)
-    landmark=models.CharField(max_length=100,blank=True)
-    instruction=models.CharField(max_length=200,blank=True)
-    latitude=models.FloatField()
-    longitude=models.FloatField()
-
-    def __str__(self) :
-        return self.address_title
-
