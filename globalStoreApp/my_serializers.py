@@ -165,6 +165,16 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = "__all__"
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        
+        # Check if the request is a GET request
+        request = self.context.get('request')
+        if request and request.method != 'GET':
+            representation.pop('orderItem', None)  # Remove 'orderItem' for non-GET requests
+
+        return representation
     
 
 class AddressSerializer(serializers.ModelSerializer):
