@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from globalStoreApp.custom_response import *
-from globalStoreApp.models import MainCategory,Category, FeatureListModel
+from globalStoreApp.models import MainCategory,Category, FeatureListModel, Address
 from globalStoreApp.my_serializers import *
 from django.db.models import F, FloatField, ExpressionWrapper
 import random
@@ -181,10 +181,16 @@ class GetOrders(APIView):
         return customResponse(message='Order Fetched sucessfully', status=200, data=serializer.data)
 
 
-class AddAddress(APIView):
+class MyAddress(APIView):
     def post(self,request,pk=None):
         serializer=AddressSerializer(data=request.data)
         if(serializer.is_valid()):
             serializer.save()
             return customResponse(message='Address Saved sucessfully', status=200, data=serializer.data)
         return customResponse(message='Failed to save address', status=2400, data=serializer.errors)
+    
+    def get(self,request,pk=None):
+        query_set=Address.objects.all()
+        serializer=AddressSerializer(query_set,many=True)
+        return customResponse(message='Address Fetched sucessfully', status=200, data=serializer.data)
+    
