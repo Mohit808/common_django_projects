@@ -137,10 +137,13 @@ class CreateOrders(APIView):
         instruction=request.data.get("instruction")
         latitude=request.data.get("latitude")
         longitude=request.data.get("longitude")
+        tip=request.data.get("tip")
 
         if productList is None or qtyList is None or storeList is None:
             return customResponse(message='product or qty or store is null', status=400,)
-
+        
+        if tip is None:
+            tip=0
 
         order_data = []
 
@@ -175,7 +178,7 @@ class CreateOrders(APIView):
         
         for key, value in finalMap.items():
             print(f"Key: {key}, Value: {value}")
-            serializer=CreateOrderSerializer(data={"store":key,"orderItem":str(value).split(","),"otp":random.randint(100000, 999999),"status":"Ordered","customer":customer,"address_type":address_type,"address_title":address_title,"full_address":full_address,"house_no":house_no,"area":area,"landmark":landmark,"instruction":instruction,"latitude":latitude,"longitude":longitude},context={'request': request})
+            serializer=CreateOrderSerializer(data={"store":key,"orderItem":str(value).split(","),"otp":random.randint(100000, 999999),"status":"Ordered","customer":customer,"address_type":address_type,"address_title":address_title,"full_address":full_address,"house_no":house_no,"area":area,"landmark":landmark,"instruction":instruction,"latitude":latitude,"longitude":longitude,'tip':tip})
             if serializer.is_valid():
                 order = serializer.save() 
             else:
