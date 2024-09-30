@@ -135,8 +135,8 @@ class CreateOrders(APIView):
         area=request.data.get("area")
         landmark=request.data.get("landmark")
         instruction=request.data.get("instruction")
-        latitude=request.data.get("latitude")
-        longitude=request.data.get("longitude")
+        # latitude=request.data.get("latitude")
+        # longitude=request.data.get("longitude")
 
         return customResponse(message="Hiiiii", status=200,)
         if productList is None or qtyList is None or storeList is None:
