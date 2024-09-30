@@ -124,7 +124,7 @@ class GetHotDeals(APIView):
 
 class CreateOrders(APIView):
     def post(self,request,pk=None):
-        productList=request.data.get("products")
+        productList=request.data.get("product")
         qtyList=request.data.get("qty")
         storeList=request.data.get("store")
         # print(productList)
@@ -132,7 +132,7 @@ class CreateOrders(APIView):
         # print(storeList)
 
         if productList is None or qtyList is None or storeList is None:
-            return customResponse(message='products or qty or store is null', status=400,)
+            return customResponse(message='product or qty or store is null', status=400,)
 
 
         order_data = []
