@@ -156,25 +156,24 @@ class OrderItemSerializer(serializers.ModelSerializer):
         return None
 
 
+
+class CreateOrderSerializer(serializers.ModelSerializer):
+    store_name = serializers.CharField(source='store.store_name', read_only=True)
+    store_logo = serializers.CharField(source='store.store_logo', read_only=True)
+
+    class Meta:
+        model = Order
+        fields = "__all__"
+
 class OrderSerializer(serializers.ModelSerializer):
     store_name = serializers.CharField(source='store.store_name', read_only=True)
     store_logo = serializers.CharField(source='store.store_logo', read_only=True)
-    # orderItem = serializers.PrimaryKeyRelatedField(many=True,queryset=OrderItem.objects.all())
     orderItem= OrderItemSerializer(many=True,required=False)
 
     class Meta:
         model = Order
         fields = "__all__"
 
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        
-        # Check if the request is a GET request
-        request = self.context.get('request')
-        if request and request.method != 'GET':
-            representation.pop('orderItem', None)  # Remove 'orderItem' for non-GET requests
-
-        return representation
     
 
 class AddressSerializer(serializers.ModelSerializer):
