@@ -228,7 +228,7 @@ class Order(models.Model):
         # return f"{self.store.store_name[:15]} : {product_names}"
 
 
-class Bannner(models.Model):
+class Banner(models.Model):
     category=models.ForeignKey(Category,on_delete=models.CASCADE)
     name=models.CharField(max_length=200)
     description=models.CharField(max_length=200)

@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from globalStoreApp.custom_response import *
-from globalStoreApp.models import MainCategory,Category, FeatureListModel, Address
+from globalStoreApp.models import MainCategory,Category, FeatureListModel, Address, Banner
 from globalStoreApp.my_serializers import *
 from django.db.models import F, FloatField, ExpressionWrapper
 import random
@@ -209,4 +209,9 @@ class MyAddress(APIView):
         query_set=Address.objects.all()
         serializer=AddressSerializer(query_set,many=True)
         return customResponse(message='Address Fetched sucessfully', status=200, data=serializer.data)
-    
+
+class GetBannner(APIView):
+    def get(self,request,pk=None):
+        query_set=Banner.objects.all()
+        serializer=BannerSerializer(query_set,many=True)
+        return customResponse(message='Banner Fetched sucessfully', status=200, data=serializer.data)
