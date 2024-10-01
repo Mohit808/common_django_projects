@@ -98,9 +98,12 @@ class GetDashboard(APIView):
                     "feature_list": products_data
                 }
                 response_data.append(feature_data)
+            
+            queryDelivery=Order.objects.exclude(status="Delivered").values_list('id', flat=True)
+            newList={'delivery':queryDelivery,'featured':response_data}
 
 
-            return customResponse(message= f'Fetch data successfully', status=200  ,data=response_data)
+            return customResponse(message= f'Fetch data successfully', status=200  ,data=newList)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
