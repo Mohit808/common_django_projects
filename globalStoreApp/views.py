@@ -160,7 +160,7 @@ class CreateOrders(APIView):
         created_order_items = [] 
 
         for item_data in order_data:
-            serializer = OrderItemSerializer(data=item_data)
+            serializer = OrderItemSerializer(data=item_data,)
             if serializer.is_valid():
                 order_item = serializer.save() 
                 created_order_items.append(order_item)
@@ -210,8 +210,8 @@ class MyAddress(APIView):
         serializer=AddressSerializer(query_set,many=True)
         return customResponse(message='Address Fetched sucessfully', status=200, data=serializer.data)
 
-class GetBannner(APIView):
+class GetBanner(APIView):
     def get(self,request,pk=None):
         query_set=Banner.objects.all()
-        serializer=BannerSerializer(query_set,many=True)
+        serializer=BannerSerializer(query_set,many=True,context={'request': request})
         return customResponse(message='Banner Fetched sucessfully', status=200, data=serializer.data)
