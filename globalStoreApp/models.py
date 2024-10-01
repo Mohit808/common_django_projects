@@ -226,3 +226,13 @@ class Order(models.Model):
     # def __str__(self):
         # product_names = ", ".join([product.name for product in self.product.all()])
         # return f"{self.store.store_name[:15]} : {product_names}"
+
+
+class Bannner(models.Model):
+    category=models.ForeignKey(Category,on_delete=models.CASCADE)
+    name=models.CharField(max_length=200)
+    description=models.CharField(max_length=200)
+    image=models.ImageField()
+
+    def __str__(self) :
+        return self.name
