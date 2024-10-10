@@ -4,7 +4,7 @@ from shareWheel.serializers import *
 from shareWheel.models import *
 from common_function.custom_response import *
 
-class WheelBooking(APIView):
+class WheelBookingFunction(APIView):
     def get(self, request,pk=None):
         
         query=WheelBooking.objects.all()
