@@ -10,7 +10,7 @@ class WheelBooking(models.Model):
     latitudeTo=models.FloatField()
     longitudeTo=models.FloatField()
     vehicle=models.CharField(max_length=20)
-    driver=models.SmallIntegerField(blank=True)
+    driver=models.SmallIntegerField(blank=True,null=True)
     status=models.CharField(max_length=20,blank=True)
     polylineRide=models.TextField(blank=True)
     polylineDriver=models.TextField(blank=True)
