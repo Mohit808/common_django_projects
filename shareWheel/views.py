@@ -16,6 +16,6 @@ class WheelBookingFunction(APIView):
         serializer = WheelBookingSerializer(data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
-            customResponse(message='created successfully', status=200)
+            return customResponse(message='created successfully', status=200)
         else : 
-            customResponse(message='Failed to create', status=400, data=serializer.errors)
+            return customResponse(message='Failed to create', status=400, data=serializer.errors)
