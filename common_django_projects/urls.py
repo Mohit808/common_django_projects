@@ -63,7 +63,7 @@ urlpatterns = [
     path('updateOrderWater', order_water.UpdateOrderWater.as_view()),
 
     #share wheels
-    path('getWheelBookings', WheelBooking.as_view()),
+    path('wheelBookings', WheelBookingFunction.as_view()),
 ]
 
 # + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
