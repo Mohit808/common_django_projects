@@ -234,7 +234,7 @@ class GetUniqueCategoryByStore(APIView):
         if storeId:
             unique_category_ids = Product.objects.filter(store_id=storeId).values('category').distinct()
             unique_categories = Category.objects.filter(id__in=unique_category_ids)
-            serializer = CategorySerializer(unique_categories, many=True)
+            serializer = CategorySerializer(unique_categories, many=True,context={'request': request})
             return customResponse(message="Categories fetched successfully",status=200,data=serializer.data)
         else:
             return customResponse(message="StoreId is null",status=400)
