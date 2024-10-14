@@ -220,3 +220,9 @@ class GetBanner(APIView):
         query_set=Banner.objects.all()
         serializer=BannerSerializer(query_set,many=True,context={'request': request})
         return customResponse(message='Banner Fetched sucessfully', status=200, data=serializer.data)
+    
+class GetStore(APIView):
+    def get(self,request,pk=None):
+        query_set=Store.objects.all()
+        serializer=StoreSerializer(query_set,many=True)
+        return customResponse(message="Store fetched successfully",status=200,data=serializer.data)

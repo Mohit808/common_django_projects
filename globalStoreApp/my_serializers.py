@@ -34,7 +34,8 @@ class SellerSerializer(serializers.ModelSerializer):
 class StoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Store
-        fields = "__all__"
+        # fields = "__all__"
+        fields = ["id","store_name","store_story"]
 
     def create(self, validated_data):
         
