@@ -226,3 +226,15 @@ class GetStore(APIView):
         query_set=Store.objects.all()
         serializer=StoreSerializer(query_set,many=True)
         return customResponse(message="Store fetched successfully",status=200,data=serializer.data)
+    
+
+class GetUniqueCategoryByStore(APIView):
+    def get(self,request,pk=None):
+        storeId=request.GET.get("storeId")
+        if storeId:
+            unique_category_ids = Product.objects.filter(store_id=storeId).values('category').distinct()
+            unique_categories = Category.objects.filter(id__in=unique_category_ids)
+            serializer = CategorySerializer(unique_categories, many=True)
+            return customResponse(message="Categories fetched successfully",status=200,data=serializer.data)
+        else:
+            return customResponse(message="StoreId is null",status=400)
