@@ -243,5 +243,5 @@ class GetUniqueCategoryByStore(APIView):
 class GetBrands(APIView):
     def get(self,request,pk=None):
         query_set=Brand.objects.all()
-        serializer=BrandSerializer(query_set,context={'request': request})
+        serializer=BrandSerializer(query_set,many=True,context={'request': request})
         return customResponse(message="Brand fetched successfully",status=200,data=serializer.data)
