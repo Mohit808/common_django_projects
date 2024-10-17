@@ -238,3 +238,10 @@ class GetUniqueCategoryByStore(APIView):
             return customResponse(message="Categories fetched successfully",status=200,data=serializer.data)
         else:
             return customResponse(message="StoreId is null",status=400)
+
+
+class GetBrands(APIView):
+    def get(self,request,pk=None):
+        query_set=Brand.objects.all()
+        serializer=BrandSerializer(query_set,context={'request': request})
+        return customResponse(message="Brand fetched successfully",status=200,data=serializer.data)
