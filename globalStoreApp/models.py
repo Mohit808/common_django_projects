@@ -239,7 +239,7 @@ class Banner(models.Model):
     
 
 class FestivalOffer(models.Model):
-    category=models.ManyToManyField(Variant)
+    variant=models.ManyToManyField(Variant)
     name=models.CharField(max_length=200)
     description=models.CharField(max_length=200)
     image=models.ImageField()

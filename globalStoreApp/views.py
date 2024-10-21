@@ -258,3 +258,15 @@ class GetFestivalOffer(APIView):
         query_set=FestivalOffer.objects.filter(priority=10).first()
         serializer=FestivalOfferSerializer(query_set,context={'request': request})
         return customResponse(message="Fetsival Offers fetched successfully",status=200,data=serializer.data)
+
+
+class GetVariantByFestival(APIView):
+    def get(self,request,pk=None):
+        festivalId=request.GET.get("festivalId")
+        if festivalId:
+            unique_variant_ids = FestivalOffer.objects.filter(id=festivalId).values('variant')
+            unique_variants = Variant.objects.filter(id__in=unique_variant_ids)
+            serializer = VariantSerializer(unique_variants, many=True,context={'request': request})
+            return customResponse(message="Variants fetched successfully",status=200,data=serializer.data)
+        else:
+            return customResponse(message="festivalId is null",status=400)
