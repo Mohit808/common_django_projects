@@ -61,6 +61,13 @@ class GetProducts(APIView):
         variantId= request.GET.get("variantId")
         categoryId= request.GET.get("categoryId")
         search= request.GET.get("search")
+        brandId=request.GET.get("brandId")
+
+        if brandId:
+            query_set=Product.objects.filter(brand=brandId)
+            serializer=ProductSerializer(query_set,many=True,context={'request': request})
+            return customResponse(message="Product fetched successfully",status=200,data=serializer.data)
+
         
 
         if variantId is not None and str(variantId)!="":
@@ -245,3 +252,11 @@ class GetBrands(APIView):
         query_set=Brand.objects.all()
         serializer=BrandSerializer(query_set,many=True,context={'request': request})
         return customResponse(message="Brand fetched successfully",status=200,data=serializer.data)
+
+
+class GetProductByBrands(APIView):
+    def get(self,request,pk=None):
+        brandId=request.GET.get("brandId")
+        query_set=Product.objects.filter(brand=brandId)
+        serializer=ProductSerializer(query_set,many=True,context={'request': request})
+        return customResponse(message="Product fetched successfully",status=200,data=serializer.data)
