@@ -236,3 +236,14 @@ class Banner(models.Model):
 
     def __str__(self) :
         return self.name
+    
+
+class FestivalOffer(models.Model):
+    category=models.ManyToManyField(Variant)
+    name=models.CharField(max_length=200)
+    description=models.CharField(max_length=200)
+    image=models.ImageField()
+    priority=models.SmallIntegerField()
+
+    def __str__(self) :
+        return self.name

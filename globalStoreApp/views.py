@@ -253,10 +253,8 @@ class GetBrands(APIView):
         serializer=BrandSerializer(query_set,many=True,context={'request': request})
         return customResponse(message="Brand fetched successfully",status=200,data=serializer.data)
 
-
-class GetProductByBrands(APIView):
+class GetFestivalOffer(APIView):
     def get(self,request,pk=None):
-        brandId=request.GET.get("brandId")
-        query_set=Product.objects.filter(brand=brandId)
-        serializer=ProductSerializer(query_set,many=True,context={'request': request})
-        return customResponse(message="Product fetched successfully",status=200,data=serializer.data)
+        query_set=FestivalOffer.objects.filter(priority=10).first()
+        serializer=FestivalOfferSerializer(query_set,context={'request': request})
+        return customResponse(message="Fetsival Offers fetched successfully",status=200,data=serializer.data)
