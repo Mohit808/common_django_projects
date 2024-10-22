@@ -235,6 +235,8 @@ class Banner(models.Model):
     image=models.ImageField()
     store=models.ForeignKey(Store,null=True,on_delete=models.CASCADE)
     priority=models.SmallIntegerField(default=0)
+    startColor=models.CharField(max_length=10,null=True)
+    endColor=models.CharField(max_length=100,null=True)
 
     def __str__(self) :
         return self.name
