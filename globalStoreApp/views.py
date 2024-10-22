@@ -223,8 +223,13 @@ class MyAddress(APIView):
         return customResponse(message='Address Fetched sucessfully', status=200, data=serializer.data)
 
 class GetBanner(APIView):
-    def get(self,request,pk=None):
-        query_set=Banner.objects.all()
+    def get(self,request):
+        storeId=request.GET.get("storeId")
+        if storeId:
+            query_set=Banner.objects.filter(store=storeId).order_by('-priority')
+        else:
+            query_set=Banner.objects.all()
+        
         serializer=BannerSerializer(query_set,many=True,context={'request': request})
         return customResponse(message='Banner Fetched sucessfully', status=200, data=serializer.data)
     

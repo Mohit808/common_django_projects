@@ -233,6 +233,8 @@ class Banner(models.Model):
     name=models.CharField(max_length=200)
     description=models.CharField(max_length=200)
     image=models.ImageField()
+    store=models.ForeignKey(Store,null=True,on_delete=models.CASCADE)
+    priority=models.SmallIntegerField(default=0)
 
     def __str__(self) :
         return self.name
