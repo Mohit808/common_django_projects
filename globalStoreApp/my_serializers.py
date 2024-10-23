@@ -188,7 +188,8 @@ class OrderSerializer(serializers.ModelSerializer):
                 'id': obj.deliveryPartner.id,
                 'name': obj.deliveryPartner.name,
                 'image_url': self.get_deliveryPartner_image(obj.deliveryPartner),
-                'bike':obj.deliveryPartner.bike
+                'bike':obj.deliveryPartner.bike,
+                'phone_number': obj.deliveryPartner.phone_number
             }
         return None
     

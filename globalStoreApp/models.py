@@ -193,9 +193,14 @@ class FeatureListModel(models.Model):
 class DeliveryPartner(models.Model):
     name=models.CharField(max_length=100)
     image=models.ImageField()
-    address=models.CharField(max_length=200)
+    phone_number=models.CharField(max_length=20,default=0)
+    email=models.CharField(max_length=100,blank=True)
     aadhaar=models.IntegerField(max_length=12)
     bike=models.CharField(max_length=20,blank=True)
+    address=models.CharField(max_length=200)
+    latitude=models.FloatField(default=0)
+    longitude=models.FloatField(default=0)
+
 
     def __str__(self):
         return f"{self.name}"
