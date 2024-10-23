@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from globalStoreApp.models import OtpModel, Seller, Store, MainCategory, Category,Product,Brand,Tags,Variant, FeatureListModel, OrderItem, Order,Address,Customer, Banner, FestivalOffer
+from globalStoreApp.models import OtpModel, Seller, Store, MainCategory, Category,Product,Brand,Tags,Variant, FeatureListModel, OrderItem, Order,Address,Customer, Banner, FestivalOffer, DeliveryPartner
 from django.conf import settings
 
 class AbsoluteImageField(serializers.ImageField):
@@ -140,6 +140,12 @@ class FeaturedSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class DeliveryPartnerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DeliveryPartner
+        fields = "__all__"
+
+
     
 class OrderItemSerializer(serializers.ModelSerializer):
     product_name = serializers.CharField(source='product.name', read_only=True)
@@ -170,10 +176,27 @@ class OrderSerializer(serializers.ModelSerializer):
     store_name = serializers.CharField(source='store.store_name', read_only=True)
     store_logo = serializers.CharField(source='store.store_logo', read_only=True)
     orderItem= OrderItemSerializer(many=True,required=False)
+    deliveryPartner = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
         fields = "__all__"
+    
+    def get_deliveryPartner(self, obj):
+        if obj.deliveryPartner:
+            return {
+                'id': obj.deliveryPartner.id,
+                'name': obj.deliveryPartner.name,
+                'image_url': self.get_deliveryPartner_image(obj.deliveryPartner),
+                'bike':obj.deliveryPartner.bike
+            }
+        return None
+    
+    def get_deliveryPartner_image(self, deliveryPartner):
+        request = self.context.get('request')
+        if deliveryPartner.image:
+            return request.build_absolute_uri(deliveryPartner.image.url) if request else f'{settings.MEDIA_URL}{deliveryPartner.image.url}'
+        return None
 
     
 

@@ -190,6 +190,17 @@ class FeatureListModel(models.Model):
     def __str__(self):
         return self.name
 
+class DeliveryPartner(models.Model):
+    name=models.CharField(max_length=100)
+    image=models.ImageField()
+    address=models.CharField(max_length=200)
+    aadhaar=models.IntegerField(max_length=12)
+    bike=models.CharField(max_length=20,blank=True)
+
+    def __str__(self):
+        return f"{self.name}"
+
+
 class OrderItem(models.Model):
     product= models.ForeignKey(Product,on_delete=models.CASCADE)
     qty=models.PositiveSmallIntegerField(default=1)
@@ -215,6 +226,7 @@ class Order(models.Model):
     instruction=models.CharField(max_length=200,blank=True)
     latitude=models.FloatField(default=0)
     longitude=models.FloatField(default=0)
+    deliveryPartner=models.ForeignKey(DeliveryPartner,on_delete=models.SET_NULL,null=True)
     
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
@@ -251,3 +263,5 @@ class FestivalOffer(models.Model):
 
     def __str__(self) :
         return self.name
+    
+

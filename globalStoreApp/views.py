@@ -8,7 +8,46 @@ from globalStoreApp.my_serializers import *
 from django.db.models import F, FloatField, ExpressionWrapper
 import random
 
+# from django.contrib.gis.db.models.functions import Distance
+# from django.contrib.gis.geos import Point
 
+
+
+
+# class GetNearByAddress(APIView):
+#     def get(self, request, pk=None):
+#         try:
+#             # Get the latitude and longitude from the request query parameters
+#             user_lat = float(request.query_params.get('latitude'))
+#             user_lon = float(request.query_params.get('longitude'))
+#             radius = float(request.query_params.get('radius', 50))  # Optional radius (default: 50 km)
+
+#             # Create a point from the user's location
+#             user_location = Point(user_lon, user_lat, srid=4326)
+
+#             # Filter variants by category and proximity using the distance function
+
+#             query = Address.objects.filter(
+#                 category=pk,
+#                 location__distance_lte=(user_location, radius * 1000)  # radius in meters
+#             ).annotate(
+#                 distance=Distance('location', user_location)
+#             ).order_by('distance')  # Orders by proximity
+
+#             # query = Variant.objects.filter(
+#             #     category=pk,
+#             #     location__distance_lte=(user_location, radius * 1000)  # radius in meters
+#             # ).annotate(
+#             #     distance=Distance('location', user_location)
+#             # ).order_by('distance')  # Orders by proximity
+
+#             # Serialize the filtered variants
+#             serializer = VariantSerializer(query, many=True, context={'request': request})
+
+#             return customResponse(message='Fetch data successfully', status=200, data=serializer.data)
+#         except ValueError:
+#             return customResponse(message='Invalid latitude or longitude', status=400)
+        
 
 # Create your views here.
 
