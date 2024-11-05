@@ -25,6 +25,13 @@ class PhoneLoginSerializer(serializers.Serializer):
         return OtpModel.objects.create(**validated_data)
     
 
+# class CustomerSerializer(serializers.ModelSerializer):
+
+#     class Meta:
+#         model = Customer
+#         fields = "__all__"
+    
+
 
 class SellerSerializer(serializers.ModelSerializer):
     class Meta:
@@ -181,7 +188,7 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = "__all__"
-    
+
     def get_deliveryPartner(self, obj):
         if obj.deliveryPartner:
             return {
@@ -199,7 +206,24 @@ class OrderSerializer(serializers.ModelSerializer):
             return request.build_absolute_uri(deliveryPartner.image.url) if request else f'{settings.MEDIA_URL}{deliveryPartner.image.url}'
         return None
 
+class DeliveryOderSerializer(serializers.ModelSerializer):
+    store_name = serializers.CharField(source='store.store_name', read_only=True)
+    store_logo = serializers.CharField(source='store.store_logo', read_only=True)
+    store_address = serializers.CharField(source='store.store_address', read_only=True)
+    store_lat = serializers.CharField(source='store.lat', read_only=True)
+    store_lng = serializers.CharField(source='store.lng', read_only=True)
+    customerName = serializers.CharField(source='customer.name', read_only=True)
+    customerImage = serializers.CharField(source='customer.image', read_only=True)
+    customerMobile = serializers.CharField(source='customer.mobile', read_only=True)
+
+    class Meta:
+        model = Order
+        fields = "__all__"
     
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation.pop('otp', None)
+        return representation
 
 class AddressSerializer(serializers.ModelSerializer):
 
