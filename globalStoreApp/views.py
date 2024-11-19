@@ -292,7 +292,7 @@ class GetUniqueCategoryByStore(APIView):
 
 class GetCategory(APIView):
     def get(self,request,pk=None):
-        unique_categories = Category.objects.filter(id=pk)
+        unique_categories = Category.objects.filter(main_category=pk)
         serializer = CategorySerializer(unique_categories, many=True,context={'request': request})
         return customResponse(message="Categories fetched successfully",status=200,data=serializer.data)
         
