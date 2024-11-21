@@ -327,3 +327,14 @@ class GetDeliveryOrders(APIView):
         order_queryset = Order.objects.all()
         serializer = DeliveryOderSerializer(order_queryset, many=True,context={'request': request})
         return customResponse(message="Orders fetched successfully",status=200,data=serializer.data)
+
+
+
+
+class CreateProduct(APIView):
+    def post(self,request,pk=None):
+        serializer=ProductSerializer(data=request.data)
+        if(serializer.is_valid()):
+            serializer.save()
+            return customResponse(message='Product Created sucessfully', status=200, data=serializer.data)
+        return customResponse(message='Failed to create product', status=400, data=serializer.errors)

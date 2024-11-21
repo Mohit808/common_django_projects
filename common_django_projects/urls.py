@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include
-from globalStoreApp.views import index,GetMainCategories,GetCategory,GetProducts, GetVariants, GetDashboard, GetHotDeals, CreateOrders, GetOrders, MyAddress, GetBanner, GetStore, GetUniqueCategoryByStore, GetBrands, GetFestivalOffer, GetVariantByFestival, GetDeliveryOrders  
+from globalStoreApp.views import index,GetMainCategories,GetCategory,GetProducts, GetVariants, GetDashboard, GetHotDeals, CreateOrders, GetOrders, MyAddress, GetBanner, GetStore, GetUniqueCategoryByStore, GetBrands, GetFestivalOffer, GetVariantByFestival, GetDeliveryOrders, CreateProduct 
 from globalStoreApp.auth import login_view
 from globalStoreApp.onboarding import add_email, add_store_name, add_owner_detail, add_business_detail,add_categories,add_address
 from waterDropApp.auth import login_view as water_login
@@ -57,6 +57,7 @@ urlpatterns = [
     path('getFestivalOffer', GetFestivalOffer.as_view()),
     path('getVariantByFestival', GetVariantByFestival.as_view()),
     path('getDeliveryOrders', GetDeliveryOrders.as_view()),
+    path('createProduct', CreateProduct.as_view()),
     # path('getNearByAddress', GetNearByAddress.as_view()),
 
     path('social-login', water_login.LoginView.as_view()),
