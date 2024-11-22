@@ -122,6 +122,14 @@ class GetProducts(APIView):
         serializer = ProductSerializer(query, many=True,context={'request': request})
         return customResponse(message= f'Fetch data successfully', status=200  ,data=serializer.data)
     
+    def delete(self, request,pk=None):
+        productId= request.GET.get("productId")
+        if not productId:
+            return customResponse(message="required productId",status=400)
+        Product.objects.filter(id=productId).delete()
+        return customResponse(message="Product deleted successfully",status=200)
+
+    
 
 class GetVariants(APIView):
     def get(self, request,pk=None):
@@ -338,3 +346,4 @@ class CreateProduct(APIView):
             serializer.save()
             return customResponse(message='Product Created sucessfully', status=200, data=serializer.data)
         return customResponse(message='Failed to create product', status=400, data=serializer.errors)
+        
