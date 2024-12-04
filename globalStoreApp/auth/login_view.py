@@ -96,7 +96,7 @@ class SignUpEmailView(APIView):
                 if serializer.is_valid():
                     serializer.save()
                 else:
-                    return customResponse(message=f"{serializer.error_messages}",status=status.HTTP_400_BAD_REQUEST)
+                    return customResponse(message=f"{serializer.errors}",status=status.HTTP_400_BAD_REQUEST)
                 queryset =Customer.objects.get(email=email)
                 serializer = CustomerSerializer(queryset)
                 return customResponse(message= 'Signin successfully', status=status.HTTP_200_OK,data={"token":token.key,"user": serializer.data})
