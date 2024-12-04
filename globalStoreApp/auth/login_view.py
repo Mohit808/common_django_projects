@@ -9,6 +9,7 @@ from globalStoreApp.custom_response import *
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from globalStoreApp.models import Customer
+from django.contrib.auth.hashers import check_password
 
 
 
@@ -71,6 +72,7 @@ def updateToSeller(user):
     return customResponse(message= 'User updated successfully', status=status.HTTP_200_OK)
 
 
+
 class SignUpEmailView(APIView):
     def post(self, request):
         email = request.data.get('email')
@@ -109,6 +111,35 @@ class SignUpEmailView(APIView):
         
         except OtpModel.DoesNotExist:
             return customResponse(message= 'Somthing went wrong', status=status.HTTP_400_BAD_REQUEST)
+        
+
+
+
+class LoginEmailView(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+    
+        
+        if email is None:
+            return customResponse(message= 'email required', status=status.HTTP_400_BAD_REQUEST)
+        if password is None:
+            return customResponse(message= 'Password required', status=status.HTTP_400_BAD_REQUEST)
+    
+        
+        try:
+            user=User.objects.get(username=email,password=password,)
+            if not check_password(password, user.password):
+                return customResponse(message='Invalid credentials', status=status.HTTP_401_UNAUTHORIZED)
+
+
+            token, created=Token.objects.get_or_create(user=user)
+            queryset =Customer.objects.get(email=email)
+            serializer = CustomerSerializer(queryset)
+            return customResponse(message= 'Signin successfully', status=status.HTTP_200_OK,data={"token":token.key,"user": serializer.data})
+        
+        except User.DoesNotExist:
+            return customResponse(message='Invalid credentials', status=status.HTTP_401_UNAUTHORIZED)
 
 
 # @api_view(['POST',"PUT"])

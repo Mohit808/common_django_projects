@@ -59,6 +59,7 @@ urlpatterns = [
     path('getDeliveryOrders', GetDeliveryOrders.as_view()),
     path('createProduct', CreateProduct.as_view()),
     path('signUp', login_view.SignUpEmailView.as_view()),
+    path('login', login_view.LoginEmailView.as_view()),
     # path('getNearByAddress', GetNearByAddress.as_view()),
 
     path('social-login', water_login.LoginView.as_view()),
