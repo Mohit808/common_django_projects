@@ -9,7 +9,6 @@ from globalStoreApp.custom_response import *
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from globalStoreApp.models import Customer
-from django.contrib.auth.hashers import check_password
 
 
 
@@ -129,9 +128,6 @@ class LoginEmailView(APIView):
         
         try:
             user=User.objects.get(username=email,password=password,)
-            if not check_password(password, user.password):
-                return customResponse(message='Invalid credentials', status=status.HTTP_401_UNAUTHORIZED)
-
 
             token, created=Token.objects.get_or_create(user=user)
             queryset =Customer.objects.get(email=email)
