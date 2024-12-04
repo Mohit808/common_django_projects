@@ -58,6 +58,7 @@ urlpatterns = [
     path('getVariantByFestival', GetVariantByFestival.as_view()),
     path('getDeliveryOrders', GetDeliveryOrders.as_view()),
     path('createProduct', CreateProduct.as_view()),
+    path('signUp', login_view.SignUpEmailView.as_view()),
     # path('getNearByAddress', GetNearByAddress.as_view()),
 
     path('social-login', water_login.LoginView.as_view()),

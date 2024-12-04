@@ -25,11 +25,11 @@ class PhoneLoginSerializer(serializers.Serializer):
         return OtpModel.objects.create(**validated_data)
     
 
-# class CustomerSerializer(serializers.ModelSerializer):
+class CustomerSerializer(serializers.ModelSerializer):
 
-#     class Meta:
-#         model = Customer
-#         fields = "__all__"
+    class Meta:
+        model = Customer
+        fields = "__all__"
     
 
 

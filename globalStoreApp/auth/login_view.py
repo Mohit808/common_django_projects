@@ -4,11 +4,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from globalStoreApp.models import OtpModel
-from globalStoreApp.my_serializers import PhoneLoginSerializer, SellerSerializer
+from globalStoreApp.my_serializers import PhoneLoginSerializer, SellerSerializer, CustomerSerializer
 from globalStoreApp.custom_response import *
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
-
+from globalStoreApp.models import Customer
 
 
 
@@ -69,3 +69,57 @@ def updateToSeller(user):
     if ser.is_valid():
         ser.save()
     return customResponse(message= 'User updated successfully', status=status.HTTP_200_OK)
+
+
+class SignUpEmailView(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+        firstName = request.data.get('firstName')
+        lastName = request.data.get('lastName')
+        
+        if email is None:
+            return customResponse(message= 'email required', status=status.HTTP_400_BAD_REQUEST)
+        if password is None:
+            return customResponse(message= 'Password required', status=status.HTTP_400_BAD_REQUEST)
+        if firstName is None:
+            return customResponse(message= 'firstName required', status=status.HTTP_400_BAD_REQUEST)
+        if lastName is None:
+            return customResponse(message= 'lastName required', status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            user,created=User.objects.get_or_create(username=email,password=password,first_name=firstName,last_name=lastName,email=email)
+
+            token, created=Token.objects.get_or_create(user=user)
+            if created:
+                serializer=CustomerSerializer(context={'request': request},data={"email":email,"name":f"{firstName} {lastName}"},partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                else:
+                    return customResponse(message=serializer.error_messages,status=status.HTTP_400_BAD_REQUEST)
+                queryset =Customer.objects.get(email=email)
+                serializer = CustomerSerializer(queryset)
+                return customResponse(message= 'Signin successfully', status=status.HTTP_200_OK,data={"token":token.key,"user": serializer.data})
+    
+                
+            # if created:
+            #     updateToSeller(user)
+            #     return customResponse(message= 'OTP verified successfully', status=status.HTTP_200_OK,data={"token":token.key})
+            # return customResponse(message= 'Invalid OTP', status=status.HTTP_200_OK,)
+        
+        except OtpModel.DoesNotExist:
+            return customResponse(message= 'Somthing went wrong', status=status.HTTP_400_BAD_REQUEST)
+
+
+# @api_view(['POST',"PUT"])
+# def createUser(request):
+#     user,created = User.objects.get_or_create(username=request.data.get('userId'))
+#     token,created  = Token.objects.get_or_create(user=user)
+#     userSer=UsersAllSerializers(data=request.data)
+#     if userSer.is_valid():
+#         userSer.save()
+#         data=userSer.data
+#         data['token']=token.key
+#         return JsonResponse(data,safe=False)
+#     else:
+#         return JsonResponse(userSer.errors,safe=False)
