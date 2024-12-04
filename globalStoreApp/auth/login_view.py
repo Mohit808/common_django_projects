@@ -100,7 +100,7 @@ class SignUpEmailView(APIView):
                 queryset =Customer.objects.get(email=email)
                 serializer = CustomerSerializer(queryset)
                 return customResponse(message= 'Signin successfully', status=status.HTTP_200_OK,data={"token":token.key,"user": serializer.data})
-            return customResponse(message="User already exists!",status=200)
+            return customResponse(message="User already exists!",status=400)
                 
             # if created:
             #     updateToSeller(user)
