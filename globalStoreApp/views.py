@@ -365,7 +365,13 @@ class OnboardDeliveryPartner(APIView):
     def post(self,request,pk=None):
         mutable_data = request.data.copy() 
         mutable_data['id'] = request.user.id
-        serializer=DeliveryPartnerSerializer(data=mutable_data,partial=True,context={'request': request})
+        try:
+            partner = DeliveryPartner.objects.get(id=mutable_data['id'])  # Fetch the partner if exists
+            serializer = DeliveryPartnerSerializer(partner, data=mutable_data, partial=True)
+        except DeliveryPartner.DoesNotExist:
+            # If no partner exists with the given id, treat it as a new object creation
+            serializer = DeliveryPartnerSerializer(data=mutable_data, partial=True)
+
         if(serializer.is_valid()):
             serializer.save()
             return customResponse(message='Data updated sucessfully', status=200, data=serializer.data)
