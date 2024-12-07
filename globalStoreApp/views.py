@@ -257,9 +257,12 @@ class CreateOrders(APIView):
         return customResponse(message='Order created successfully', status=200, data=itemIds)
 
 
+
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class GetOrders(APIView):
     def get(self,request,pk=None):
-        querySet=Order.objects.all()
+        querySet=Order.objects.filter(customer=request.user.id)
         serializer=OrderSerializer(querySet,many=True,context={'request': request})
         return customResponse(message='Order Fetched sucessfully', status=200, data=serializer.data)
 
