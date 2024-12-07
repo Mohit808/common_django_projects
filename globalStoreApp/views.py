@@ -145,7 +145,7 @@ class GetVariants(APIView):
         return customResponse(message= f'Fetch data successfully', status=200  ,data=serializer.data)
     
     
-
+@authentication_classes([TokenAuthentication])
 class GetDashboard(APIView):
     def get(self, request,pk=None):
 
@@ -162,8 +162,8 @@ class GetDashboard(APIView):
                     "feature_list": products_data
                 }
                 response_data.append(feature_data)
-            
-            queryDelivery=Order.objects.filter(customer_id=1).exclude(status="Delivered").values_list('id', flat=True)
+            print(request.user.id)
+            queryDelivery=Order.objects.filter(customer_id=request.user.id).exclude(status="Delivered").values_list('id', flat=True)
             newList={'delivery':queryDelivery,'featured':response_data}
 
 
