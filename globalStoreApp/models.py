@@ -14,7 +14,7 @@ class OtpModel(models.Model):
 
 
 class Customer(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, default=0, primary_key=True)
+    id=models.IntegerField(primary_key=True)
     name=models.CharField(max_length=50)
     image=models.ImageField(blank=True)
     mobile=models.CharField(max_length=20,blank=True)
@@ -25,8 +25,7 @@ class Customer(models.Model):
 
 
 class Address(models.Model):
-    customer=models.ForeignKey(Customer,on_delete=models.CASCADE,to_field='user')
-    # customer=models.ForeignKey(Customer,on_delete=models.CASCADE,)
+    customer=models.ForeignKey(Customer,on_delete=models.CASCADE)
     address_type=models.CharField(max_length=10)
     full_address=models.CharField(max_length=200)
     house_no=models.CharField(max_length=100,blank=True)
@@ -224,7 +223,7 @@ class Order(models.Model):
     otp=models.CharField(blank=True,max_length=10)
     status=models.CharField(blank=True,max_length=10)
     tip=models.FloatField(blank=True,max_length=9,default=0)
-    customer=models.ForeignKey(Customer,on_delete=models.CASCADE,to_field='user')
+    customer=models.ForeignKey(Customer,on_delete=models.CASCADE)
     address_type=models.CharField(max_length=10,blank=True)
     address_title=models.CharField(max_length=100,blank=True)
     full_address=models.CharField(max_length=200,blank=True)

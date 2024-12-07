@@ -90,10 +90,9 @@ class SignUpEmailView(APIView):
         
         try:
             user,created=User.objects.get_or_create(username=email,password=password,first_name=firstName,last_name=lastName,email=email)
-
             token, created=Token.objects.get_or_create(user=user)
             if created:
-                serializer=CustomerSerializer(context={'request': request},data={"email":email,"name":f"{firstName} {lastName}"},partial=True)
+                serializer=CustomerSerializer(context={'request': request},data={"id":user.id,"email":email,"name":f"{firstName} {lastName}"},partial=True)
                 if serializer.is_valid():
                     serializer.save()
                 else:
