@@ -7,6 +7,11 @@ from globalStoreApp.models import MainCategory,Category, FeatureListModel, Addre
 from globalStoreApp.my_serializers import *
 from django.db.models import F, FloatField, ExpressionWrapper
 import random
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
+
+
 
 # from django.contrib.gis.db.models.functions import Distance
 # from django.contrib.gis.geos import Point
@@ -184,12 +189,15 @@ class GetHotDeals(APIView):
         return customResponse(message= f'Fetch data successfully', status=200  ,data=serializer.data)
     
 
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class CreateOrders(APIView):
     def post(self,request,pk=None):
         productList=request.data.get("product")
         qtyList=request.data.get("qty")
         storeList=request.data.get("store")
-        customer=request.data.get("customer")
+        # customer=request.data.get("customer")
+        customer=request.user.id
         address_type=request.data.get("address_type")
         address_title=request.data.get("address_title")
         full_address=request.data.get("full_address")
