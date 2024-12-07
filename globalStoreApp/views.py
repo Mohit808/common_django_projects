@@ -357,4 +357,17 @@ class CreateProduct(APIView):
             serializer.save()
             return customResponse(message='Product Created sucessfully', status=200, data=serializer.data)
         return customResponse(message='Failed to create product', status=400, data=serializer.errors)
+    
+
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+class OnboardDeliveryPartner(APIView):
+    def post(self,request,pk=None):
+        mutable_data = request.data.copy() 
+        mutable_data['id'] = request.user.id
+        serializer=DeliveryPartnerSerializer(data=mutable_data,partial=True,context={'request': request})
+        if(serializer.is_valid()):
+            serializer.save()
+            return customResponse(message='Data updated sucessfully', status=200, data=serializer.data)
+        return customResponse(message='Failed to update data', status=400, data=serializer.errors)
         
