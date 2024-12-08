@@ -361,15 +361,24 @@ class GetMyDeliveryOrders(APIView):
 class AcceptOrders(APIView):
     def post(self,request,pk=None):
         order_id=request.data.get("order_id")
+        status=request.data.get("status")
         if not order_id:
             return customResponse(message="order_id required",status=400)
+        status=request.data.get("status")
+        if not status:
+            return customResponse(message="status required",status=400)
         try:
             order = Order.objects.get(pk=order_id)
         except Order.DoesNotExist:
             return customResponse(message= 'Order not found', status=status.HTTP_404_NOT_FOUND)
 
-        order.status = "Accepted by delivery partner"
-        order.deliveryPartner_id=request.user.id
+        if status==1:
+            order.status = "Accepted by delivery partner"
+            order.deliveryPartner_id=request.user.id
+        if status==2:
+            order.status="Picked up"
+        if(status==3):
+            order.status=="Delivered"
         order.save()
         return customResponse(message="Orders accepted successfully",status=200)
 
