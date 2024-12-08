@@ -343,7 +343,7 @@ class GetVariantByFestival(APIView):
 
 class GetDeliveryOrders(APIView):
     def get(self,request,pk=None):
-        order_queryset = Order.objects.all()
+        order_queryset = Order.objects.exclude(customer_id=request.user.id)
         serializer = DeliveryOderSerializer(order_queryset, many=True,context={'request': request})
         return customResponse(message="Orders fetched successfully",status=200,data=serializer.data)
     

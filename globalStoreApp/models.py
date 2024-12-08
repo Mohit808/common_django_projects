@@ -220,11 +220,12 @@ class OrderItem(models.Model):
 
 class Order(models.Model):
     store= models.ForeignKey(Store,on_delete=models.CASCADE)
+    customer=models.ForeignKey(Customer,on_delete=models.CASCADE)
+    deliveryPartner=models.ForeignKey(DeliveryPartner,on_delete=models.SET_NULL,null=True,blank=True)
     orderItem= models.ManyToManyField(OrderItem,null=True)
     otp=models.CharField(blank=True,max_length=10)
     status=models.CharField(blank=True,max_length=10)
     tip=models.FloatField(blank=True,max_length=9,default=0)
-    customer=models.ForeignKey(Customer,on_delete=models.CASCADE)
     address_type=models.CharField(max_length=10,blank=True)
     address_title=models.CharField(max_length=100,blank=True)
     full_address=models.CharField(max_length=200,blank=True)
@@ -234,7 +235,6 @@ class Order(models.Model):
     instruction=models.CharField(max_length=200,blank=True)
     latitude=models.FloatField(default=0)
     longitude=models.FloatField(default=0)
-    deliveryPartner=models.ForeignKey(DeliveryPartner,on_delete=models.SET_NULL,null=True,blank=True)
     
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
