@@ -340,7 +340,7 @@ class GetVariantByFestival(APIView):
         else:
             return customResponse(message="festivalId is null",status=400)
         
-
+@authentication_classes([TokenAuthentication])
 class GetDeliveryOrders(APIView):
     def get(self,request,pk=None):
         order_queryset = Order.objects.exclude(customer_id=request.user.id)
