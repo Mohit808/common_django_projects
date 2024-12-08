@@ -234,7 +234,7 @@ class Order(models.Model):
     instruction=models.CharField(max_length=200,blank=True)
     latitude=models.FloatField(default=0)
     longitude=models.FloatField(default=0)
-    deliveryPartner=models.ForeignKey(DeliveryPartner,on_delete=models.SET_NULL,null=True)
+    deliveryPartner=models.ForeignKey(DeliveryPartner,on_delete=models.SET_NULL,null=True,blank=True)
     
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
