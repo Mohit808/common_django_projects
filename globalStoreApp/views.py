@@ -346,6 +346,24 @@ class GetDeliveryOrders(APIView):
         order_queryset = Order.objects.all()
         serializer = DeliveryOderSerializer(order_queryset, many=True,context={'request': request})
         return customResponse(message="Orders fetched successfully",status=200,data=serializer.data)
+    
+
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+class AcceptOrders(APIView):
+    def post(self,request,pk=None):
+        order_id=request.data.get("order_id")
+        if not order_id:
+            return customResponse(message="order_id required",status=400)
+        try:
+            order = Order.objects.get(pk=order_id)
+        except Order.DoesNotExist:
+            return customResponse(message= 'Order not found', status=status.HTTP_404_NOT_FOUND)
+
+        order.status = "Accepted by delivery partner"
+        order.deliveryPartner=request.user.id
+        order.save()
+        return customResponse(message="Orders accepted successfully",status=200)
 
 
 
