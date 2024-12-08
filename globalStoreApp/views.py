@@ -349,6 +349,7 @@ class GetDeliveryOrders(APIView):
     
 
 @authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class GetMyDeliveryOrders(APIView):
     def get(self,request,pk=None):
         order_queryset = Order.objects.filter(customer_id=request.user.id)
