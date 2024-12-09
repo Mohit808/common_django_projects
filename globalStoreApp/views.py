@@ -355,7 +355,7 @@ class GetMyDeliveryOrders(APIView):
         status=request.GET.get("status")
         if not status:
             return customResponse(message="status is required",status=400)
-        order_queryset = Order.objects.filter(deliveryPartner_id=request.user.id)
+        order_queryset = Order.objects.filter(deliveryPartner_id=request.user.id,status=status)
         serializer = DeliveryOderSerializer(order_queryset, many=True,context={'request': request})
         return customResponse(message="Orders fetched successfully",status=200,data=serializer.data)
     
