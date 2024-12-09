@@ -375,7 +375,7 @@ class AcceptOrders(APIView):
 
         if status==1:
             order.statusName = "Accepted by delivery partner"
-            order.deliveryPartner_id=request.user.id
+            order.deliveryPartner=request.user.id
         if status==2:
             order.statusName="Picked up"
         if(status==3):
