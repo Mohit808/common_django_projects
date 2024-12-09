@@ -374,12 +374,13 @@ class AcceptOrders(APIView):
             return customResponse(message= 'Order not found', status=status.HTTP_404_NOT_FOUND)
 
         if status==1:
-            order.status = "Accepted by delivery partner"
+            order.statusName = "Accepted by delivery partner"
             order.deliveryPartner_id=request.user.id
         if status==2:
-            order.status="Picked up"
+            order.statusName="Picked up"
         if(status==3):
-            order.status=="Delivered"
+            order.statusName=="Delivered"
+        order.status=status
         order.save()
         return customResponse(message="Orders accepted successfully",status=200)
 
