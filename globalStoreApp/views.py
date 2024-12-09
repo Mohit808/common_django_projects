@@ -382,7 +382,7 @@ class AcceptOrders(APIView):
         if status==2 or status =="2":
             order.statusName="Picked up"
         if status==3 or status =="3":
-            order.statusName=="Delivered"
+            order.statusName="Delivered"
         order.status=status
         order.save()
         return customResponse(message="Orders accepted successfully",status=200)
