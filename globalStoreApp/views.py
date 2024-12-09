@@ -248,7 +248,7 @@ class CreateOrders(APIView):
         
         for key, value in finalMap.items():
             print(f"Key: {key}, Value: {value}")
-            serializer=CreateOrderSerializer(data={"store":key,"orderItem":str(value).split(","),"otp":random.randint(100000, 999999),"status":1,"statusName":"Ordered","customer":customer,"address_type":address_type,"address_title":address_title,"full_address":full_address,"house_no":house_no,"area":area,"landmark":landmark,"instruction":instruction,"latitude":latitude,"longitude":longitude,'tip':tip})
+            serializer=CreateOrderSerializer(data={"store":key,"orderItem":str(value).split(","),"otp":random.randint(100000, 999999),"status":0,"statusName":"Ordered","customer":customer,"address_type":address_type,"address_title":address_title,"full_address":full_address,"house_no":house_no,"area":area,"landmark":landmark,"instruction":instruction,"latitude":latitude,"longitude":longitude,'tip':tip})
             if serializer.is_valid():
                 order = serializer.save() 
             else:
@@ -352,6 +352,9 @@ class GetDeliveryOrders(APIView):
 @permission_classes([IsAuthenticated])
 class GetMyDeliveryOrders(APIView):
     def get(self,request,pk=None):
+        status=request.GET.get("status")
+        if not status:
+            return customResponse(message="status is required",status=400)
         order_queryset = Order.objects.filter(deliveryPartner_id=request.user.id)
         serializer = DeliveryOderSerializer(order_queryset, many=True,context={'request': request})
         return customResponse(message="Orders fetched successfully",status=200,data=serializer.data)
@@ -372,13 +375,13 @@ class AcceptOrders(APIView):
             order = Order.objects.get(pk=order_id)
         except Order.DoesNotExist:
             return customResponse(message= 'Order not found', status=status.HTTP_404_NOT_FOUND)
-
-        if status==1:
+        
+        if status==1 or status == "1":
             order.statusName = "Accepted by delivery partner"
             order.deliveryPartner_id=request.user.id
-        if status==2:
+        if status==2 or status =="2":
             order.statusName="Picked up"
-        if(status==3):
+        if status==3 or status =="3":
             order.statusName=="Delivered"
         order.status=status
         order.save()
