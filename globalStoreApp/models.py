@@ -74,7 +74,10 @@ class Store(models.Model):
     seller_id=models.ForeignKey(Seller,on_delete=models.CASCADE)
     store_name= models.CharField(max_length=100)
     store_slug= models.CharField(max_length=100)
-    business_name= models.CharField(max_length=100)
+    business_owner_name= models.CharField(max_length=100)
+    store_mobile=models.CharField(max_length=20,blank=True)
+    store_email=models.CharField(max_length=100,blank=True)
+
     store_logo= models.CharField(max_length=100)
     store_banner= models.CharField(max_length=100)
     store_story= models.CharField(max_length=100)

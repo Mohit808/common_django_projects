@@ -401,7 +401,8 @@ class CreateSeller(APIView):
             serializer = SellerSerializer(data=data, partial=True)
         if(serializer.is_valid()):
             serializer.save()
-            return customResponse(message='Seller Created sucessfully', status=200, data=serializer.data)
+            message = 'Seller updated successfully' if 'id' in data else 'Seller created successfully'
+            return customResponse(message=message, status=200, data=serializer.data)
         return customResponse(message='Failed to create seller', status=400, data=serializer.errors)
     
 
