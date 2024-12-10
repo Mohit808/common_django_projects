@@ -388,7 +388,22 @@ class AcceptOrders(APIView):
         return customResponse(message="Orders accepted successfully",status=200)
 
 
-
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+class CreateSeller(APIView):
+    def post(self,request,pk=None):
+        data=request.data.copy() 
+        data['id']=request.user.id
+        try:
+            seller = Seller.objects.get(id=request.user.id)
+            serializer = SellerSerializer(seller, data=data, partial=True)
+        except Seller.DoesNotExist:
+            serializer = SellerSerializer(data=data, partial=True)
+        if(serializer.is_valid()):
+            serializer.save()
+            return customResponse(message='Seller Created sucessfully', status=200, data=serializer.data)
+        return customResponse(message='Failed to create seller', status=400, data=serializer.errors)
+    
 
 class CreateProduct(APIView):
     def post(self,request,pk=None):
@@ -397,6 +412,7 @@ class CreateProduct(APIView):
             serializer.save()
             return customResponse(message='Product Created sucessfully', status=200, data=serializer.data)
         return customResponse(message='Failed to create product', status=400, data=serializer.errors)
+
     
 
 @authentication_classes([SessionAuthentication, TokenAuthentication])

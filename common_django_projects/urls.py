@@ -62,6 +62,7 @@ urlpatterns = [
     path('onboardDeliveryPartner', OnboardDeliveryPartner.as_view()),
     path('acceptOrders', AcceptOrders.as_view()),
     path('getMyDeliveryOrders', GetMyDeliveryOrders.as_view()),
+    path('createSeller', CreateSeller.as_view()),
 
     path('signUp', login_view.SignUpEmailView.as_view()),
     path('login', login_view.LoginEmailView.as_view()),

@@ -41,6 +41,7 @@ class Address(models.Model):
 
 
 class Seller(models.Model):
+    id=models.IntegerField(primary_key=True)
     username = models.CharField(max_length=100)
     password = models.CharField(max_length=100)
     email = models.CharField(max_length=100,unique=True)
@@ -55,6 +56,8 @@ class Seller(models.Model):
     is_phone_number_verified=models.BooleanField(default=False)
     is_email_verified=models.BooleanField(default=False)
     aadhaar_number=models.CharField(max_length=12)
+    aadhaar_front=models.ImageField(blank=True)
+    aadhaar_back=models.ImageField(blank=True)
     is_aadhar_verified=models.BooleanField(default=False)
     status=models.BooleanField(default=False)
     fcm_token=models.CharField(max_length=100)
