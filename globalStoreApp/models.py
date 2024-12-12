@@ -78,8 +78,8 @@ class Store(models.Model):
     store_mobile=models.CharField(max_length=20,blank=True)
     store_email=models.CharField(max_length=100,blank=True)
 
-    store_logo= models.CharField(max_length=100)
-    store_banner= models.CharField(max_length=100)
+    store_logo= models.ImageField()
+    store_banner= models.ImageField()
     store_story= models.CharField(max_length=100)
     store_type= models.CharField(max_length=100)
     gst_number= models.CharField(max_length=12,blank=True)
