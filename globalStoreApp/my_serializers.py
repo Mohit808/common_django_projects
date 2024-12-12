@@ -38,6 +38,14 @@ class SellerSerializer(serializers.ModelSerializer):
         model = Seller
         fields = "__all__"
 
+
+
+class StoreSerializer2(serializers.ModelSerializer):
+    class Meta:
+        model = Store
+        fields = "__all__"
+
+
 class StoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Store
