@@ -71,6 +71,7 @@ class Seller(models.Model):
     
 
 class Store(models.Model):
+    id=models.IntegerField(primary_key=True)
     seller_id=models.ForeignKey(Seller,on_delete=models.CASCADE)
     store_name= models.CharField(max_length=100)
     store_slug= models.SlugField(max_length=100)
@@ -90,6 +91,16 @@ class Store(models.Model):
     store_code= models.CharField(max_length=100)
     store_code_text= models.CharField(max_length=100)
     loyalty_points= models.CharField(max_length=10)
+
+    # address_title=models.CharField(max_length=100,blank=True)
+    # full_address=models.CharField(max_length=200,blank=True)
+    # house_no=models.CharField(max_length=100,blank=True)
+    # area=models.CharField(max_length=100,blank=True)
+    # landmark=models.CharField(max_length=100,blank=True)
+    # instruction=models.CharField(max_length=200,blank=True)
+    # latitude=models.FloatField(default=0)
+    # longitude=models.FloatField(default=0)
+
     store_address= models.CharField(max_length=100)
     store_building= models.CharField(max_length=100,blank=True)
     store_floor= models.CharField(max_length=100,blank=True)
@@ -231,7 +242,7 @@ class Order(models.Model):
     orderItem= models.ManyToManyField(OrderItem,null=True)
     otp=models.CharField(blank=True,max_length=10)
     status=models.IntegerField(blank=True,default=0)
-    statusName=models.CharField(blank=True,max_length=10)
+    statusName=models.CharField(blank=True,max_length=100)
     tip=models.FloatField(blank=True,max_length=9,default=0)
     address_type=models.CharField(max_length=10,blank=True)
     address_title=models.CharField(max_length=100,blank=True)

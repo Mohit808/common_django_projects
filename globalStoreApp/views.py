@@ -453,3 +453,16 @@ class CreateStore(APIView):
             serializer.save()
             return customResponse(message=message, status=200, data=serializer.data)
         return customResponse(message='Failed to create Store', status=400, data=serializer.errors)
+    
+
+
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+class GetSellerOrders(APIView):
+     def get(self,request,pk=None):
+        status=request.GET.get("status")
+        if not status:
+            return customResponse(message="status is required",status=400)
+        order_queryset = Order.objects.filter(store=request.user.id,status=status)
+        serializer = OrderSerializer(order_queryset, many=True,context={'request': request})
+        return customResponse(message="Orders fetched successfully",status=200,data=serializer.data)

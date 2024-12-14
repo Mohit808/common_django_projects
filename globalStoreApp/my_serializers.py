@@ -192,6 +192,7 @@ class OrderSerializer(serializers.ModelSerializer):
     store_logo = serializers.CharField(source='store.store_logo', read_only=True)
     orderItem= OrderItemSerializer(many=True,required=False)
     deliveryPartner = serializers.SerializerMethodField()
+    customer = serializers.SerializerMethodField()
 
     class Meta:
         model = Order
@@ -208,10 +209,29 @@ class OrderSerializer(serializers.ModelSerializer):
             }
         return None
     
+    def get_customer(self, obj):
+        if obj.customer:
+            return {
+                'id': obj.customer.id,
+                'customer_name': obj.customer.name,
+                # 'customer_image':obj.customer.image.url,
+                'customer_image': self.get_customer_image(obj.customer),
+                'mobile':obj.customer.mobile,
+                'email': obj.customer.email
+            }
+        return None
+    
+    
     def get_deliveryPartner_image(self, deliveryPartner):
         request = self.context.get('request')
         if deliveryPartner.image:
             return request.build_absolute_uri(deliveryPartner.image.url) if request else f'{settings.MEDIA_URL}{deliveryPartner.image.url}'
+        return None
+    
+    def get_customer_image(self, customer):
+        request = self.context.get('request')
+        if customer.image:
+            return request.build_absolute_uri(customer.image.url) if request else f'{settings.MEDIA_URL}{customer.image.url}'
         return None
 
 class DeliveryOderSerializer(serializers.ModelSerializer):

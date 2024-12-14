@@ -64,6 +64,7 @@ urlpatterns = [
     path('getMyDeliveryOrders', GetMyDeliveryOrders.as_view()),
     path('createSeller', CreateSeller.as_view()),
     path('createStore', CreateStore.as_view()),
+    path('getSellerOrders', GetSellerOrders.as_view()),
 
     path('signUp', login_view.SignUpEmailView.as_view()),
     path('login', login_view.LoginEmailView.as_view()),
