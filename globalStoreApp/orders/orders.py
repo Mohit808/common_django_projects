@@ -20,14 +20,14 @@ class GetOrders(APIView):
         if not status:
             return customResponse(message="status is required",status=400)
         isCustomer=request.GET.get("isCustomer")
-        if isCustomer is not None:
+        if isCustomer:
             print("IsCustomer")
             querySet=Order.objects.filter(customer=request.user.id,status=status)
         isDelivery=request.GET.get("isDelivery")
-        if isDelivery is not None:
+        if isDelivery:
             querySet=Order.objects.filter(deliveryPartner_id=request.user.id,status=status)
         isStore=request.GET.get("isStore")
-        if isStore is not None:
+        if isStore:
             querySet=Order.objects.filter(store=request.user.id,status=status)
         if isCustomer is None and isDelivery is None and isStore is None:
             querySet = Order.objects.filter(status=status).exclude(deliveryPartner=request.user.id)
