@@ -31,6 +31,11 @@ class GetOrders(APIView):
 
         isStore=request.GET.get("isStore")
         if isStore:
+            print(request.user.id)
+            qw=Order.objects.all()
+            for x in qw:
+                print(x.store_id)
+            print(Order.objects.all())
             querySet=Order.objects.filter(store=request.user.id,status=status)
 
         if not isCustomer and not isDelivery and not isStore:

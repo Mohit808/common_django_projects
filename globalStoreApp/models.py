@@ -125,7 +125,7 @@ class Store(models.Model):
     is_pickup= models.BooleanField(default=False)
     is_deleted= models.BooleanField(default=False)
     def __str__(self):
-        return self.store_name
+        return f"{self.id} : {self.store_name}"
 
 
 
