@@ -11,9 +11,6 @@ from rest_framework.authtoken.models import Token
 from globalStoreApp.models import Customer
 
 
-
-# mobile number already exists then replace it with new otp
-
 class LoginView(APIView):
     def post(self, request):
         phone_number = request.data.get('phone_number')
