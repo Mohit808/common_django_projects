@@ -127,7 +127,7 @@ class LoginEmailView(APIView):
 
             token, created=Token.objects.get_or_create(user=user)
             queryset =Customer.objects.get(email=email)
-            serializer = CustomerSerializer(queryset)
+            serializer = CustomerSerializer(queryset,context={'request': request})
             return customResponse(message= 'Signin successfully', status=status.HTTP_200_OK,data={"token":token.key,"user": serializer.data})
         
         except User.DoesNotExist:
