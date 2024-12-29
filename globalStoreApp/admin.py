@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import OtpModel, Seller, Store, Category ,Brand, Tags , Product, MainCategory, Variant, FeatureListModel, Order, OrderItem, Customer, Address, Banner, FestivalOffer, DeliveryPartner 
-
+from .models import *
 admin.site.register(OtpModel)
 admin.site.register(Seller)
 admin.site.register(Store)
@@ -19,6 +18,8 @@ admin.site.register(Banner)
 admin.site.register(FestivalOffer)
 admin.site.register(Order)
 admin.site.register(DeliveryPartner)
+admin.site.register(Transaction)
+admin.site.register(Wallet)
 
 # class OrderAdmin(admin.ModelAdmin):
 #     def formfield_for_manytomany(self, db_field, request, **kwargs):

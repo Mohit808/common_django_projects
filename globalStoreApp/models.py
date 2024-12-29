@@ -242,7 +242,7 @@ class Order(models.Model):
     store= models.ForeignKey(Store,on_delete=models.CASCADE)
     customer=models.ForeignKey(Customer,on_delete=models.CASCADE)
     deliveryPartner=models.ForeignKey(DeliveryPartner,on_delete=models.SET_NULL,null=True,blank=True)
-    orderItem= models.ManyToManyField(OrderItem,null=True)
+    orderItem= models.ManyToManyField(OrderItem,null=True) 
     otp=models.CharField(blank=True,max_length=10)
     status=models.IntegerField(blank=True,default=0)
     statusName=models.CharField(blank=True,max_length=100)
@@ -292,5 +292,34 @@ class FestivalOffer(models.Model):
 
     def __str__(self) :
         return self.name
+    
+
+class Transaction(models.Model):
+    TRANSACTION_TYPE_CHOICES = [
+        (0, 'Credit'),
+        (1, 'Debit'),
+        (2, 'withdraw request'),
+    ]
+    orderId=models.ForeignKey(Order,on_delete=models.SET_NULL,null=True)
+    customer=models.ForeignKey(Customer,on_delete=models.SET_NULL,null=True)
+    amount=models.FloatField()
+    type=models.IntegerField(choices=TRANSACTION_TYPE_CHOICES) # //0= credit or 1=debit, 2=withdraw request
+    remark=models.CharField(max_length=200)
+
+    created_at=models.DateTimeField(auto_now_add=True)
+    updated_at=models.DateTimeField(auto_now=True)
+
+    def __str__(self) :
+        return f"{self.amount}"
+    
+class Wallet(models.Model):
+    balance=models.FloatField()
+    customer=models.ForeignKey(Customer,on_delete=models.SET_NULL,null=True)
+
+    created_at=models.DateTimeField(auto_now_add=True)
+    updated_at=models.DateTimeField(auto_now=True)
+
+    def __str__(self) :
+        return f"{self.balance}"
     
 
