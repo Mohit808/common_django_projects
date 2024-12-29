@@ -349,10 +349,11 @@ class AcceptOrders(APIView):
             order = Order.objects.get(pk=order_id)
         except Order.DoesNotExist:
             return customResponse(message= 'Order not found', status=status.HTTP_404_NOT_FOUND)
-        
+        print(status)
         if status==1 or status == "1":
             order.statusName = "Accepted by delivery partner"
             order.deliveryPartner_id=request.user.id
+            print(order.deliveryPartner_id)
         if status==2 or status =="2":
             order.statusName="Picked up"
         if status==3 or status =="3":
@@ -391,7 +392,7 @@ class AcceptOrders(APIView):
                     return customResponse(message= f"{customError(transactionSerializer.errors)}",status=400)
             
         order.status=status
-        # order.save()
+        order.save()
         return customResponse(message="Orders accepted successfully",status=200)
 
 
