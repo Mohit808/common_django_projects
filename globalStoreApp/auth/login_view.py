@@ -4,11 +4,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from globalStoreApp.models import OtpModel
-from globalStoreApp.my_serializers import PhoneLoginSerializer, SellerSerializer, CustomerSerializer
+from globalStoreApp.my_serializers import PhoneLoginSerializer, SellerSerializer, CustomerSerializer, DeliveryPartnerSerializer
 from globalStoreApp.custom_response import *
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
-from globalStoreApp.models import Customer
+from globalStoreApp.models import Customer, DeliveryPartner, Seller
 
 
 class LoginView(APIView):
@@ -128,7 +128,24 @@ class LoginEmailView(APIView):
             token, created=Token.objects.get_or_create(user=user)
             queryset =Customer.objects.get(email=email)
             serializer = CustomerSerializer(queryset,context={'request': request})
-            return customResponse(message= 'Signin successfully', status=status.HTTP_200_OK,data={"token":token.key,"user": serializer.data})
+
+            print(user.id)
+            try:
+                querysetDelivery =DeliveryPartner.objects.get(id=user.id)
+                serializerDelivery = DeliveryPartnerSerializer(querysetDelivery,context={'request': request})
+                delivery_data = serializerDelivery.data
+
+            except DeliveryPartner.DoesNotExist:
+                delivery_data = None
+
+            try:
+                querysetSeller =Seller.objects.get(id=user.id)
+                serializerSeller = SellerSerializer(querysetSeller,context={'request': request})
+                seller_data = serializerSeller.data
+            except Seller.DoesNotExist:
+                seller_data = None 
+
+            return customResponse(message= 'Signin successfully', status=status.HTTP_200_OK,data={"token":token.key,"user": serializer.data,"deliveryPartner":delivery_data,"seller":seller_data})
         
         except User.DoesNotExist:
             return customResponse(message='Invalid credentials', status=status.HTTP_401_UNAUTHORIZED)
