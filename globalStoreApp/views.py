@@ -446,9 +446,18 @@ class OnboardDeliveryPartner(APIView):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 class CreateStore(APIView):
-    def post(self,request,pk=None):
-        mutable_data = request.data.copy() 
-        mutable_data['seller_id'] = request.user.id
+    def post(self, request, pk=None):
+        mutable_data = request.data.copy()
+        mutable_data['seller_id'] = request.user.id  # Set seller_id
+
+        # 🔹 Ensure seller_id exists in the database
+        if not Store.objects.filter(id=mutable_data['seller_id']).exists():
+            return customResponse(
+                message="Seller does not exist",
+                status=400,
+                data={"seller_id": ["Invalid seller_id - object does not exist."]}
+            )
+
         try:
             store = Store.objects.get(seller_id=mutable_data['seller_id'])
             serializer = StoreSerializer2(store, data=mutable_data, partial=True)
@@ -456,10 +465,31 @@ class CreateStore(APIView):
         except Store.DoesNotExist:
             serializer = StoreSerializer2(data=mutable_data, partial=True)
             message = 'Store created successfully'
-        if(serializer.is_valid()):
+
+        if serializer.is_valid():
             serializer.save()
             return customResponse(message=message, status=200, data=serializer.data)
+
         return customResponse(message='Failed to create Store', status=400, data=serializer.errors)
+
+
+# @authentication_classes([TokenAuthentication])
+# @permission_classes([IsAuthenticated])
+# class CreateStore(APIView):
+#     def post(self,request,pk=None):
+#         mutable_data = request.data.copy() 
+#         mutable_data['seller_id'] = request.user.id
+#         try:
+#             store = Store.objects.get(seller_id=mutable_data['seller_id'])
+#             serializer = StoreSerializer2(store, data=mutable_data, partial=True)
+#             message = 'Store updated successfully'
+#         except Store.DoesNotExist:
+#             serializer = StoreSerializer2(data=mutable_data, partial=True)
+#             message = 'Store created successfully'
+#         if(serializer.is_valid()):
+#             serializer.save()
+#             return customResponse(message=message, status=200, data=serializer.data)
+#         return customResponse(message='Failed to create Store', status=400, data=serializer.errors)
     
 
 @authentication_classes([TokenAuthentication])
