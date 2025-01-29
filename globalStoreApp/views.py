@@ -432,9 +432,9 @@ class OnboardDeliveryPartner(APIView):
         mutable_data['id'] = request.user.id
         try:
             partner = DeliveryPartner.objects.get(id=mutable_data['id'])  # Fetch the partner if exists
-            serializer = DeliveryPartnerSerializer(partner, data=mutable_data, partial=True)
+            serializer = DeliveryPartnerSerializer(partner, data=mutable_data, partial=True,context={'request': request})
         except DeliveryPartner.DoesNotExist:
-            serializer = DeliveryPartnerSerializer(data=mutable_data, partial=True)
+            serializer = DeliveryPartnerSerializer(data=mutable_data, partial=True,context={'request': request})
 
         if(serializer.is_valid()):
             serializer.save()
