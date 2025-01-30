@@ -458,15 +458,15 @@ class CreateStore(APIView):
         #         data={"seller_id": ["Invalid seller_id - object does not exist."]}
         #     )
 
-        try:
-            store = Store.objects.get(id=mutable_data['id'])
-            serializer = StoreSerializer2(store, data=mutable_data, partial=True)
-            message = 'Store updated successfully'
-        except Store.DoesNotExist:
-            serializer = StoreSerializer2(data=mutable_data, partial=True)
-            message = 'Store created successfully'
+        # try:
+        #     store = Store.objects.get(id=mutable_data['id'])
+        #     serializer = StoreSerializer2(store, data=mutable_data, partial=True)
+        #     message = 'Store updated successfully'
+        # except Store.DoesNotExist:
+        #     serializer = StoreSerializer2(data=mutable_data, partial=True)
+        #     message = 'Store created successfully'
                     
-        # serializer = StoreSerializer2(data=mutable_data, partial=True)
+        serializer = StoreSerializer2(data=mutable_data, partial=True)
 
         if serializer.is_valid():
             serializer.save()
