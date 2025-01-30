@@ -448,7 +448,7 @@ class OnboardDeliveryPartner(APIView):
 class CreateStore(APIView):
     def post(self, request, pk=None):
         mutable_data = request.data.copy()
-        mutable_data['seller_id'] = request.user.id  # Set seller_id
+        mutable_data['id'] = request.user.id  # Set seller_id
 
         # # 🔹 Ensure seller_id exists in the database
         # if not Store.objects.filter(id=mutable_data['seller_id']).exists():
