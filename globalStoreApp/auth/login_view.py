@@ -4,11 +4,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from globalStoreApp.models import OtpModel
-from globalStoreApp.my_serializers import PhoneLoginSerializer, SellerSerializer, CustomerSerializer, DeliveryPartnerSerializer
+from globalStoreApp.my_serializers import PhoneLoginSerializer, SellerSerializer, CustomerSerializer, DeliveryPartnerSerializer, StoreSerializer2
 from globalStoreApp.custom_response import *
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
-from globalStoreApp.models import Customer, DeliveryPartner, Seller
+from globalStoreApp.models import Customer, DeliveryPartner, Seller, Store
 
 
 class LoginView(APIView):
@@ -145,7 +145,14 @@ class LoginEmailView(APIView):
             except Seller.DoesNotExist:
                 seller_data = None 
 
-            return customResponse(message= 'Signin successfully', status=status.HTTP_200_OK,data={"token":token.key,"user": serializer.data,"deliveryPartner":delivery_data,"seller":seller_data})
+            try:
+                querysetStore =Store.objects.get(id=user.id)
+                serializerStore = StoreSerializer2(querysetStore,context={'request': request})
+                store_data = serializerStore.data
+            except Store.DoesNotExist:
+                store_data = None 
+
+            return customResponse(message= 'Signin successfully', status=status.HTTP_200_OK,data={"token":token.key,"user": serializer.data,"deliveryPartner":delivery_data,"seller":seller_data,"Store":store_data})
         
         except User.DoesNotExist:
             return customResponse(message='Invalid credentials', status=status.HTTP_401_UNAUTHORIZED)

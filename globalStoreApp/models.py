@@ -75,6 +75,7 @@ class Seller(models.Model):
 
 class Store(models.Model):
     id=models.IntegerField(primary_key=True)
+    # seller_id=models.ForeignKey(Seller,on_delete=models.CASCADE)
     store_name= models.CharField(max_length=100)
     store_slug= models.SlugField(max_length=100)
     business_owner_name= models.CharField(max_length=100)
