@@ -466,7 +466,7 @@ class CreateStore(APIView):
             serializer = StoreSerializer2(data=mutable_data, partial=True)
             message = 'Store created successfully'
                     
-        serializer = StoreSerializer2(data=mutable_data, partial=True)
+        # serializer = StoreSerializer2(data=mutable_data, partial=True)
 
         if serializer.is_valid():
             serializer.save()
