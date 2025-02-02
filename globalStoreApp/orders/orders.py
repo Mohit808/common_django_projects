@@ -45,12 +45,12 @@ class GetOrders(APIView):
         return customResponse(message='Order Fetched sucessfully', status=200, data=serializer.data)
     
 
-@authentication_classes([TokenAuthentication])
-class GetDeliveryOrders(APIView):
-    def get(self,request,pk=None):
-        order_queryset = Order.objects.exclude(deliveryPartner=request.user.id)
-        serializer = DeliveryOderSerializer(order_queryset, many=True,context={'request': request})
-        return customResponse(message="Orders fetched successfully",status=200,data=serializer.data)
+# @authentication_classes([TokenAuthentication])
+# class GetDeliveryOrders(APIView):
+#     def get(self,request,pk=None):
+#         order_queryset = Order.objects.exclude(deliveryPartner=request.user.id)
+#         serializer = DeliveryOderSerializer(order_queryset, many=True,context={'request': request})
+#         return customResponse(message="Orders fetched successfully",status=200,data=serializer.data)
     
 
 @authentication_classes([TokenAuthentication])

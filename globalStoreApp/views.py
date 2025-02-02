@@ -99,7 +99,16 @@ class GetMainCategories(APIView):
         serializer = MainCategorySerializer(query, many=True,context={'request': request})
         return customResponse(message= f'Fetch data successfully', status=200  ,data=serializer.data)
     
+
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+class GetInventory(APIView):
+    def get(self, request,pk=None):
+        query=Product.objects.filter(store=request.user.id)
+        serializer = ProductSerializer(query, many=True,context={'request': request})
+        return customResponse(message= f'Fetch data successfully', status=200  ,data=serializer.data)
     
+
 class GetProducts(APIView):
     def get(self, request,pk=None):
         variantId= request.GET.get("variantId")

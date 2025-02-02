@@ -58,7 +58,7 @@ urlpatterns = [
     path('getBrands', GetBrands.as_view()),
     path('getFestivalOffer', GetFestivalOffer.as_view()),
     path('getVariantByFestival', GetVariantByFestival.as_view()),
-    path('getDeliveryOrders', GetDeliveryOrders.as_view()),
+    # path('getDeliveryOrders', GetDeliveryOrders.as_view()),
     path('createProduct', CreateProduct.as_view()),
     path('onboardDeliveryPartner', OnboardDeliveryPartner.as_view()),
     path('acceptOrders', AcceptOrders.as_view()),
@@ -67,6 +67,7 @@ urlpatterns = [
     path('createStore', CreateStore.as_view()),
     path('getSellerOrders', GetSellerOrders.as_view()),
     path('getTransactions', GetTransactions.as_view()),
+    path('getInventory', GetInventory.as_view()),
 
     path('signUp', login_view.SignUpEmailView.as_view()),
     path('login', login_view.LoginEmailView.as_view()),
