@@ -17,6 +17,7 @@ from rest_framework.permissions import IsAuthenticated
 class GetOrders(APIView):
     def get(self,request,pk=None):
         status=request.GET.get("status")
+        print(request.user.id)
         if not status:
             print("1")
             return customResponse(message="status is required",status=400)
