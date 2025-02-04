@@ -18,15 +18,17 @@ class GetOrders(APIView):
     def get(self,request,pk=None):
         status=request.GET.get("status")
         if not status:
+            print("1")
             return customResponse(message="status is required",status=400)
 
         isCustomer=request.GET.get("isCustomer")
         if isCustomer:
-            print("IsCustomer")
+            print("2")
             querySet=Order.objects.filter(customer=request.user.id,status=status)
 
         isDelivery=request.GET.get("isDelivery")
         if isDelivery:
+            print("3")
             querySet=Order.objects.filter(deliveryPartner_id=request.user.id,status=status)
 
         isStore=request.GET.get("isStore")
@@ -36,11 +38,14 @@ class GetOrders(APIView):
             # for x in qw:
             #     print(x.store_id)
             # print(Order.objects.all())
+            print("4")
             querySet=Order.objects.filter(store=request.user.id,status=status)
+            # querySet=Order.objects.filter(store=request.user.id,status=status)
 
         if not isCustomer and not isDelivery and not isStore:
-            querySet = Order.objects.filter(status=status).exclude(deliveryPartner=request.user.id)
-            print("qwertyu")
+            querySet = Order.objects.filter(status=status)
+            print("5")
+        # querySet=Order.objects.all()
         serializer=OrderSerializer(querySet,many=True,context={'request': request})
         return customResponse(message='Order Fetched sucessfully', status=200, data=serializer.data)
     
