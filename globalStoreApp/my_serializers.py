@@ -123,8 +123,12 @@ class MainCategorySerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    brand = BrandSerializer(read_only=True)
+    # brand = BrandSerializer(read_only=True)
     discount_percentage = serializers.SerializerMethodField()
+    main_category_name=serializers.CharField(source='main_category.name', read_only=True) 
+    category_name=serializers.CharField(source='category.name', read_only=True) 
+    variant_name=serializers.CharField(source='variant.name', read_only=True) 
+    brand_name=serializers.CharField(source='brand.name', read_only=True) 
     store_name = serializers.CharField(source='store.store_name', read_only=True)
 
     class Meta:
