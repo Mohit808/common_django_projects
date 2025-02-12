@@ -53,6 +53,7 @@ urlpatterns = [
     path('getOrders', GetOrders.as_view()),
     path('myAddress', MyAddress.as_view()),
     path('getBanner', GetBanner.as_view()),
+    path('getMyBanner', GetMyBanner.as_view()),
     path('getStore', GetStore.as_view()),
     path('getUniqueCategoryByStore', GetUniqueCategoryByStore.as_view()),
     path('getBrands', GetBrands.as_view()),
