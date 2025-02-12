@@ -291,6 +291,14 @@ class GetBanner(APIView):
         
         serializer=BannerSerializer(query_set,many=True,context={'request': request})
         return customResponse(message='Banner Fetched sucessfully', status=200, data=serializer.data)
+
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+class GetMyBanner(APIView):
+    def get(self,request):
+        query_set=Banner.objects.filter(store=request.user.id).order_by('-priority')
+        serializer=BannerSerializer(query_set,many=True,context={'request': request})
+        return customResponse(message='Banner Fetched sucessfully', status=200, data=serializer.data)
     
 class GetStore(APIView):
     def get(self,request,pk=None):
