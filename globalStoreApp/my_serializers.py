@@ -193,7 +193,7 @@ class CreateOrderSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     store_name = serializers.CharField(source='store.store_name', read_only=True)
-    store_logo = serializers.CharField(source='store.store_logo', read_only=True)
+    store_logo = serializers.serializers.SerializerMethodField()
     store_address = serializers.CharField(source='store.store_address', read_only=True)
     store_building = serializers.CharField(source='store.store_building', read_only=True)
     store_floor = serializers.CharField(source='store.store_floor', read_only=True)
@@ -237,6 +237,11 @@ class OrderSerializer(serializers.ModelSerializer):
             }
         return None
     
+    def get_store_logo(self, obj):
+        request = self.context.get('request')
+        if obj.store and obj.store.store_logo:
+            return request.build_absolute_uri(obj.store.store_logo.url) if request else f'{settings.MEDIA_URL}{obj.store.store_logo.url}'
+        return None
     
     def get_deliveryPartner_image(self, deliveryPartner):
         request = self.context.get('request')
