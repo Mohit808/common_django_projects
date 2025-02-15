@@ -423,9 +423,13 @@ class CreateSeller(APIView):
         return customResponse(message='Failed to create seller', status=400, data=serializer.errors)
     
 
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class CreateProduct(APIView):
     def post(self,request,pk=None):
-        serializer=ProductSerializer(data=request.data)
+        data=request.data.copy() 
+        data['store']=request.user.id
+        serializer=ProductSerializer(data=data)
         if(serializer.is_valid()):
             serializer.save()
             return customResponse(message='Product Created sucessfully', status=200, data=serializer.data)
