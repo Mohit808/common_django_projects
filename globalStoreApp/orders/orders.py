@@ -10,6 +10,7 @@ import random
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from django.db.models import Value
 
 
 @authentication_classes([SessionAuthentication, TokenAuthentication])
@@ -17,37 +18,48 @@ from rest_framework.permissions import IsAuthenticated
 class GetOrders(APIView):
     def get(self,request,pk=None):
         status=request.GET.get("status")
-        print(request.user.id)
+        isCustomer=request.GET.get("isCustomer")
+        isDelivery=request.GET.get("isDelivery")
+        isStore=request.GET.get("isStore")
+        
+        
         if not status:
             print("1")
             return customResponse(message="status is required",status=400)
 
-        isCustomer=request.GET.get("isCustomer")
-        if isCustomer:
+        elif isCustomer:
             print("2")
             querySet=Order.objects.filter(customer=request.user.id,status=status)
+            serializer=OrderSerializer(querySet,many=True,context={'request': request})
+            if status != '2':
+                for data in serializer.data:
+                    data.pop('otp', None)
 
-        isDelivery=request.GET.get("isDelivery")
-        if isDelivery:
+        
+        elif isDelivery:
             print("3")
             querySet=Order.objects.filter(deliveryPartner_id=request.user.id,status=status)
+            serializer=OrderSerializer(querySet,many=True,context={'request': request})
+            for data in serializer.data:
+                data.pop('otp', None)
 
-        isStore=request.GET.get("isStore")
-        if isStore:
-            # print(request.user.id)
-            # qw=Order.objects.all()
-            # for x in qw:
-            #     print(x.store_id)
-            # print(Order.objects.all())
+
+        
+        elif isStore:
             print("4")
             querySet=Order.objects.filter(store=request.user.id,status=status)
-            # querySet=Order.objects.filter(store=request.user.id,status=status)
+            serializer=OrderSerializer(querySet,many=True,context={'request': request})
+            if status != '1':
+                for data in serializer.data:
+                    data.pop('otp', None)
 
-        if not isCustomer and not isDelivery and not isStore:
+        else:
             querySet = Order.objects.filter(status=status)
+            serializer=OrderSerializer(querySet,many=True,context={'request': request})
+            for data in serializer.data:
+                data.pop('otp', None)
             print("5")
-        # querySet=Order.objects.all()
-        serializer=OrderSerializer(querySet,many=True,context={'request': request})
+
         return customResponse(message='Order Fetched sucessfully', status=200, data=serializer.data)
     
 
