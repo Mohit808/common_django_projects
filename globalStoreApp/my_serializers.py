@@ -193,7 +193,7 @@ class CreateOrderSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     store_name = serializers.CharField(source='store.store_name', read_only=True)
-    store_logo = serializers.serializers.SerializerMethodField()
+    store_logo = serializers.SerializerMethodField()
     store_address = serializers.CharField(source='store.store_address', read_only=True)
     store_building = serializers.CharField(source='store.store_building', read_only=True)
     store_floor = serializers.CharField(source='store.store_floor', read_only=True)
