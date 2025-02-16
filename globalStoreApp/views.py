@@ -372,7 +372,13 @@ class AcceptOrders(APIView):
             order.deliveryPartner_id=request.user.id
             print(order.deliveryPartner_id)
         if status==2 or status =="2":
+            if not request.data.get("otp"):
+                return customResponse(message= "Otp not provided",status=400)
+            if order.otp != request.data.get("otp"):
+                return customResponse(message= "Otp does not match",status=400)
+            order.otp=random.randint(100000, 999999)
             order.statusName="Picked up"
+
         if status==3 or status =="3":
             order.statusName="Delivered"
             print(order.orderItem)
