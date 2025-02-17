@@ -390,7 +390,7 @@ class AcceptOrders(APIView):
             transactionSerializer=TransactionSerializer(data={"orderId":order_id,"amount":201+order.tip,"remark":"Delivery success","type":"1","customer":order.customer.id}) # order.totalAmount
             if transactionSerializer.is_valid():
                 transactionSerializer.save()
-                wallet, created = Wallet.objects.get_or_create(customer=order.customer, defaults={'balance': 0} )
+                wallet, created = Wallet.objects.get_or_create(customer=order.customer_id, defaults={'balance': 0} )
                 Wallet.objects.filter(customer=order.customer.id).update(balance=F('balance')-201-order.tip)
             else:
                 return customResponse(message= f"{customError(transactionSerializer.errors)}",status=400)
