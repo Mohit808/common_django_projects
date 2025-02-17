@@ -399,8 +399,8 @@ class AcceptOrders(APIView):
             transactionSerializer=TransactionSerializer(data={"orderId":order_id,"amount":201,"remark":"Delivery success","type":"0","customer":order.store.id}) # order.totalAmount
             if transactionSerializer.is_valid():
                 transactionSerializer.save()
-                wallet, created = Wallet.objects.get_or_create(customer=order.store.id, defaults={'balance': 0} )
-                Wallet.objects.filter(customer=order.store.id).update(balance=F('balance')+201)
+                wallet, created = Wallet.objects.get_or_create(customer=order.store, defaults={'balance': 0} )
+                Wallet.objects.filter(customer=order.store).update(balance=F('balance')+201)
             else:
                 return customResponse(message= f"{customError(transactionSerializer.errors)}",status=400)
             
@@ -409,8 +409,8 @@ class AcceptOrders(APIView):
                 transactionSerializer=TransactionSerializer(data={"orderId":order_id,"amount":order.tip,"remark":"Delivery success","type":"0","customer":order.deliveryPartner.id}) # order.totalAmount
                 if transactionSerializer.is_valid():
                     transactionSerializer.save()
-                    wallet, created = Wallet.objects.get_or_create(customer=order.deliveryPartner.id, defaults={'balance': 0} )
-                    Wallet.objects.filter(customer=order.deliveryPartner.id).update(balance=F('balance')+order.tip)
+                    wallet, created = Wallet.objects.get_or_create(customer=order.deliveryPartner, defaults={'balance': 0} )
+                    Wallet.objects.filter(customer=order.deliveryPartner).update(balance=F('balance')+order.tip)
                 else:
                     return customResponse(message= f"{customError(transactionSerializer.errors)}",status=400)
             
