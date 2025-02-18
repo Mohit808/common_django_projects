@@ -10,6 +10,7 @@ import random
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from django.db.models import Sum
 
 
 
@@ -225,13 +226,23 @@ class CreateOrders(APIView):
             tip=0
 
         order_data = []
+        mapTotal={}
+        mapDiscountTotal={}
 
         for  x in range(len(productList)):
+            queryProduct=Product.objects.get(id=productList[x])
+            print(mapTotal)
+            mapTotal[storeList[x]] = mapTotal.get(storeList[x], 0) + (queryProduct.discountedPrice or queryProduct.price) * qtyList[x]
+            mapDiscountTotal[storeList[x]] = (mapDiscountTotal.get(storeList[x], 0) + (queryProduct.price) * qtyList[x])-mapTotal[storeList[x]]
             order_data.append({
                 'product': productList[x],
                 'qty': qtyList[x],
-                'store': storeList[x]
+                'store': storeList[x],
+                'price': queryProduct.price,
+                'discountedPrice': queryProduct.discountedPrice,
             })
+        # print("sddaaaaaa")
+        print(mapTotal)
 
         created_order_items = [] 
 
@@ -256,10 +267,13 @@ class CreateOrders(APIView):
                 finalMap[storeList[x]]=itemIds[x]
         
         for key, value in finalMap.items():
-            print(f"Key: {key}, Value: {value}")
-            serializer=CreateOrderSerializer(data={"store":key,"orderItem":str(value).split(","),"otp":random.randint(100000, 999999),"status":0,"statusName":"Ordered","customer":customer,"address_type":address_type,"address_title":address_title,"full_address":full_address,"house_no":house_no,"area":area,"landmark":landmark,"instruction":instruction,"latitude":latitude,"longitude":longitude,'tip':tip})
+            # print(f"Key: {key}, Value: {value}")
+            
+            print(f"total_price  {mapTotal[key]}")
+            serializer=CreateOrderSerializer(data={"store":key,"orderItem":str(value).split(","),"otp":random.randint(100000, 999999),"status":0,"statusName":"Ordered","customer":customer,"address_type":address_type,"address_title":address_title,"full_address":full_address,"house_no":house_no,"area":area,"landmark":landmark,"instruction":instruction,"latitude":latitude,"longitude":longitude,'tip':tip,"totalAmount":mapTotal[key],"discountedTotalAmount":mapDiscountTotal[key]})
             if serializer.is_valid():
-                order = serializer.save() 
+                # order = serializer.save() 
+                pass
             else:
                 return customResponse(message='Order Failed to create', status=400, data=serializer.errors)
 

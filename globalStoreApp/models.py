@@ -233,16 +233,22 @@ class OrderItem(models.Model):
     product= models.ForeignKey(Product,on_delete=models.CASCADE)
     qty=models.PositiveSmallIntegerField(default=1)
     store=models.ForeignKey(Store,on_delete=models.CASCADE)
+    price= models.FloatField(null=True,blank=True)
+    discountedPrice= models.FloatField(null=True,blank=True)
 
     def __str__(self):
         return f"{self.product.name} (x{self.qty})"
     
 
+# totalAmount=0
+        # discountedAmount=0
 class Order(models.Model):
     store= models.ForeignKey(Store,on_delete=models.CASCADE)
     customer=models.ForeignKey(Customer,on_delete=models.CASCADE)
     deliveryPartner=models.ForeignKey(DeliveryPartner,on_delete=models.SET_NULL,null=True,blank=True)
     orderItem= models.ManyToManyField(OrderItem,null=True) 
+    totalAmount=models.FloatField(null=True,blank=True)
+    discountedTotalAmount=models.FloatField(null=True,blank=True)
     otp=models.CharField(blank=True,max_length=10)
     status=models.IntegerField(blank=True,default=0)
     statusName=models.CharField(blank=True,max_length=100)
