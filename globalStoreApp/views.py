@@ -417,7 +417,7 @@ class AcceptOrders(APIView):
             if transactionSerializer.is_valid():
                 transactionSerializer.save()
                 try:
-                    wallet, created = Wallet.objects.get_or_create(customer_id=order.store.id, defaults={'balance': 0} )
+                    wallet, created = Wallet.objects.get_or_create(customer_id=order.store, defaults={'balance': 0} )
                     Wallet.objects.filter(customer=order.store).update(balance=F('balance')+order.totalAmount)
                 except Exception as e:
                     print(e)
