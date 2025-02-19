@@ -273,6 +273,15 @@ class CreateOrders(APIView):
             serializer=CreateOrderSerializer(data={"store":key,"orderItem":str(value).split(","),"otp":random.randint(100000, 999999),"status":0,"statusName":"Ordered","customer":customer,"address_type":address_type,"address_title":address_title,"full_address":full_address,"house_no":house_no,"area":area,"landmark":landmark,"instruction":instruction,"latitude":latitude,"longitude":longitude,'tip':tip,"totalAmount":mapTotal[key],"discountedTotalAmount":mapDiscountTotal[key]})
             if serializer.is_valid():
                 order = serializer.save()
+
+                transactionSerializer=TransactionSerializer(data={"orderId":order.id,"amount":order.totalAmount+order.tip,"remark":"Delivery success","type":"0","customer":order.customer.id}) # order.totalAmount
+                if transactionSerializer.is_valid():
+                    transactionSerializer.save()
+                    wallet, created = Wallet.objects.get_or_create(customer_id=order.customer.id, defaults={'balance': 0} )
+                    Wallet.objects.filter(customer_id=order.customer.id).update(balance=F('balance')-order.totalAmount-order.tip)
+                else:
+                    return customResponse(message= f"{customError(transactionSerializer.errors)}",status=400)
+
             else:
                 return customResponse(message='Order Failed to create', status=400, data=serializer.errors)
 
