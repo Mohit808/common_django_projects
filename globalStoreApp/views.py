@@ -443,7 +443,7 @@ class AcceptOrders(APIView):
                     return customResponse(message= f"{customError(transactionSerializer.errors)}",status=400)
             
         order.status=status
-        # order.save()
+        order.save()
         return customResponse(message="Orders accepted successfully",status=200)
 
 
