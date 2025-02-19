@@ -272,8 +272,7 @@ class CreateOrders(APIView):
             print(f"total_price  {mapTotal[key]}")
             serializer=CreateOrderSerializer(data={"store":key,"orderItem":str(value).split(","),"otp":random.randint(100000, 999999),"status":0,"statusName":"Ordered","customer":customer,"address_type":address_type,"address_title":address_title,"full_address":full_address,"house_no":house_no,"area":area,"landmark":landmark,"instruction":instruction,"latitude":latitude,"longitude":longitude,'tip':tip,"totalAmount":mapTotal[key],"discountedTotalAmount":mapDiscountTotal[key]})
             if serializer.is_valid():
-                # order = serializer.save() 
-                pass
+                order = serializer.save() 
             else:
                 return customResponse(message='Order Failed to create', status=400, data=serializer.errors)
 
