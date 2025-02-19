@@ -412,6 +412,7 @@ class AcceptOrders(APIView):
             # else:
             #     return customResponse(message= f"{customError(transactionSerializer.errors)}",status=400)
             
+            
             # # add to seller wallet
             transactionSerializer=TransactionSerializer(data={"orderId":order_id,"amount":order.totalAmount,"remark":"Delivery success","type":"0","customer":order.store.id}) # order.totalAmount
             if transactionSerializer.is_valid():
