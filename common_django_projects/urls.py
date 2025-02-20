@@ -63,10 +63,10 @@ urlpatterns = [
     path('createProduct', CreateProduct.as_view()),
     path('onboardDeliveryPartner', OnboardDeliveryPartner.as_view()),
     path('acceptOrders', AcceptOrders.as_view()),
-    path('getMyDeliveryOrders', GetMyDeliveryOrders.as_view()),
+    # path('getMyDeliveryOrders', GetMyDeliveryOrders.as_view()),
     path('createSeller', CreateSeller.as_view()),
     path('createStore', CreateStore.as_view()),
-    path('getSellerOrders', GetSellerOrders.as_view()),
+    # path('getSellerOrders', GetSellerOrders.as_view()),
     path('getTransactions', GetTransactions.as_view()),
     path('getInventory', GetInventory.as_view()),
 

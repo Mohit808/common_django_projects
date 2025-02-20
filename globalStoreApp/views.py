@@ -217,13 +217,13 @@ class CreateOrders(APIView):
         instruction=request.data.get("instruction")
         latitude=request.data.get("latitude")
         longitude=request.data.get("longitude")
-        tip=request.data.get("tip")
+        tipMap=request.data.get("tip")
 
         if productList is None or qtyList is None or storeList is None:
             return customResponse(message='product or qty or store is null', status=400,)
         
-        if tip is None or not tip:
-            tip=0
+        # if tip is None or not tip:
+        #     tip=0
 
         order_data = []
         mapTotal={}
@@ -231,7 +231,7 @@ class CreateOrders(APIView):
 
         for  x in range(len(productList)):
             queryProduct=Product.objects.get(id=productList[x])
-            print(mapTotal)
+            # print(mapTotal)
             mapTotal[storeList[x]] = mapTotal.get(storeList[x], 0) + (queryProduct.discountedPrice or queryProduct.price) * qtyList[x]
             mapDiscountTotal[storeList[x]] = (mapDiscountTotal.get(storeList[x], 0) + (queryProduct.price) * qtyList[x])-mapTotal[storeList[x]]
             order_data.append({
@@ -242,7 +242,7 @@ class CreateOrders(APIView):
                 'discountedPrice': queryProduct.discountedPrice,
             })
         # print("sddaaaaaa")
-        print(mapTotal)
+        # print(mapTotal)
 
         created_order_items = [] 
 
@@ -269,7 +269,7 @@ class CreateOrders(APIView):
         for key, value in finalMap.items():
             # print(f"Key: {key}, Value: {value}")
             
-            print(f"total_price  {mapTotal[key]}")
+            tip=tipMap.get(f"{key}",0)
             serializer=CreateOrderSerializer(data={"store":key,"orderItem":str(value).split(","),"otp":random.randint(100000, 999999),"status":0,"statusName":"Ordered","customer":customer,"address_type":address_type,"address_title":address_title,"full_address":full_address,"house_no":house_no,"area":area,"landmark":landmark,"instruction":instruction,"latitude":latitude,"longitude":longitude,'tip':tip,"totalAmount":mapTotal[key],"discountedTotalAmount":mapDiscountTotal[key]})
             if serializer.is_valid():
                 order = serializer.save()

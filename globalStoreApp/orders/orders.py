@@ -65,34 +65,3 @@ class GetOrders(APIView):
 
         return customResponse(message='Order Fetched sucessfully', status=200, data=serializer.data)
     
-
-# @authentication_classes([TokenAuthentication])
-# class GetDeliveryOrders(APIView):
-#     def get(self,request,pk=None):
-#         order_queryset = Order.objects.exclude(deliveryPartner=request.user.id)
-#         serializer = DeliveryOderSerializer(order_queryset, many=True,context={'request': request})
-#         return customResponse(message="Orders fetched successfully",status=200,data=serializer.data)
-    
-
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-class GetMyDeliveryOrders(APIView):
-    def get(self,request,pk=None):
-        status=request.GET.get("status")
-        if not status:
-            return customResponse(message="status is required",status=400)
-        order_queryset = Order.objects.filter(deliveryPartner_id=request.user.id,status=status)
-        serializer = DeliveryOderSerializer(order_queryset, many=True,context={'request': request})
-        return customResponse(message="Orders fetched successfully",status=200,data=serializer.data)
-
-
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
-class GetSellerOrders(APIView):
-     def get(self,request,pk=None):
-        status=request.GET.get("status")
-        if not status:
-            return customResponse(message="status is required",status=400)
-        order_queryset = Order.objects.filter(store=request.user.id,status=status)
-        serializer = OrderSerializer(order_queryset, many=True,context={'request': request})
-        return customResponse(message="Orders fetched successfully",status=200,data=serializer.data)
