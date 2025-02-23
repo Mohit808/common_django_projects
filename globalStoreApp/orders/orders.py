@@ -88,9 +88,13 @@ class CancelOrder(APIView):
             order.save()
         elif isDelivery:
             order=Order.objects.get(deliveryPartner_id=request.user.id,id=id)
-            order.status='101'
-            order.statusName='Cancelled by Delivery Partner'
-            order.cancelReason=reason
+            if order.status == 1:
+                order.status = 0
+                order.deliveryPartner = None
+            else:
+                order.status='101'
+                order.statusName='Cancelled by Delivery Partner'
+                order.cancelReason=reason
             order.save()
         elif isStore:
             order=Order.objects.get(store=request.user.id,id=id)
