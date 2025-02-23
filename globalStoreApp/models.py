@@ -252,6 +252,7 @@ class Order(models.Model):
     otp=models.CharField(blank=True,max_length=10)
     status=models.IntegerField(blank=True,default=0)
     statusName=models.CharField(blank=True,max_length=100)
+    cancelReason=models.CharField(blank=True,max_length=100)
     tip=models.FloatField(blank=True,max_length=9,default=0)
     address_type=models.CharField(max_length=10,blank=True)
     address_title=models.CharField(max_length=100,blank=True)

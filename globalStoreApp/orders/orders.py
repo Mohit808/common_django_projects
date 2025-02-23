@@ -65,3 +65,37 @@ class GetOrders(APIView):
 
         return customResponse(message='Order Fetched sucessfully', status=200, data=serializer.data)
     
+
+
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+class CancelOrder(APIView):
+    def get(self,request,pk=None):
+        reason=request.GET.get("reason")
+        isCustomer=request.GET.get("isCustomer")
+        isDelivery=request.GET.get("isDelivery")
+        isStore=request.GET.get("isStore")
+        if not reason:
+            return customResponse(message="reason is required",status=400)
+        elif isCustomer:
+            order=Order.objects.get(customer=request.user.id,id=pk)
+            order.status='101'
+            order.statusName='Cancelled by Customer'
+            order.cancelReason=reason
+            order.save()
+        elif isDelivery:
+            order=Order.objects.get(deliveryPartner_id=request.user.id,id=pk)
+            order.status='101'
+            order.statusName='Cancelled by Delivery Partner'
+            order.cancelReason=reason
+            order.save()
+        elif isStore:
+            order=Order.objects.get(store=request.user.id,id=pk)
+            order.status='101'
+            order.statusName='Cancelled by Store'
+            order.cancelReason=reason
+            order.save()
+        else:
+            return customResponse(message="No Customer or delivery or store is not defined",status=400)
+
+        return customResponse(message='Order Fetched sucessfully', status=200)
