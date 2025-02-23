@@ -101,4 +101,4 @@ class CancelOrder(APIView):
         else:
             return customResponse(message="No Customer or delivery or store is not defined",status=400)
 
-        return customResponse(message='Order Fetched sucessfully', status=200)
+        return customResponse(message='Order Cancelled sucessfully', status=200)
