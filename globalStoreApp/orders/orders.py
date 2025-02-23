@@ -76,6 +76,8 @@ class CancelOrder(APIView):
         isCustomer=request.GET.get("isCustomer")
         isDelivery=request.GET.get("isDelivery")
         isStore=request.GET.get("isStore")
+        if not id:
+            return customResponse(message="id is required",status=400)
         if not reason:
             return customResponse(message="reason is required",status=400)
         elif isCustomer:
