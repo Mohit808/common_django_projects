@@ -71,6 +71,7 @@ class GetOrders(APIView):
 @permission_classes([IsAuthenticated])
 class CancelOrder(APIView):
     def get(self,request,pk=None):
+        id=request.GET.get("id")
         reason=request.GET.get("reason")
         isCustomer=request.GET.get("isCustomer")
         isDelivery=request.GET.get("isDelivery")
@@ -78,19 +79,19 @@ class CancelOrder(APIView):
         if not reason:
             return customResponse(message="reason is required",status=400)
         elif isCustomer:
-            order=Order.objects.get(customer=request.user.id,id=pk)
+            order=Order.objects.get(customer=id,id=pk)
             order.status='101'
             order.statusName='Cancelled by Customer'
             order.cancelReason=reason
             order.save()
         elif isDelivery:
-            order=Order.objects.get(deliveryPartner_id=request.user.id,id=pk)
+            order=Order.objects.get(deliveryPartner_id=id,id=pk)
             order.status='101'
             order.statusName='Cancelled by Delivery Partner'
             order.cancelReason=reason
             order.save()
         elif isStore:
-            order=Order.objects.get(store=request.user.id,id=pk)
+            order=Order.objects.get(store=id,id=pk)
             order.status='101'
             order.statusName='Cancelled by Store'
             order.cancelReason=reason
