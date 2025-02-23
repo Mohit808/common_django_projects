@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.http import HttpResponse
 from rest_framework.views import APIView
 from globalStoreApp.custom_response import *
-from globalStoreApp.models import MainCategory,Category, FeatureListModel, Address, Banner
+# from globalStoreApp.models import *
 from globalStoreApp.my_serializers import *
 from django.db.models import F, FloatField, ExpressionWrapper
 import random
@@ -45,8 +45,6 @@ class GetOrders(APIView):
             serializer=OrderSerializer(querySet,many=True,context={'request': request})
             for data in serializer.data:
                 data.pop('otp', None)
-
-
         
         elif isStore:
             print("4")
@@ -90,6 +88,7 @@ class CancelOrder(APIView):
             order=Order.objects.get(deliveryPartner_id=request.user.id,id=id)
             if order.status == 1:
                 order.status = 0
+                order.statusName='Ordered'
                 order.deliveryPartner = None
             else:
                 order.status='101'
@@ -106,3 +105,4 @@ class CancelOrder(APIView):
             return customResponse(message="No Customer or delivery or store is not defined",status=400)
 
         return customResponse(message='Order Cancelled sucessfully', status=200)
+    
