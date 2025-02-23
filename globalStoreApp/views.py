@@ -274,7 +274,7 @@ class CreateOrders(APIView):
             if serializer.is_valid():
                 order = serializer.save()
 
-                transactionSerializer=TransactionSerializer(data={"orderId":order.id,"amount":order.totalAmount+order.tip,"remark":"Delivery success","type":"0","customer":customer}) # order.totalAmount
+                transactionSerializer=TransactionSerializer(data={"orderId":order.id,"amount":order.totalAmount+order.tip,"remark":"Added during order","type":"0","customer":customer}) # order.totalAmount
                 if transactionSerializer.is_valid():
                     transactionSerializer.save()
                     wallet, created = Wallet.objects.get_or_create(customer_id=customer, defaults={'balance': 0} )
