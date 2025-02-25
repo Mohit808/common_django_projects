@@ -321,7 +321,7 @@ class Transaction(models.Model):
     
 class Wallet(models.Model):
     balance=models.FloatField()
-    pending_amount=models.FloatField()
+    pending_amount=models.FloatField(default=0)
     customer=models.ForeignKey(Customer,on_delete=models.SET_NULL,null=True)
 
     created_at=models.DateTimeField(auto_now_add=True)
