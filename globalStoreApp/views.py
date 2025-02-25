@@ -277,8 +277,8 @@ class CreateOrders(APIView):
                 transactionSerializer=TransactionSerializer(data={"orderId":order.id,"amount":order.totalAmount+order.tip,"remark":"Added during order","type":"0","customer":customer}) # order.totalAmount
                 if transactionSerializer.is_valid():
                     transactionSerializer.save()
-                    wallet, created = Wallet.objects.get_or_create(customer_id=customer, defaults={'balance': 0} )
-                    Wallet.objects.filter(customer_id=customer).update(balance=F('balance')+order.totalAmount+order.tip)
+                    wallet, created = Wallet.objects.get_or_create(customer_id=customer, defaults={'balance': 0,'pending_amount':0} )
+                    Wallet.objects.filter(customer_id=customer).update(balance=F('pending_amount')+order.totalAmount+order.tip)
                 else:
                     return customResponse(message= f"{customError(transactionSerializer.errors)}",status=400)
 
@@ -560,6 +560,7 @@ class GetTransactions(APIView):
         serializer_wallet=WalletSerializer(query_set_wallet,context={'request': request})
 
         query_set=Transaction.objects.filter(customer=request.user.id)
+        
         serializer=TransactionSerializer(query_set,many=True,context={'request': request})
         return customResponse(message="Fetsival Offers fetched successfully",status=200,data={"wallet":serializer_wallet.data,"transaction":serializer.data})
 
