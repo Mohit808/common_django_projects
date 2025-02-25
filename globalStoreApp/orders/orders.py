@@ -84,8 +84,8 @@ class CancelOrder(APIView):
             order.statusName='Cancelled by Customer'
             order.cancelReason=reason
             order.save()
-            Wallet.objects.filter(customer=request.user.id).update(pending_amount=F('pending_amount') - order.discountedAmount - order.tip, balance=F('balance') + order.discountedAmount+ order.tip)
-            serializerNoti=NotificationSerializer(data={"customer":order.customer.id,"heading":"Order Cancelled","description":f"{order.discountedAmount+order.tip} refund to your wallet"})
+            Wallet.objects.filter(customer=request.user.id).update(pending_amount=F('pending_amount') - order.discountedTotalAmount - order.tip, balance=F('balance') + order.discountedTotalAmount+ order.tip)
+            serializerNoti=NotificationSerializer(data={"customer":order.customer.id,"heading":"Order Cancelled","description":f"{order.discountedTotalAmount+order.tip} refund to your wallet"})
             if serializerNoti.is_valid():
                 serializerNoti.save()
         elif isDelivery:
@@ -101,8 +101,8 @@ class CancelOrder(APIView):
                 order.status='101'
                 order.statusName='Cancelled by Delivery Partner'
                 order.cancelReason=reason
-                Wallet.objects.filter(customer=order.customer.id).update(pending_amount=F('pending_amount') - order.discountedAmount - order.tip, balance=F('balance') + order.discountedAmount+ order.tip)
-                serializerNoti=NotificationSerializer(data={"customer":order.customer.id,"heading":"Order Cancelled","description":f"{order.discountedAmount+order.tip} refund to your wallet"})
+                Wallet.objects.filter(customer=order.customer.id).update(pending_amount=F('pending_amount') - order.discountedTotalAmount - order.tip, balance=F('balance') + order.discountedTotalAmount+ order.tip)
+                serializerNoti=NotificationSerializer(data={"customer":order.customer.id,"heading":"Order Cancelled","description":f"{order.discountedTotalAmount+order.tip} refund to your wallet"})
                 if serializerNoti.is_valid():
                     serializerNoti.save()
 
@@ -113,8 +113,8 @@ class CancelOrder(APIView):
             order.statusName='Cancelled by Store'
             order.cancelReason=reason
             order.save()
-            Wallet.objects.filter(customer=order.customer.id).update(pending_amount=F('pending_amount') - order.discountedAmount - order.tip, balance=F('balance') + order.discountedAmount+ order.tip)
-            serializerNoti=NotificationSerializer(data={"customer":order.customer.id,"heading":"Order Cancelled","description":f"{order.discountedAmount+order.tip} refund to your wallet"})
+            Wallet.objects.filter(customer=order.customer.id).update(pending_amount=F('pending_amount') - order.discountedTotalAmount - order.tip, balance=F('balance') + order.discountedTotalAmount+ order.tip)
+            serializerNoti=NotificationSerializer(data={"customer":order.customer.id,"heading":"Order Cancelled","description":f"{order.discountedTotalAmount+order.tip} refund to your wallet"})
             if serializerNoti.is_valid():
                 serializerNoti.save()
         else:

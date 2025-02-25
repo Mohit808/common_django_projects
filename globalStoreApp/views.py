@@ -274,13 +274,13 @@ class CreateOrders(APIView):
             if serializer.is_valid():
                 order = serializer.save()
 
-                transactionSerializer=TransactionSerializer(data={"orderId":order.id,"amount":order.discountedAmount+order.tip,"remark":"Added during order","type":"0","customer":customer}) # order.totalAmount
+                transactionSerializer=TransactionSerializer(data={"orderId":order.id,"amount":order.discountedTotalAmount+order.tip,"remark":"Added during order","type":"0","customer":customer}) # order.totalAmount
                 if transactionSerializer.is_valid():
                     transactionSerializer.save()
                     wallet, created = Wallet.objects.get_or_create(customer_id=customer, defaults={'balance': 0,'pending_amount':0} )
-                    Wallet.objects.filter(customer_id=customer).update(pending_amount=F('pending_amount')+order.discountedAmount+order.tip)
+                    Wallet.objects.filter(customer_id=customer).update(pending_amount=F('pending_amount')+order.discountedTotalAmount+order.tip)
 
-                    serializerNoti=NotificationSerializer(data={"customer":request.user.id,"heading":"Order created successfully","description":f"{order.discountedAmount+order.tip} added as pending amount"})
+                    serializerNoti=NotificationSerializer(data={"customer":request.user.id,"heading":"Order created successfully","description":f"{order.discountedTotalAmount+order.tip} added as pending amount"})
                     if serializerNoti.is_valid():
                         serializerNoti.save()
                 else:
@@ -418,20 +418,20 @@ class AcceptOrders(APIView):
             print(order.tip)
             
             # #substract from customer wallet
-            transactionSerializer=TransactionSerializer(data={"orderId":order_id,"amount":order.discountedAmount+order.tip,"remark":"Delivery success","type":"1","customer":order.customer.id}) # order.totalAmount
+            transactionSerializer=TransactionSerializer(data={"orderId":order_id,"amount":order.discountedTotalAmount+order.tip,"remark":"Delivery success","type":"1","customer":order.customer.id}) # order.totalAmount
             if transactionSerializer.is_valid():
                 transactionSerializer.save()
                 wallet, created = Wallet.objects.get_or_create(customer_id=order.customer.id, defaults={'balance': 0} )
-                Wallet.objects.filter(customer_id=order.customer.id).update(pending_amount=F('balance')-order.discountedAmount-order.tip)
+                Wallet.objects.filter(customer_id=order.customer.id).update(pending_amount=F('balance')-order.discountedTotalAmount-order.tip)
             else:
                 return customResponse(message= f"{customError(transactionSerializer.errors)}",status=400)
             
             # # add to seller wallet
-            transactionSerializer=TransactionSerializer(data={"orderId":order_id,"amount":order.discountedAmount,"remark":"Delivery success","type":"0","customer":order.store.id}) # order.totalAmount
+            transactionSerializer=TransactionSerializer(data={"orderId":order_id,"amount":order.discountedTotalAmount,"remark":"Delivery success","type":"0","customer":order.store.id}) # order.totalAmount
             if transactionSerializer.is_valid():
                 transactionSerializer.save()
                 wallet, created = Wallet.objects.get_or_create(customer_id=order.store.id, defaults={'balance': 0} )
-                Wallet.objects.filter(customer_id=order.store.id).update(balance=F('balance')+order.discountedAmount)
+                Wallet.objects.filter(customer_id=order.store.id).update(balance=F('balance')+order.discountedTotalAmount)
                 # wallet, created = Wallet.objects.update_or_create(customer_id=order.store.id, defaults={'balance': F('balance') + order.totalAmount})
             else:
                 return customResponse(message= f"{customError(transactionSerializer.errors)}",status=400)
