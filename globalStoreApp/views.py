@@ -274,11 +274,15 @@ class CreateOrders(APIView):
             if serializer.is_valid():
                 order = serializer.save()
 
-                transactionSerializer=TransactionSerializer(data={"orderId":order.id,"amount":order.totalAmount+order.tip,"remark":"Added during order","type":"0","customer":customer}) # order.totalAmount
+                transactionSerializer=TransactionSerializer(data={"orderId":order.id,"amount":order.discountedTotalAmount+order.tip,"remark":"Added during order","type":"0","customer":customer}) # order.totalAmount
                 if transactionSerializer.is_valid():
                     transactionSerializer.save()
-                    wallet, created = Wallet.objects.get_or_create(customer_id=customer, defaults={'balance': 0} )
-                    Wallet.objects.filter(customer_id=customer).update(balance=F('balance')+order.totalAmount+order.tip)
+                    wallet, created = Wallet.objects.get_or_create(customer_id=customer, defaults={'balance': 0,'pending_amount':0} )
+                    Wallet.objects.filter(customer_id=customer).update(pending_amount=F('pending_amount')+order.discountedTotalAmount+order.tip)
+
+                    serializerNoti=NotificationSerializer(data={"customer":request.user.id,"heading":"Order created successfully","description":f"{order.discountedTotalAmount+order.tip} added as pending amount"})
+                    if serializerNoti.is_valid():
+                        serializerNoti.save()
                 else:
                     return customResponse(message= f"{customError(transactionSerializer.errors)}",status=400)
 
@@ -326,6 +330,14 @@ class GetStore(APIView):
     def get(self,request,pk=None):
         query_set=Store.objects.all()
         serializer=StoreSerializer(query_set,many=True)
+        return customResponse(message="Store fetched successfully",status=200,data=serializer.data)
+
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+class GetMyStore(APIView):
+    def get(self,request,pk=None):
+        query_set=Store.objects.get(id=request.user.id)
+        serializer=StoreSerializer2(query_set)
         return customResponse(message="Store fetched successfully",status=200,data=serializer.data)
     
 
@@ -393,6 +405,7 @@ class AcceptOrders(APIView):
             order.statusName = "Accepted by delivery partner"
             order.deliveryPartner_id=request.user.id
             print(order.deliveryPartner_id)
+            
         if status==2 or status =="2":
             if not request.data.get("otp"):
                 return customResponse(message= "Otp not provided",status=400)
@@ -413,20 +426,20 @@ class AcceptOrders(APIView):
             print(order.tip)
             
             # #substract from customer wallet
-            transactionSerializer=TransactionSerializer(data={"orderId":order_id,"amount":order.totalAmount+order.tip,"remark":"Delivery success","type":"1","customer":order.customer.id}) # order.totalAmount
+            transactionSerializer=TransactionSerializer(data={"orderId":order_id,"amount":order.discountedTotalAmount+order.tip,"remark":"Delivery success","type":"1","customer":order.customer.id}) # order.totalAmount
             if transactionSerializer.is_valid():
                 transactionSerializer.save()
                 wallet, created = Wallet.objects.get_or_create(customer_id=order.customer.id, defaults={'balance': 0} )
-                Wallet.objects.filter(customer_id=order.customer.id).update(balance=F('balance')-order.totalAmount-order.tip)
+                Wallet.objects.filter(customer_id=order.customer.id).update(pending_amount=F('balance')-order.discountedTotalAmount-order.tip)
             else:
                 return customResponse(message= f"{customError(transactionSerializer.errors)}",status=400)
             
             # # add to seller wallet
-            transactionSerializer=TransactionSerializer(data={"orderId":order_id,"amount":order.totalAmount,"remark":"Delivery success","type":"0","customer":order.store.id}) # order.totalAmount
+            transactionSerializer=TransactionSerializer(data={"orderId":order_id,"amount":order.discountedTotalAmount,"remark":"Delivery success","type":"0","customer":order.store.id}) # order.totalAmount
             if transactionSerializer.is_valid():
                 transactionSerializer.save()
                 wallet, created = Wallet.objects.get_or_create(customer_id=order.store.id, defaults={'balance': 0} )
-                Wallet.objects.filter(customer_id=order.store.id).update(balance=F('balance')+order.totalAmount)
+                Wallet.objects.filter(customer_id=order.store.id).update(balance=F('balance')+order.discountedTotalAmount)
                 # wallet, created = Wallet.objects.update_or_create(customer_id=order.store.id, defaults={'balance': F('balance') + order.totalAmount})
             else:
                 return customResponse(message= f"{customError(transactionSerializer.errors)}",status=400)
@@ -560,6 +573,7 @@ class GetTransactions(APIView):
         serializer_wallet=WalletSerializer(query_set_wallet,context={'request': request})
 
         query_set=Transaction.objects.filter(customer=request.user.id)
+        
         serializer=TransactionSerializer(query_set,many=True,context={'request': request})
         return customResponse(message="Fetsival Offers fetched successfully",status=200,data={"wallet":serializer_wallet.data,"transaction":serializer.data})
 

@@ -321,7 +321,20 @@ class Transaction(models.Model):
     
 class Wallet(models.Model):
     balance=models.FloatField()
-    customer=models.ForeignKey(Customer,on_delete=models.SET_NULL,null=True)
+    pending_amount=models.FloatField(default=0)
+    customer=models.ForeignKey(Customer,on_delete=models.CASCADE,null=True)
+
+    created_at=models.DateTimeField(auto_now_add=True)
+    updated_at=models.DateTimeField(auto_now=True)
+
+    def __str__(self) :
+        return f"{self.balance}"
+
+
+class Notification(models.Model):
+    customer=models.ForeignKey(Customer,on_delete=models.CASCADE,null=True)
+    heading=models.CharField(max_length=100)
+    description=models.TextField(blank=True)
 
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
