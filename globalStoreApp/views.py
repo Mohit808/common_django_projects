@@ -232,8 +232,8 @@ class CreateOrders(APIView):
         for  x in range(len(productList)):
             queryProduct=Product.objects.get(id=productList[x])
             # print(mapTotal)
-            mapTotal[storeList[x]] = mapTotal.get(storeList[x], 0) + (queryProduct.discountedPrice or queryProduct.price) * qtyList[x]
-            mapDiscountTotal[storeList[x]] = (mapDiscountTotal.get(storeList[x], 0) + (queryProduct.price) * qtyList[x])-mapTotal[storeList[x]]
+            mapTotal[storeList[x]] = mapTotal.get(storeList[x], 0) + ((queryProduct.price or queryProduct.discountedPrice) * qtyList[x])
+            mapDiscountTotal[storeList[x]] = mapDiscountTotal.get(storeList[x], 0) + ((queryProduct.discountedPrice or queryProduct.price) * qtyList[x])
             order_data.append({
                 'product': productList[x],
                 'qty': qtyList[x],
@@ -399,7 +399,7 @@ class AcceptOrders(APIView):
         try:
             order = Order.objects.get(pk=order_id)
         except Order.DoesNotExist:
-            return customResponse(message= 'Order not found', status=status.HTTP_404_NOT_FOUND)
+            return customResponse(message= 'Order not found', status=400)
         print(status)
         if status==1 or status == "1":
             order.statusName = "Accepted by delivery partner"
