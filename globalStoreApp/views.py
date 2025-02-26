@@ -430,7 +430,7 @@ class AcceptOrders(APIView):
             if transactionSerializer.is_valid():
                 transactionSerializer.save()
                 wallet, created = Wallet.objects.get_or_create(customer_id=order.customer.id, defaults={'balance': 0} )
-                Wallet.objects.filter(customer_id=order.customer.id).update(pending_amount=F('balance')-order.discountedTotalAmount-order.tip)
+                Wallet.objects.filter(customer_id=order.customer.id).update(pending_amount=F('pending_amount')-order.discountedTotalAmount-order.tip)
             else:
                 return customResponse(message= f"{customError(transactionSerializer.errors)}",status=400)
             
