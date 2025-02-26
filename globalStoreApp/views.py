@@ -336,7 +336,7 @@ class GetStore(APIView):
 @permission_classes([IsAuthenticated])
 class GetMyStore(APIView):
     def get(self,request,pk=None):
-        query_set=Store.objects.filter(id=request.user.id)
+        query_set=Store.objects.get(id=request.user.id)
         serializer=StoreSerializer2(query_set,many=True)
         return customResponse(message="Store fetched successfully",status=200,data=serializer.data)
     
