@@ -331,6 +331,14 @@ class GetStore(APIView):
         query_set=Store.objects.all()
         serializer=StoreSerializer(query_set,many=True)
         return customResponse(message="Store fetched successfully",status=200,data=serializer.data)
+
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+class GetMyStore(APIView):
+    def get(self,request,pk=None):
+        query_set=Store.objects.filter(id=request.user.id)
+        serializer=StoreSerializer2(query_set,many=True)
+        return customResponse(message="Store fetched successfully",status=200,data=serializer.data)
     
 
 class GetUniqueCategoryByStore(APIView):
