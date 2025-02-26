@@ -337,7 +337,7 @@ class GetStore(APIView):
 class GetMyStore(APIView):
     def get(self,request,pk=None):
         query_set=Store.objects.get(id=request.user.id)
-        serializer=StoreSerializer2(query_set,many=True)
+        serializer=StoreSerializer2(query_set)
         return customResponse(message="Store fetched successfully",status=200,data=serializer.data)
     
 
