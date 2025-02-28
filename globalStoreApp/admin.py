@@ -20,6 +20,7 @@ admin.site.register(Order)
 admin.site.register(DeliveryPartner)
 admin.site.register(Transaction)
 admin.site.register(Wallet)
+admin.site.register(WithdrawRequest)
 
 # class OrderAdmin(admin.ModelAdmin):
 #     def formfield_for_manytomany(self, db_field, request, **kwargs):

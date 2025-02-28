@@ -578,3 +578,30 @@ class GetTransactions(APIView):
         return customResponse(message="Fetsival Offers fetched successfully",status=200,data={"wallet":serializer_wallet.data,"transaction":serializer.data})
 
     
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+class PostWithdrawRequest(APIView):
+    def post(self,request,pk=None):
+        request.data._mutable = True
+        request.data['customer']=request.user.id
+        amount=request.data.get("amount")
+        if not amount:
+            return customResponse(message="Amount required",status=400)
+        try:
+            amount = int(amount)
+        except ValueError:
+            return customResponse(message="Invalid amount", status=400)
+        if amount < 10:
+            return customResponse(message="Minimum withdraw amount is 10",status=400)
+        try:
+            query_set=Wallet.objects.get(customer=request.user.id)
+        except Wallet.DoesNotExist:
+            return customResponse(message= "Wallet not found for the user",status=400)
+        if query_set.balance < amount:
+            return customResponse(message="Insufficient balance",status=400)
+        serializer=WithdrawRequestSerializer(data=request.data)
+        if(serializer.is_valid()):
+            serializer.save()
+            Wallet.objects.filter(customer=request.user.id).update(balance=F('balance')-amount)
+            return customResponse(message="Withdraw request created successfully",status=200)
+        return customResponse(message="Failed to create withdraw request",status=400,data=serializer.errors)

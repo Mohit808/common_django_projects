@@ -328,7 +328,17 @@ class Wallet(models.Model):
     updated_at=models.DateTimeField(auto_now=True)
 
     def __str__(self) :
-        return f"{self.balance}"
+        return f"{self.customer.id} : {self.customer.name} , Balance : {self.balance} , Pending : {self.pending_amount}"
+
+class WithdrawRequest(models.Model):
+    customer=models.ForeignKey(Customer,on_delete=models.CASCADE,null=True)
+    amount=models.FloatField()
+
+    created_at=models.DateTimeField(auto_now_add=True)
+    updated_at=models.DateTimeField(auto_now=True)
+
+    def __str__(self) :
+        return f"{self.customer.id} : {self.customer.name} , Amount : {self.amount}"
 
 
 class Notification(models.Model):
