@@ -323,7 +323,12 @@ class DeleteBanner(APIView):
         bannerId=request.GET.get("bannerId")
         if not bannerId:
             return customResponse(message="bannerId required",status=400)
-        Banner.objects.filter(id=bannerId).delete()
+        
+        try:
+            Banner.objects.filter(id=bannerId).delete() #not deleting data
+        except Banner.DoesNotExist:
+            return customResponse(message="Banner not found",status=400)
+        
         return customResponse(message="Banner deleted successfully",status=200)
 
 @authentication_classes([SessionAuthentication, TokenAuthentication])
