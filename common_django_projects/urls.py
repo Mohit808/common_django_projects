@@ -72,6 +72,8 @@ urlpatterns = [
     # path('getSellerOrders', GetSellerOrders.as_view()),
     path('getTransactions', GetTransactions.as_view()),
     path('getInventory', GetInventory.as_view()),
+    path('postStory', PostStory.as_view()),
+    path('getStory', GetStory.as_view()),
 
     path('signUp', login_view.SignUpEmailView.as_view()),
     path('login', login_view.LoginEmailView.as_view()),

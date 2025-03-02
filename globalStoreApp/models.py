@@ -353,3 +353,18 @@ class Notification(models.Model):
         return f"{self.balance}"
     
 
+
+class Story(models.Model):
+    customer=models.ForeignKey(Customer,on_delete=models.CASCADE,null=True)
+    image=models.ImageField()
+    description=models.TextField(blank=True)
+    latitude=models.FloatField(default=0)
+    longitude=models.FloatField(default=0)
+
+    created_at=models.DateTimeField(auto_now_add=True)
+    updated_at=models.DateTimeField(auto_now=True)
+
+    def __str__(self) :
+        return f"{self.balance}"
+    
+

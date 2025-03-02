@@ -605,3 +605,26 @@ class PostWithdrawRequest(APIView):
             Wallet.objects.filter(customer=request.user.id).update(balance=F('balance')-amount)
             return customResponse(message="Withdraw request created successfully",status=200)
         return customResponse(message="Failed to create withdraw request",status=400,data=serializer.errors)
+    
+
+
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+class PostStory(APIView):
+
+    def post(self,request,pk=None):
+        data = request.data.copy()
+        data['customer']=request.user.id
+        serializer=StorySerializer(data=data)
+        if(serializer.is_valid()):
+            serializer.save()
+            return customResponse(message="Story created successfully",status=200)
+        return customResponse(message="Failed to create story",status=400)
+
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+class GetStory(APIView):
+    def get(self,request,pk=None):
+        query_set=Story.objects.all()
+        serializer=StorySerializer(query_set,many=True,context={'request': request})
+        return customResponse(message="Story fetched successfully",status=200,data=serializer.data)
