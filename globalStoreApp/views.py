@@ -318,6 +318,14 @@ class GetBanner(APIView):
         serializer=BannerSerializer(query_set,many=True,context={'request': request})
         return customResponse(message='Banner Fetched sucessfully', status=200, data=serializer.data)
 
+class DeleteBanner(APIView):
+    def get(self,request):
+        bannerId=request.GET.get("bannerId")
+        if not bannerId:
+            return customResponse(message="bannerId required",status=400)
+        Banner.objects.filter(id=bannerId).delete()
+        return customResponse(message="Banner deleted successfully",status=200)
+
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 class GetMyBanner(APIView):
@@ -338,6 +346,7 @@ class PostBanner(APIView):
             serializer.save()
             return customResponse(message='Banner Created sucessfully', status=200, data=serializer.data)
         return customResponse(message=f"{serializer.errors}", status=400)
+
         
 
 class GetStore(APIView):
