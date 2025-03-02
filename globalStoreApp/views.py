@@ -325,7 +325,21 @@ class GetMyBanner(APIView):
         query_set=Banner.objects.filter(store=request.user.id).order_by('-priority')
         serializer=BannerSerializer(query_set,many=True,context={'request': request})
         return customResponse(message='Banner Fetched sucessfully', status=200, data=serializer.data)
-    
+
+
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+class PostBanner(APIView):
+    def post(self,request):
+        data=request.data.copy() 
+        data['store']=request.user.id
+        serializer=BannerSerializer(data=data)
+        if(serializer.is_valid()):
+            serializer.save()
+            return customResponse(message='Banner Created sucessfully', status=200, data=serializer.data)
+        return customResponse(message=f"{serializer.errors}", status=400)
+        
+
 class GetStore(APIView):
     def get(self,request,pk=None):
         query_set=Store.objects.all()
