@@ -280,6 +280,7 @@ class Banner(models.Model):
     category=models.ForeignKey(Category,on_delete=models.CASCADE)
     name=models.CharField(max_length=200)
     description=models.CharField(max_length=200)
+    buttonText=models.CharField(max_length=200,)
     image=models.ImageField()
     store=models.ForeignKey(Store,null=True,on_delete=models.CASCADE)
     priority=models.SmallIntegerField(default=0)
