@@ -283,7 +283,8 @@ class AddressSerializer(serializers.ModelSerializer):
 
 
 class BannerSerializer(serializers.ModelSerializer):
-
+    category= CategorySerializer(required=False)
+    main_category_name = serializers.CharField(source='category.main_category.name', read_only=True)
     class Meta:
         model = Banner
         fields = "__all__"
