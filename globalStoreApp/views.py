@@ -346,6 +346,10 @@ class PostBanner(APIView):
     def post(self,request):
         data=request.data.copy() 
         data['store']=request.user.id
+        banner_id = data.get('bannerId')  
+        if banner_id:
+            Banner.objects.filter(id=banner_id).update(**data)
+            return customResponse(message='Banner updated successfully', status=200)
         serializer=BannerSerializer(data=data)
         if(serializer.is_valid()):
             serializer.save()
