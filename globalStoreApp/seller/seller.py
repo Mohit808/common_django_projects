@@ -15,5 +15,5 @@ class SellerDashboard(APIView):
         available_items=Product.objects.filter(store=request.user.id).count()
         sold_items=Order.objects.filter(store=request.user.id,status=3).count()
         ongoing_orders = Order.objects.filter(store=request.user.id, status__in=[0, 1, 2]).count()
-        total_revenue=Order.objects.filter(store=request.user.id,status=3).aggregate(Sum('discountedTotalAmount'))
+        total_revenue=Order.objects.filter(store=request.user.id,status=3).aggregate(Sum('discountedTotalAmount'))['discountedTotalAmount__sum']
         return customResponse(message="Data fetched successfully", status=200, data={"available_items": available_items, "sold_items": sold_items, "ongoing_orders": ongoing_orders,"total_revenue":total_revenue})
