@@ -77,4 +77,4 @@ class SellerDashboard(APIView):
                     'debit': entry['total_debit'] or 0
                     }
                 }
-        return customResponse(message="Data fetched successfully", status=200, data={"available_items": available_items, "sold_items": sold_items, "ongoing_orders": ongoing_orders,"total_revenue":total_revenue,"orders_this_week":orders_this_week,"orders_previous_week":orders_previous_week,"percentage_change":percentage_change,"average_order_revenue":average_order_revenue_last_7_days,"tran":result})
+        return customResponse(message="Data fetched successfully", status=200, data={"available_items": available_items, "sold_items": sold_items, "ongoing_orders": ongoing_orders,"total_revenue":total_revenue,"orders_this_week":orders_this_week,"orders_previous_week":orders_previous_week,"percentage_change":percentage_change,"average_order_revenue":average_order_revenue_last_7_days,"transaction_insights":result})
