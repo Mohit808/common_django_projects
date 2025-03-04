@@ -72,9 +72,8 @@ class SellerDashboard(APIView):
             day_index = last_7_days.index(day_of_week)
             day_name = days_of_week[day_index]
             result[day_index] = {
-                day_name: {
-                    'credit': entry['total_credit'] or 0,
-                    'debit': entry['total_debit'] or 0
-                    }
+                ' day': day_name,
+                'credit': entry['total_credit'] or 0,
+                'debit': entry['total_debit'] or 0
                 }
         return customResponse(message="Data fetched successfully", status=200, data={"available_items": available_items, "sold_items": sold_items, "ongoing_orders": ongoing_orders,"total_revenue":total_revenue,"orders_this_week":orders_this_week,"orders_previous_week":orders_previous_week,"percentage_change":percentage_change,"average_order_revenue":average_order_revenue_last_7_days,"transaction_insights":result})
