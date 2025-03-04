@@ -6,6 +6,11 @@ from globalStoreApp.models import *
 from globalStoreApp.my_serializers import *
 from globalStoreApp.custom_response import *
 from django.db.models import Sum
+from datetime import timedelta
+from django.utils import timezone
+
+
+
 
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -16,4 +21,25 @@ class SellerDashboard(APIView):
         sold_items=Order.objects.filter(store=request.user.id,status=3).count()
         ongoing_orders = Order.objects.filter(store=request.user.id, status__in=[0, 1, 2]).count()
         total_revenue=Order.objects.filter(store=request.user.id,status=3).aggregate(Sum('discountedTotalAmount'))['discountedTotalAmount__sum']
-        return customResponse(message="Data fetched successfully", status=200, data={"available_items": available_items, "sold_items": sold_items, "ongoing_orders": ongoing_orders,"total_revenue":total_revenue})
+
+        now = timezone.now()
+        start_of_current_week = now - timedelta(days=now.weekday())
+        end_of_current_week = start_of_current_week + timedelta(days=7)
+
+        # Get the start of the previous week and end of the previous week
+        start_of_previous_week = start_of_current_week - timedelta(days=7)
+        end_of_previous_week = start_of_previous_week + timedelta(days=7)
+
+        orders_this_week = Order.objects.filter(created_at__gte=start_of_current_week, created_at__lt=end_of_current_week).count()
+
+        orders_previous_week = Order.objects.filter(created_at__gte=start_of_previous_week, created_at__lt=end_of_previous_week).count()
+
+        if orders_previous_week > 0:
+            percentage_change = ((orders_this_week - orders_previous_week) / orders_previous_week) * 100
+        else:
+            percentage_change = float('inf')  # This handles the case where there were no orders in the previous week
+
+        print(f"Orders this week: {orders_this_week}")
+        print(f"Orders previous week: {orders_previous_week}")
+        print(f"Percentage change: {percentage_change}%")
+        return customResponse(message="Data fetched successfully", status=200, data={"available_items": available_items, "sold_items": sold_items, "ongoing_orders": ongoing_orders,"total_revenue":total_revenue,"orders_this_week":orders_this_week,"orders_previous_week":orders_previous_week,"percentage_change":percentage_change})
