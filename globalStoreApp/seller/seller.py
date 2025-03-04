@@ -8,7 +8,7 @@ from globalStoreApp.custom_response import *
 from django.db.models import Sum
 from datetime import timedelta
 from django.utils import timezone
-
+from django.db.models.functions import Coalesce
 
 
 
@@ -58,5 +58,5 @@ class SellerDashboard(APIView):
             average_order_revenue = total_revenue_previous_week / total_orders_previous_week
         else:
             average_order_revenue = 0
-            
+
         return customResponse(message="Data fetched successfully", status=200, data={"available_items": available_items, "sold_items": sold_items, "ongoing_orders": ongoing_orders,"total_revenue":total_revenue,"orders_this_week":orders_this_week,"orders_previous_week":orders_previous_week,"percentage_change":percentage_change,"average_order_revenue":average_order_revenue})
