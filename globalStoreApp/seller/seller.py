@@ -66,14 +66,14 @@ class SellerDashboard(APIView):
         days_of_week = [day.strftime('%a') for day in last_7_days]
         transactions_last_7_days = Transaction.objects.filter(created_at__gte=last_7_days[-1])
         total_per_day = (transactions_last_7_days.annotate(date=TruncDate('created_at')) .values('date').annotate(total_credit=Sum('amount', filter=Q(type=0)), total_debit=Sum('amount', filter=Q(type=1)) ).order_by('date'))
-        result = [{day_name: {'credit': 0, 'debit': 0}} for day_name in days_of_week]
+        result = [{'day': day_name, 'credit': 0, 'debit': 0} for day_name in days_of_week]
         for entry in total_per_day:
             day_of_week = entry['date']
             day_index = last_7_days.index(day_of_week)
             day_name = days_of_week[day_index]
-            result[day_index] = {
-                ' day': day_name,
-                'credit': entry['total_credit'] or 0,
-                'debit': entry['total_debit'] or 0
-                }
+            # result[day_index] = {
+            #     'day': day_name,
+            #     'credit': entry['total_credit'] or 0,
+            #     'debit': entry['total_debit'] or 0
+            #     }
         return customResponse(message="Data fetched successfully", status=200, data={"available_items": available_items, "sold_items": sold_items, "ongoing_orders": ongoing_orders,"total_revenue":total_revenue,"orders_this_week":orders_this_week,"orders_previous_week":orders_previous_week,"percentage_change":percentage_change,"average_order_revenue":average_order_revenue_last_7_days,"transaction_insights":result})
