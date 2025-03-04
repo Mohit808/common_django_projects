@@ -42,4 +42,4 @@ class SellerDashboard(APIView):
         print(f"Orders this week: {orders_this_week}")
         print(f"Orders previous week: {orders_previous_week}")
         print(f"Percentage change: {percentage_change}%")
-        return customResponse(message="Data fetched successfully", status=200, data={"available_items": available_items, "sold_items": sold_items, "ongoing_orders": ongoing_orders,"total_revenue":total_revenue,"orders_this_week":orders_this_week,"orders_previous_week":orders_previous_week,"percentage_change":percentage_change})
+        return customResponse(message="Data fetched successfully", status=200, data={"available_items": available_items, "sold_items": sold_items, "ongoing_orders": ongoing_orders,"total_revenue":total_revenue,"orders_this_week":"f{orders_this_week}","orders_previous_week":"f{orders_previous_week}","percentage_change":f"{percentage_change}"})
