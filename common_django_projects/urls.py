@@ -22,6 +22,7 @@ from globalStoreApp.views import *
 from globalStoreApp.auth import login_view
 from globalStoreApp.onboarding import add_email, add_store_name, add_owner_detail, add_business_detail,add_categories,add_address
 from globalStoreApp.orders.orders import *
+from globalStoreApp.seller.seller import *
 from waterDropApp.auth import login_view as water_login
 from waterDropApp.products import add_product_water, order_water
 from shareWheel.views import *
@@ -71,6 +72,7 @@ urlpatterns = [
     # path('getSellerOrders', GetSellerOrders.as_view()),
     path('getTransactions', GetTransactions.as_view()),
     path('getInventory', GetInventory.as_view()),
+    path('sellerDashboard', SellerDashboard.as_view()),
 
     path('signUp', login_view.SignUpEmailView.as_view()),
     path('login', login_view.LoginEmailView.as_view()),
