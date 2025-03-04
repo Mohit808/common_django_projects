@@ -50,13 +50,16 @@ class SellerDashboard(APIView):
         #     average_order_revenue = total_revenue_previous_week / total_orders_previous_week
         # else:
         #     average_order_revenue = 0 
-        total_revenue_previous_week = Order.objects.filter(created_at__gte=start_of_previous_week,created_at__lt=end_of_previous_week).aggregate(total_revenue=Sum(Coalesce('discountedTotalAmount', 'totalAmount')))['total_revenue']
-        total_orders_previous_week = Order.objects.filter(created_at__gte=start_of_previous_week,created_at__lt=end_of_previous_week).count()
-        if total_revenue_previous_week is None:
-            total_revenue_previous_week = 0
-        if total_orders_previous_week > 0:
-            average_order_revenue = total_revenue_previous_week / total_orders_previous_week
+        seven_days_ago = timezone.now() - timedelta(days=7)
+        orders_last_7_days = Order.objects.filter(created_at__gte=seven_days_ago)
+        total_revenue_last_7_days = orders_last_7_days.aggregate(total_revenue=Sum(Coalesce('discountedTotalAmount', 'totalAmount')))['total_revenue']
+        total_orders_last_7_days = orders_last_7_days.count()
+        if total_revenue_last_7_days is None:
+            total_revenue_last_7_days = 0
+        
+        if total_orders_last_7_days > 0:
+            average_order_revenue_last_7_days = total_revenue_last_7_days / total_orders_last_7_days
         else:
-            average_order_revenue = 0
+            average_order_revenue_last_7_days = 0
 
-        return customResponse(message="Data fetched successfully", status=200, data={"available_items": available_items, "sold_items": sold_items, "ongoing_orders": ongoing_orders,"total_revenue":total_revenue,"orders_this_week":orders_this_week,"orders_previous_week":orders_previous_week,"percentage_change":percentage_change,"average_order_revenue":average_order_revenue})
+        return customResponse(message="Data fetched successfully", status=200, data={"available_items": available_items, "sold_items": sold_items, "ongoing_orders": ongoing_orders,"total_revenue":total_revenue,"orders_this_week":orders_this_week,"orders_previous_week":orders_previous_week,"percentage_change":percentage_change,"average_order_revenue":average_order_revenue_last_7_days})
