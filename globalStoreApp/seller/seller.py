@@ -37,9 +37,9 @@ class SellerDashboard(APIView):
         if orders_previous_week > 0:
             percentage_change = ((orders_this_week - orders_previous_week) / orders_previous_week) * 100
         else:
-            percentage_change = float('inf')  # This handles the case where there were no orders in the previous week
+            percentage_change = 0.0
 
         print(f"Orders this week: {orders_this_week}")
         print(f"Orders previous week: {orders_previous_week}")
         print(f"Percentage change: {percentage_change}%")
-        return customResponse(message="Data fetched successfully", status=200, data={"available_items": available_items, "sold_items": sold_items, "ongoing_orders": ongoing_orders,"total_revenue":total_revenue,"orders_this_week":f"{orders_this_week}","orders_previous_week":f"{orders_previous_week}","percentage_change":f"{percentage_change}"})
+        return customResponse(message="Data fetched successfully", status=200, data={"available_items": available_items, "sold_items": sold_items, "ongoing_orders": ongoing_orders,"total_revenue":total_revenue,"orders_this_week":orders_this_week,"orders_previous_week":orders_previous_week,"percentage_change":f"{percentage_change}"})
