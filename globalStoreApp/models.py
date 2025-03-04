@@ -280,6 +280,7 @@ class Banner(models.Model):
     category=models.ForeignKey(Category,on_delete=models.CASCADE)
     name=models.CharField(max_length=200)
     description=models.CharField(max_length=200)
+    buttonText=models.CharField(max_length=200,)
     image=models.ImageField()
     store=models.ForeignKey(Store,null=True,on_delete=models.CASCADE)
     priority=models.SmallIntegerField(default=0)
@@ -328,13 +329,38 @@ class Wallet(models.Model):
     updated_at=models.DateTimeField(auto_now=True)
 
     def __str__(self) :
-        return f"{self.balance}"
+        return f"{self.customer.id} : {self.customer.name} , Balance : {self.balance} , Pending : {self.pending_amount}"
+
+class WithdrawRequest(models.Model):
+    customer=models.ForeignKey(Customer,on_delete=models.CASCADE,null=True)
+    amount=models.FloatField()
+
+    created_at=models.DateTimeField(auto_now_add=True)
+    updated_at=models.DateTimeField(auto_now=True)
+
+    def __str__(self) :
+        return f"{self.customer.id} : {self.customer.name} , Amount : {self.amount}"
 
 
 class Notification(models.Model):
     customer=models.ForeignKey(Customer,on_delete=models.CASCADE,null=True)
     heading=models.CharField(max_length=100)
     description=models.TextField(blank=True)
+
+    created_at=models.DateTimeField(auto_now_add=True)
+    updated_at=models.DateTimeField(auto_now=True)
+
+    def __str__(self) :
+        return f"{self.balance}"
+    
+
+
+class Story(models.Model):
+    customer=models.ForeignKey(Customer,on_delete=models.CASCADE,null=True)
+    image=models.ImageField()
+    description=models.TextField(blank=True)
+    latitude=models.FloatField(default=0)
+    longitude=models.FloatField(default=0)
 
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)

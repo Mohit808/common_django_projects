@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from globalStoreApp.models import OtpModel, Seller, Store, MainCategory, Category,Product,Brand,Tags,Variant, FeatureListModel, OrderItem, Order,Address,Customer, Banner, FestivalOffer, DeliveryPartner,Wallet, Transaction, Notification
+from globalStoreApp.models import OtpModel, Seller, Store, MainCategory, Category,Product,Brand,Tags,Variant, FeatureListModel, OrderItem, Order,Address,Customer, Banner, FestivalOffer, DeliveryPartner,Wallet, Transaction, Notification,WithdrawRequest, Story
 from django.conf import settings
 
 class AbsoluteImageField(serializers.ImageField):
@@ -283,7 +283,8 @@ class AddressSerializer(serializers.ModelSerializer):
 
 
 class BannerSerializer(serializers.ModelSerializer):
-
+    main_category_name = serializers.CharField(source='category.main_category.name', read_only=True)
+    category_details = CategorySerializer(source="category", read_only=True)
     class Meta:
         model = Banner
         fields = "__all__"
@@ -309,6 +310,12 @@ class WalletSerializer(serializers.ModelSerializer):
         model = Wallet
         fields = "__all__"
 
+class WithdrawRequestSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = WithdrawRequest
+        fields = "__all__"
+
 class TransactionSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -320,4 +327,10 @@ class NotificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Notification
+        fields = "__all__"
+
+class StorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Story
         fields = "__all__"

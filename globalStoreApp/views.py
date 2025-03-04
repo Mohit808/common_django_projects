@@ -232,8 +232,8 @@ class CreateOrders(APIView):
         for  x in range(len(productList)):
             queryProduct=Product.objects.get(id=productList[x])
             # print(mapTotal)
-            mapTotal[storeList[x]] = mapTotal.get(storeList[x], 0) + (queryProduct.discountedPrice or queryProduct.price) * qtyList[x]
-            mapDiscountTotal[storeList[x]] = (mapDiscountTotal.get(storeList[x], 0) + (queryProduct.price) * qtyList[x])-mapTotal[storeList[x]]
+            mapTotal[storeList[x]] = mapTotal.get(storeList[x], 0) + ((queryProduct.price or queryProduct.discountedPrice) * qtyList[x])
+            mapDiscountTotal[storeList[x]] = mapDiscountTotal.get(storeList[x], 0) + ((queryProduct.discountedPrice or queryProduct.price) * qtyList[x])
             order_data.append({
                 'product': productList[x],
                 'qty': qtyList[x],
@@ -318,6 +318,19 @@ class GetBanner(APIView):
         serializer=BannerSerializer(query_set,many=True,context={'request': request})
         return customResponse(message='Banner Fetched sucessfully', status=200, data=serializer.data)
 
+class DeleteBanner(APIView):
+    def get(self,request):
+        bannerId=request.GET.get("bannerId")
+        if not bannerId:
+            return customResponse(message="bannerId required",status=400)
+        
+        try:
+            Banner.objects.filter(id=bannerId).delete() #not deleting data
+        except Banner.DoesNotExist:
+            return customResponse(message="Banner not found",status=400)
+        
+        return customResponse(message="Banner deleted successfully",status=200)
+
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 class GetMyBanner(APIView):
@@ -325,7 +338,32 @@ class GetMyBanner(APIView):
         query_set=Banner.objects.filter(store=request.user.id).order_by('-priority')
         serializer=BannerSerializer(query_set,many=True,context={'request': request})
         return customResponse(message='Banner Fetched sucessfully', status=200, data=serializer.data)
-    
+
+
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+class PostBanner(APIView):
+    def post(self,request):
+        data=request.data.copy() 
+        data['store']=request.user.id
+        id = data.get('id')  
+        if id:
+            print("qwertyu")
+            banner=Banner.objects.get(id=id,store=request.user.id)
+            serializer = BannerSerializer(banner, data=data, partial=True)
+            if(serializer.is_valid()):
+                serializer.save()
+                return customResponse(message='Banner updated successfully', status=200)
+            else:  
+                return customResponse(message=f"{serializer.errors}", status=400)
+        serializer=BannerSerializer(data=data)
+        if(serializer.is_valid()):
+            serializer.save()
+            return customResponse(message='Banner Created sucessfully', status=200, data=serializer.data)
+        return customResponse(message=f"{serializer.errors}", status=400)
+
+        
+
 class GetStore(APIView):
     def get(self,request,pk=None):
         query_set=Store.objects.all()
@@ -399,7 +437,7 @@ class AcceptOrders(APIView):
         try:
             order = Order.objects.get(pk=order_id)
         except Order.DoesNotExist:
-            return customResponse(message= 'Order not found', status=status.HTTP_404_NOT_FOUND)
+            return customResponse(message= 'Order not found', status=400)
         print(status)
         if status==1 or status == "1":
             order.statusName = "Accepted by delivery partner"
@@ -430,7 +468,7 @@ class AcceptOrders(APIView):
             if transactionSerializer.is_valid():
                 transactionSerializer.save()
                 wallet, created = Wallet.objects.get_or_create(customer_id=order.customer.id, defaults={'balance': 0} )
-                Wallet.objects.filter(customer_id=order.customer.id).update(pending_amount=F('balance')-order.discountedTotalAmount-order.tip)
+                Wallet.objects.filter(customer_id=order.customer.id).update(pending_amount=F('pending_amount')-order.discountedTotalAmount-order.tip)
             else:
                 return customResponse(message= f"{customError(transactionSerializer.errors)}",status=400)
             
@@ -578,3 +616,53 @@ class GetTransactions(APIView):
         return customResponse(message="Fetsival Offers fetched successfully",status=200,data={"wallet":serializer_wallet.data,"transaction":serializer.data})
 
     
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+class PostWithdrawRequest(APIView):
+    def post(self,request,pk=None):
+        request.data._mutable = True
+        request.data['customer']=request.user.id
+        amount=request.data.get("amount")
+        if not amount:
+            return customResponse(message="Amount required",status=400)
+        try:
+            amount = int(amount)
+        except ValueError:
+            return customResponse(message="Invalid amount", status=400)
+        if amount < 10:
+            return customResponse(message="Minimum withdraw amount is 10",status=400)
+        try:
+            query_set=Wallet.objects.get(customer=request.user.id)
+        except Wallet.DoesNotExist:
+            return customResponse(message= "Wallet not found for the user",status=400)
+        if query_set.balance < amount:
+            return customResponse(message="Insufficient balance",status=400)
+        serializer=WithdrawRequestSerializer(data=request.data)
+        if(serializer.is_valid()):
+            serializer.save()
+            Wallet.objects.filter(customer=request.user.id).update(balance=F('balance')-amount)
+            return customResponse(message="Withdraw request created successfully",status=200)
+        return customResponse(message="Failed to create withdraw request",status=400,data=serializer.errors)
+    
+
+
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+class PostStory(APIView):
+
+    def post(self,request,pk=None):
+        data = request.data.copy()
+        data['customer']=request.user.id
+        serializer=StorySerializer(data=data)
+        if(serializer.is_valid()):
+            serializer.save()
+            return customResponse(message="Story created successfully",status=200)
+        return customResponse(message="Failed to create story",status=400)
+
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+class GetStory(APIView):
+    def get(self,request,pk=None):
+        query_set=Story.objects.all()
+        serializer=StorySerializer(query_set,many=True,context={'request': request})
+        return customResponse(message="Story fetched successfully",status=200,data=serializer.data)
