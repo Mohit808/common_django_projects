@@ -42,9 +42,9 @@ class SellerDashboard(APIView):
         print(f"Orders this week: {orders_this_week}")
         print(f"Orders previous week: {orders_previous_week}")
         print(f"Percentage change: {percentage_change}%")
-
-
-        total_revenue_previous_week = Order.objects.filter(created_at__gte=start_of_previous_week,created_at__lt=end_of_previous_week).aggregate(Sum('total_amount'))['total_amount__sum']
+        
+        #Average order revenue
+        total_revenue_previous_week = Order.objects.filter(created_at__gte=start_of_previous_week,created_at__lt=end_of_previous_week).aggregate(Sum('discountedTotalAmount'))['discountedTotalAmount__sum']
         total_orders_previous_week = Order.objects.filter(created_at__gte=start_of_previous_week,created_at__lt=end_of_previous_week).count()
         if total_orders_previous_week > 0:
             average_order_revenue = total_revenue_previous_week / total_orders_previous_week
