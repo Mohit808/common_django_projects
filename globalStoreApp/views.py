@@ -605,7 +605,7 @@ class GetTransactions(APIView):
 
     def get(self,request,pk=None):
         try:
-            query_set_wallet = Wallet.objects.get_or_create(customer_id=request.user.id)
+            query_set_wallet,created = Wallet.objects.get_or_create(customer_id=request.user.id)
         except Wallet.DoesNotExist:
             return customResponse(message= "Wallet not found for the user",status=400)
         serializer_wallet=WalletSerializer(query_set_wallet,context={'request': request})
