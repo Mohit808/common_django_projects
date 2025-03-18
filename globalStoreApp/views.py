@@ -607,7 +607,7 @@ class GetTransactions(APIView):
         try:
             query_set_wallet = Wallet.objects.get(customer=request.user.id)
         except Wallet.DoesNotExist:
-            raise customResponse(message= "Wallet not found for the user",status=400)
+            return customResponse(message= "Wallet not found for the user",status=400)
         serializer_wallet=WalletSerializer(query_set_wallet,context={'request': request})
 
         query_set=Transaction.objects.filter(customer=request.user.id)
