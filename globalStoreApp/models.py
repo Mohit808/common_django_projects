@@ -146,7 +146,7 @@ class Category(models.Model):
     image =  models.ImageField(upload_to="product_images")
     description = models.TextField()
     def __str__(self):
-        return self.name
+        return f"{self.id} {self.name}"
     
     class Meta:
         verbose_name = "Category"

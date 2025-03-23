@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include
 from globalStoreApp.views import *
+from globalStoreApp.banner.banner import PostBanner, GetBanner, GetMyBanner, DeleteBanner
 # index,GetMainCategories,GetCategory,GetProducts, GetVariants, GetDashboard, GetHotDeals, CreateOrders, GetOrders, MyAddress, GetBanner, GetStore, GetUniqueCategoryByStore, GetBrands, GetFestivalOffer, GetVariantByFestival, GetDeliveryOrders, CreateProduct, OnboardDeliveryPartner, AcceptOrders,GetMyDeliveryOrders 
 from globalStoreApp.auth import login_view
 from globalStoreApp.onboarding import add_email, add_store_name, add_owner_detail, add_business_detail,add_categories,add_address
