@@ -210,7 +210,7 @@ class FeatureListModel(models.Model):
     updated_at=models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name
+        return f"Priority {self.priority} : {self.name}"
 
 class DeliveryPartner(models.Model):
     id=models.IntegerField(primary_key=True)
