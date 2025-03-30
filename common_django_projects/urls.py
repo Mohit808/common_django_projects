@@ -30,6 +30,7 @@ from shareWheel.views import *
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from globalStoreApp.delivery_partner.delivery_home import *
 
 
 urlpatterns = [
@@ -79,6 +80,10 @@ urlpatterns = [
     path('postStory', PostStory.as_view()),
     path('getStory', GetStory.as_view()),
     path('sellerDashboard', SellerDashboard.as_view()),
+
+
+    path('getTodayAndWeeklyDeliveries', GetTodayAndWeeklyDeliveries.as_view()),
+
 
     path('signUp', login_view.SignUpEmailView.as_view()),
     path('login', login_view.LoginEmailView.as_view()),
