@@ -307,60 +307,6 @@ class MyAddress(APIView):
         serializer=AddressSerializer(query_set,many=True)
         return customResponse(message='Address Fetched sucessfully', status=200, data=serializer.data)
 
-class GetBanner(APIView):
-    def get(self,request):
-        storeId=request.GET.get("storeId")
-        if storeId:
-            query_set=Banner.objects.filter(store=storeId).order_by('-priority')
-        else:
-            query_set=Banner.objects.all()
-        
-        serializer=BannerSerializer(query_set,many=True,context={'request': request})
-        return customResponse(message='Banner Fetched sucessfully', status=200, data=serializer.data)
-
-class DeleteBanner(APIView):
-    def get(self,request):
-        bannerId=request.GET.get("bannerId")
-        if not bannerId:
-            return customResponse(message="bannerId required",status=400)
-        
-        try:
-            Banner.objects.filter(id=bannerId).delete() #not deleting data
-        except Banner.DoesNotExist:
-            return customResponse(message="Banner not found",status=400)
-        
-        return customResponse(message="Banner deleted successfully",status=200)
-
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
-class GetMyBanner(APIView):
-    def get(self,request):
-        query_set=Banner.objects.filter(store=request.user.id).order_by('-priority')
-        serializer=BannerSerializer(query_set,many=True,context={'request': request})
-        return customResponse(message='Banner Fetched sucessfully', status=200, data=serializer.data)
-
-
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
-class PostBanner(APIView):
-    def post(self,request):
-        data=request.data.copy() 
-        data['store']=request.user.id
-        id = data.get('id')  
-        if id:
-            print("qwertyu")
-            banner=Banner.objects.get(id=id,store=request.user.id)
-            serializer = BannerSerializer(banner, data=data, partial=True)
-            if(serializer.is_valid()):
-                serializer.save()
-                return customResponse(message='Banner updated successfully', status=200)
-            else:  
-                return customResponse(message=f"{serializer.errors}", status=400)
-        serializer=BannerSerializer(data=data)
-        if(serializer.is_valid()):
-            serializer.save()
-            return customResponse(message='Banner Created sucessfully', status=200, data=serializer.data)
-        return customResponse(message=f"{serializer.errors}", status=400)
 
         
 
@@ -605,9 +551,9 @@ class GetTransactions(APIView):
 
     def get(self,request,pk=None):
         try:
-            query_set_wallet = Wallet.objects.get(customer=request.user.id)
+            query_set_wallet,created = Wallet.objects.get_or_create(customer_id=request.user.id)
         except Wallet.DoesNotExist:
-            raise customResponse(message= "Wallet not found for the user",status=400)
+            return customResponse(message= "Wallet not found for the user",status=400)
         serializer_wallet=WalletSerializer(query_set_wallet,context={'request': request})
 
         query_set=Transaction.objects.filter(customer=request.user.id)

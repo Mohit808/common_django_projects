@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include
 from globalStoreApp.views import *
+from globalStoreApp.banner.banner import PostBanner, GetBanner, GetMyBanner, DeleteBanner
 # index,GetMainCategories,GetCategory,GetProducts, GetVariants, GetDashboard, GetHotDeals, CreateOrders, GetOrders, MyAddress, GetBanner, GetStore, GetUniqueCategoryByStore, GetBrands, GetFestivalOffer, GetVariantByFestival, GetDeliveryOrders, CreateProduct, OnboardDeliveryPartner, AcceptOrders,GetMyDeliveryOrders 
 from globalStoreApp.auth import login_view
 from globalStoreApp.onboarding import add_email, add_store_name, add_owner_detail, add_business_detail,add_categories,add_address
@@ -29,6 +30,7 @@ from shareWheel.views import *
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from globalStoreApp.delivery_partner.delivery_home import *
 
 
 urlpatterns = [
@@ -78,6 +80,10 @@ urlpatterns = [
     path('postStory', PostStory.as_view()),
     path('getStory', GetStory.as_view()),
     path('sellerDashboard', SellerDashboard.as_view()),
+
+
+    path('getTodayAndWeeklyDeliveries', GetTodayAndWeeklyDeliveries.as_view()),
+
 
     path('signUp', login_view.SignUpEmailView.as_view()),
     path('login', login_view.LoginEmailView.as_view()),

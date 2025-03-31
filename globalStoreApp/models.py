@@ -146,7 +146,7 @@ class Category(models.Model):
     image =  models.ImageField(upload_to="product_images")
     description = models.TextField()
     def __str__(self):
-        return self.name
+        return f"{self.id} {self.name}"
     
     class Meta:
         verbose_name = "Category"
@@ -210,7 +210,7 @@ class FeatureListModel(models.Model):
     updated_at=models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name
+        return f"Priority {self.priority} : {self.name}"
 
 class DeliveryPartner(models.Model):
     id=models.IntegerField(primary_key=True)
@@ -321,7 +321,7 @@ class Transaction(models.Model):
         return f"{self.amount}"
     
 class Wallet(models.Model):
-    balance=models.FloatField()
+    balance=models.FloatField(default=0)
     pending_amount=models.FloatField(default=0)
     customer=models.ForeignKey(Customer,on_delete=models.CASCADE,null=True)
 
