@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import *
+from social_network.models import *
 admin.site.register(OtpModel)
 admin.site.register(Seller)
 admin.site.register(Store)
@@ -21,6 +22,10 @@ admin.site.register(DeliveryPartner)
 admin.site.register(Transaction)
 admin.site.register(Wallet)
 admin.site.register(WithdrawRequest)
+admin.site.register(Post)
+admin.site.register(Comment)
+admin.site.register(Like)
+admin.site.register(Follow)
 
 # class OrderAdmin(admin.ModelAdmin):
 #     def formfield_for_manytomany(self, db_field, request, **kwargs):
