@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
+
 
 
 
@@ -181,12 +183,15 @@ class Product(models.Model):
     image= models.ImageField(upload_to="product_images")
     price= models.FloatField()
     discountedPrice= models.FloatField(null=True,blank=True)
+    unit= models.CharField(max_length=100,null=True)
+    qty= models.SmallIntegerField(null=True,blank=True)
+    stock= models.SmallIntegerField(null=True, blank=True)
     store= models.ForeignKey(Store,on_delete=models.CASCADE,null=True, blank=True)
     main_category= models.ForeignKey(MainCategory,on_delete=models.CASCADE,null=True, blank=True)
     category= models.ForeignKey(Category,on_delete=models.CASCADE)
     variant= models.ForeignKey(Variant,on_delete=models.CASCADE,null=True, blank=True)
     brand = models.ForeignKey(Brand,on_delete=models.CASCADE, null=True, blank= True)
-    tag =models.ManyToManyField(Tags,  null=True, blank= True)
+    tag =models.ManyToManyField(Tags, blank= True)
     origin=models.TextField(blank= True)
     tips= models.TextField(blank= True)
     additional_info = models.TextField(blank=True)
@@ -218,7 +223,7 @@ class DeliveryPartner(models.Model):
     image=models.ImageField()
     phone_number=models.CharField(max_length=20,null=True,blank=True)
     email=models.CharField(max_length=100,blank=True)
-    aadhaar=models.IntegerField(max_length=12,null=True,blank=True)
+    aadhaar=models.BigIntegerField(null=True,blank=True,validators=[RegexValidator(r'^\d{12}$', 'Aadhaar number must be 12 digits.')])
     bike=models.CharField(max_length=20,blank=True)
     address=models.CharField(max_length=200)
     latitude=models.FloatField(default=0)
@@ -246,7 +251,7 @@ class Order(models.Model):
     store= models.ForeignKey(Store,on_delete=models.CASCADE)
     customer=models.ForeignKey(Customer,on_delete=models.CASCADE)
     deliveryPartner=models.ForeignKey(DeliveryPartner,on_delete=models.SET_NULL,null=True,blank=True)
-    orderItem= models.ManyToManyField(OrderItem,null=True) 
+    orderItem= models.ManyToManyField(OrderItem) 
     totalAmount=models.FloatField(null=True,blank=True)
     discountedTotalAmount=models.FloatField(null=True,blank=True)
     otp=models.CharField(blank=True,max_length=10)
