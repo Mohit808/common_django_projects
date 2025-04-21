@@ -181,6 +181,8 @@ class Product(models.Model):
     description=models.TextField()
     highlight=models.TextField(blank=True)
     image= models.ImageField(upload_to="product_images")
+    imageMain= models.TextField(blank=True)
+    images=models.TextField(blank=True)
     price= models.FloatField()
     discountedPrice= models.FloatField(null=True,blank=True)
     unit= models.CharField(max_length=100,null=True)
