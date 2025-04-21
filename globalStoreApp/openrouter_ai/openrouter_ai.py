@@ -34,7 +34,7 @@ class ChatCompletion(APIView):
         }
 
         headers = {
-            "Authorization": f"Bearer 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",
+            "Authorization": f"Bearer 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",
             "Content-Type": "application/json"
         }
 
