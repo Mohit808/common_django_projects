@@ -20,13 +20,16 @@ class ChatCompletion(APIView):
     def post(self,request,pk=None):
 
         user_message = request.data.get("message")
+        product = request.data.get("product")
         if not user_message:
             return Response({"error": "No message provided"}, status=status.HTTP_400_BAD_REQUEST)
 
         payload = {
             "model": "meta-llama/llama-4-maverick:free",
             "messages": [
-                {"role": "user", "content": user_message}
+                {"role": "user", "content": f"Product name - f{product} required - f{user_message}",},
+                {"role": "system","content": "I am building a product catalog. When I give a product name and required fields like Description, Highlights, Origin, Tips, or Additional Info, respond only with the exact two-line content for each field. Do not include any introductory or closing phrases. Do not repeat the product name or mention the field name. Only provide the content for the requested fields. Keep each response clear, concise, and aligned with the product. No extra words, no explanations — just pure, direct text for copy-paste use."},
+                {"role": "assistant", "content": "You are an expert store manager who know all product in the store and its descriptionm, ingredient and all detail"}
             ]
         }
 
