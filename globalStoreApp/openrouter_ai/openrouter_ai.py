@@ -17,8 +17,9 @@ import requests
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 class ChatCompletion(APIView):
-    def get(self,request,pk=None):
-        user_message=request.GET.get("message")
+    def post(self,request,pk=None):
+
+        user_message = request.data.get("message")
         if not user_message:
             return Response({"error": "No message provided"}, status=status.HTTP_400_BAD_REQUEST)
 
