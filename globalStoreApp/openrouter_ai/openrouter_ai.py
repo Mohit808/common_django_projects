@@ -24,14 +24,14 @@ class ChatCompletion(APIView):
             return Response({"error": "No message provided"}, status=status.HTTP_400_BAD_REQUEST)
 
         payload = {
-            "model": "openai/gpt-3.5-turbo",
+            "model": "meta-llama/llama-4-maverick:free",
             "messages": [
                 {"role": "user", "content": user_message}
             ]
         }
 
         headers = {
-            "Authorization": f"Bearer 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",
+            "Authorization": f"Bearer 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",
             "Content-Type": "application/json"
         }
 
