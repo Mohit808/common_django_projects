@@ -23,6 +23,9 @@ class ChatCompletion(APIView):
         product = request.data.get("product")
         if not user_message:
             return Response({"error": "No message provided"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not product:
+            return Response({"error": "No product provided"}, status=status.HTTP_400_BAD_REQUEST)
 
         payload = {
             "model": "meta-llama/llama-4-maverick:free",
