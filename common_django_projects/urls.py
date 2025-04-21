@@ -31,6 +31,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from globalStoreApp.delivery_partner.delivery_home import *
+from globalStoreApp.openrouter_ai.openrouter_ai import *
 
 
 urlpatterns = [
@@ -38,6 +39,8 @@ urlpatterns = [
     path('',index),
     path('api-auth/', include('rest_framework.urls')),
     
+    path('chatCompletion', ChatCompletion.as_view()),
+
     path('send-otp', login_view.LoginView.as_view()),
     path('verify-otp', login_view.VerifyOTPView.as_view()),
     path('add-email', add_email.AddEmailFunction.as_view()),
