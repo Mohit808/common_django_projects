@@ -180,7 +180,7 @@ class Product(models.Model):
     name= models.CharField(max_length=100)
     description=models.TextField()
     highlight=models.TextField(blank=True)
-    image= models.ImageField(upload_to="product_images")
+    image= models.ImageField(upload_to="product_images",blank=True)
     imageMain= models.CharField(max_length=200,blank=True)
     images=models.CharField(max_length=1000,blank=True)
     price= models.FloatField()
