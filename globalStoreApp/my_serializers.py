@@ -138,8 +138,10 @@ class ProductSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         request = self.context.get('request')
-        if request is not None:
+        if instance.image and hasattr(instance.image, 'url'):
             representation['image'] = request.build_absolute_uri(instance.image.url)
+        else:
+            representation['image'] = None
         return representation
     
     def get_discount_percentage(self, obj):
