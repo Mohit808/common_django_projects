@@ -105,7 +105,7 @@ class UserModel(models.Model):
     location_long=models.CharField(max_length=200)
 
     def __str__(self):
-        return f"{self.name}"+" : "+f"{self.name}"
+        return f"{self.id}"+" : "+f"{self.name}"
 
 class UserPreference(models.Model):
     text=models.TextField()
