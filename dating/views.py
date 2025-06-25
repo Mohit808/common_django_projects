@@ -86,7 +86,7 @@ class Onboarding(APIView):
             serializer = UserSerializer(profile, data=data, partial=True)
         except UserModel.DoesNotExist:
             data['user'] = request.user.id
-            serializer = UserSerializer(data=data)
+            serializer = UserSerializer(data=data,partial=True)
 
         if serializer.is_valid():
             serializer.save()
