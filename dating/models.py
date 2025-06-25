@@ -63,7 +63,7 @@ class DatingToken(models.Model):
     
     
 class UserModel(models.Model):
-    id=models.AutoField(primary_key=True)
+    id=models.IntegerField(primary_key=True)
     username=models.CharField(max_length=100,blank=True)
     name=models.CharField(max_length=100)
     email=models.CharField(max_length=100)
