@@ -81,12 +81,25 @@ class DatingLoginView(APIView):
 class Onboarding(APIView):
     def post(self,request):
         data=request.data.copy()
-        data['id']=request.user.id
-        serializer = UserSerializer(data=data,partial=True)
+        try:
+            profile = UserModel.objects.get(id=request.user.id)
+            serializer = UserSerializer(profile, data=data, partial=True)
+        except UserModel.DoesNotExist:
+            data['id'] = request.user.id
+            serializer = UserSerializer(data=data,partial=True)
+
         if serializer.is_valid():
-            user = serializer.save()
-            return customResponse(message="data saved successfully", status=200)
-        return customResponse(message=f"{serializer.errors}",status=400)
+            serializer.save()
+            return customResponse(message="Data saved successfully", status=200)
+
+        return customResponse(message=f"{serializer.errors}", status=400)
+    
+        # data['id']=request.user.id
+        # serializer = UserSerializer(data=data,partial=True)
+        # if serializer.is_valid():
+        #     user = serializer.save()
+        #     return customResponse(message="data saved successfully", status=200)
+        # return customResponse(message=f"{serializer.errors}",status=400)
 
 
 
