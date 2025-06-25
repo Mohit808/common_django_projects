@@ -111,7 +111,8 @@ urlpatterns = [
     path('wheelBookings', WheelBookingFunction.as_view()),
 
     # social network urls
-    path("social/", include('social_network.urls'))
+    path("social/", include('social_network.urls')),
+    path("dating/", include('dating.urls'))
 ]
 
 # + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
