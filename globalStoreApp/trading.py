@@ -50,7 +50,6 @@ data = yf.download(tickers=tickers, period="1d", interval="5m", group_by='ticker
 
 
 
-
 class GetTrading(APIView):
     def get(self, request,pk=None):
         data = yf.download(tickers=tickers, period="1d", interval="5m", group_by='ticker')
