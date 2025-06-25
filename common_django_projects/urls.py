@@ -32,6 +32,7 @@ from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from globalStoreApp.delivery_partner.delivery_home import *
 from globalStoreApp.openrouter_ai.openrouter_ai import *
+from globalStoreApp.trading import *
 
 
 urlpatterns = [
@@ -83,6 +84,9 @@ urlpatterns = [
     path('postStory', PostStory.as_view()),
     path('getStory', GetStory.as_view()),
     path('sellerDashboard', SellerDashboard.as_view()),
+
+
+    path('getTrading', GetTrading.as_view()),
 
 
     path('getTodayAndWeeklyDeliveries', GetTodayAndWeeklyDeliveries.as_view()),
