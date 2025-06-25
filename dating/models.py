@@ -63,7 +63,8 @@ class DatingToken(models.Model):
     
     
 class UserModel(models.Model):
-    user = models.OneToOneField(DatingUser, primary_key=True, on_delete=models.CASCADE,default=None)
+    id = models.AutoField(primary_key=True)
+    user = models.OneToOneField(DatingUser, on_delete=models.CASCADE,default=None)
     username=models.CharField(max_length=100,blank=True)
     name=models.CharField(max_length=100)
     email=models.CharField(max_length=100)
