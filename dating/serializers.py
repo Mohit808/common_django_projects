@@ -3,5 +3,5 @@ from dating.models import *
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = UserDating
         fields = "__all__"
