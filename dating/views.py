@@ -78,6 +78,8 @@ class DatingLoginView(APIView):
 @permission_classes([IsAuthenticated])
 class Onboarding(APIView):
     def post(self,request):
+        data=request.data.copy()
+        data['id']=request.user.id
         serializer = UserSerializer(data=request.data,partial=True)
         if serializer.is_valid():
             user = serializer.save()
