@@ -80,7 +80,7 @@ class Onboarding(APIView):
     def post(self,request):
         data=request.data.copy()
         data['id']=request.user.id
-        serializer = UserSerializer(data=request.data,partial=True)
+        serializer = UserSerializer(data=data,partial=True)
         if serializer.is_valid():
             user = serializer.save()
             return customResponse(message="data saved successfully", status=200)
