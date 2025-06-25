@@ -90,7 +90,7 @@ class Onboarding(APIView):
 
         if serializer.is_valid():
             serializer.save()
-            return customResponse(message="Data saved successfully", status=200)
+            return customResponse(data=request.user.id,message="Data saved successfully", status=200)
 
         return customResponse(message=f"{serializer.errors}", status=400)
     
