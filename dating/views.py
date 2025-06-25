@@ -35,11 +35,19 @@ class DatingRegisterView(APIView):
         if serializer.is_valid():
             user = serializer.save()
             token = DatingToken.objects.create(user=user)
+            
             return Response({
-                'id': user.id,
-                'email': user.email,
-                'token': token.key
-            }, status=status.HTTP_201_CREATED)
+                'message': 'Login successful',
+                'token': token.key,
+                'user': {'id': user.id, 'email': user.email}},status=200)
+
+            # return Response({
+            #     'id': user.id,
+            #     'email': user.email,
+            #     'token': token.key
+            # }, status=status.HTTP_201_CREATED)
+        
+    
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
