@@ -2,8 +2,10 @@ from django.shortcuts import render
 from common_function.custom_response import *
 from rest_framework.views import APIView
 from dating.models import *
+from dating.serializers import *
 from rest_framework.pagination import PageNumberPagination
 from django.contrib.auth.models import User
+
 
 
 def hello(request):
@@ -12,6 +14,18 @@ def hello(request):
 class Hello(APIView):
     def get(self, request,pk=None):
        return customResponse(data="Hello",message= f'Fetch data successfully', status=200)
+    
+
+
+
+
+class DatingRegisterView(APIView):
+    def post(self, request):
+        serializer = DatingUserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({'id': user.id, 'email': user.email}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 class Login(APIView):
