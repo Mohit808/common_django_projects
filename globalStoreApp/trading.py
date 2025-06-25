@@ -54,5 +54,12 @@ data = yf.download(tickers=tickers, period="1d", interval="5m", group_by='ticker
 class GetTrading(APIView):
     def get(self, request,pk=None):
         data = yf.download(tickers=tickers, period="1d", interval="5m", group_by='ticker')
+        latest_data = {}
 
-        return customResponse(message= f'Fetch data successfully', status=200  ,data=data.to_json())
+        for ticker in tickers:
+            ticker_data = data[ticker]
+            if not ticker_data.empty:
+                last_row = ticker_data.iloc[-1]
+                latest_data[ticker] = last_row.to_dict()
+
+        return customResponse(message= f'Fetch data successfully', status=200  ,data=latest_data)
