@@ -82,15 +82,15 @@ class Onboarding(APIView):
     def post(self,request):
         data=request.data.copy()
         try:
-            profile = UserModel.objects.get(id=request.user.id)
+            profile = UserModel.objects.get(user=request.user)
             serializer = UserSerializer(profile, data=data, partial=True)
         except UserModel.DoesNotExist:
-            data['id'] = request.user.id
-            serializer = UserSerializer(data=data,partial=True)
+            data['user'] = request.user.id
+            serializer = UserSerializer(data=data)
 
         if serializer.is_valid():
             serializer.save()
-            return customResponse(data=request.user.id,message="Data saved successfully", status=200)
+            return customResponse(message="Data saved successfully", status=200)
 
         return customResponse(message=f"{serializer.errors}", status=400)
     
