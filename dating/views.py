@@ -72,6 +72,23 @@ class DatingLoginView(APIView):
     
 
 
+
+
+@authentication_classes([DatingTokenAuthentication])
+@permission_classes([IsAuthenticated])
+class Onboarding(APIView):
+    def post(self,request):
+        serializer = UserSerializer(data=request.data,partial=True)
+        if serializer.is_valid():
+            user = serializer.save()
+            return customResponse(message="data saved successfully", status=200)
+        return customResponse(message=f"{serializer.errors}",status=400)
+
+
+
+
+
+
 @authentication_classes([DatingTokenAuthentication])
 @permission_classes([IsAuthenticated])
 class Home(APIView):
