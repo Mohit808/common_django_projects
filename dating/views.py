@@ -29,6 +29,7 @@ class Hello(APIView):
 class DatingRegisterView(APIView):
     def post(self, request):
         data = request.data.copy()
+        data['email'] = data.get('email', '').strip().lower()
         data['username'] = data.get('email', '')
         serializer = DatingUserSerializer(data=data)
         if serializer.is_valid():
@@ -47,6 +48,7 @@ class DatingRegisterView(APIView):
 class DatingLoginView(APIView):
     def post(self, request):
         email = request.data.get('email')
+        email = email.strip().lower() if email else None
         password = request.data.get('password')
 
         if not email or not password:
