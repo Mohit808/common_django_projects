@@ -21,7 +21,9 @@ class Hello(APIView):
 
 class DatingRegisterView(APIView):
     def post(self, request):
-        serializer = DatingUserSerializer(data=request.data)
+        data = request.data.copy()
+        data['username'] = data.get('email', '')
+        serializer = DatingUserSerializer(data=data)
         if serializer.is_valid():
             user = serializer.save()
             return Response({'id': user.id, 'email': user.email}, status=status.HTTP_201_CREATED)
