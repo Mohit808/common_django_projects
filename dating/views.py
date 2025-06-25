@@ -43,9 +43,36 @@ class DatingRegisterView(APIView):
 
 
 
+
+class DatingLoginView(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        if not email or not password:
+            return Response({'error': 'Email and password are required'}, status=400)
+
+        try:
+            user = DatingUser.objects.get(email=email)
+        except DatingUser.DoesNotExist:
+            return Response({'error': 'Invalid credentials'}, status=401)
+
+        if not user.check_password(password):
+            return Response({'error': 'Invalid credentials'}, status=401)
+
+        token, created = DatingToken.objects.get_or_create(user=user)
+
+        return Response({
+            'message': 'Login successful',
+            'token': token.key,
+            'user': {'id': user.id, 'email': user.email}
+        }, status=200)
+    
+
+
 @authentication_classes([DatingTokenAuthentication])
 @permission_classes([IsAuthenticated])
-class Login(APIView):
+class Home(APIView):
     def post(self,request):
     
         return customResponse(data="Logged in successfully",message="Logged in successfully",status=200)
