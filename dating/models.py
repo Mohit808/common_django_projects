@@ -76,6 +76,7 @@ class UserModel(models.Model):
     bio=models.CharField(max_length=200)
     likes=models.CharField(max_length=500,null=True)
     profile_picture=models.CharField(max_length=200)
+    images=models.CharField(max_length=1000,null=True)
     height=models.CharField(max_length=200)
     weight=models.CharField(max_length=200)
     question1=models.TextField()
