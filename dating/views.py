@@ -72,8 +72,8 @@ class DatingLoginView(APIView):
         return Response({
             'message': 'Login successful',
             'token': token.key,
-            'user': {'id': user.id, 'email': user.email},
-            'user_model':UserSerializer(user_model).data if user_model else None 
+            # 'user': {'id': user.id, 'email': user.email},
+            'user':UserSerializer(user_model).data if user_model else None 
         }, status=200)
     
 
