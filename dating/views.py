@@ -58,9 +58,11 @@ class DatingLoginView(APIView):
 
         try:
             user = DatingUser.objects.get(email=email)
-            profile = user.usermodel
+            user_model = UserModel.objects.get(user=user)
         except DatingUser.DoesNotExist:
             return Response({'error': 'Invalid credentials'}, status=401)
+        except UserModel.DoesNotExist:
+            user_model = None 
 
         if not user.check_password(password):
             return Response({'error': 'Invalid credentials'}, status=401)
@@ -71,7 +73,7 @@ class DatingLoginView(APIView):
             'message': 'Login successful',
             'token': token.key,
             'user': {'id': user.id, 'email': user.email},
-            'profile':f"{profile}"
+            'user_model':user_model 
         }, status=200)
     
 
