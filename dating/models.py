@@ -74,6 +74,7 @@ class UserModel(models.Model):
     marital_status=models.CharField(max_length=10)
     birth_date=models.CharField(max_length=10)
     bio=models.CharField(max_length=200)
+    likes=models.CharField(max_length=500,null=True)
     profile_picture=models.CharField(max_length=200)
     height=models.CharField(max_length=200)
     weight=models.CharField(max_length=200)
