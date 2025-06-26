@@ -83,7 +83,7 @@ class UserModel(models.Model):
     answer2=models.TextField()
     video=models.TextField()
     video_promt=models.TextField()
-    zoodiac_sign=models.CharField(max_length=100)
+    zodiac_sign=models.CharField(max_length=100)
     work=models.CharField(max_length=100)
     job_title=models.CharField(max_length=100)
     collageUniversity=models.CharField(max_length=200)
