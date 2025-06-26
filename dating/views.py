@@ -93,8 +93,8 @@ class Onboarding(APIView):
             serializer = UserSerializer(data=data,partial=True)
 
         if serializer.is_valid():
-            serializer.save()
-            return customResponse(message="Data saved successfully", status=200)
+            user_model=serializer.save()
+            return customResponse(data=UserSerializer(user_model).data,message="Data saved successfully", status=200)
 
         return customResponse(message=f"{serializer.errors}", status=400)
     
