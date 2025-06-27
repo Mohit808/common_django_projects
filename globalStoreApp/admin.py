@@ -31,6 +31,7 @@ admin.site.register(Like)
 admin.site.register(Follow)
 admin.site.register(UserModel)
 admin.site.register(DatingUser)
+admin.site.register(Like)
 
 # class OrderAdmin(admin.ModelAdmin):
 #     def formfield_for_manytomany(self, db_field, request, **kwargs):
