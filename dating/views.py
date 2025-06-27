@@ -177,6 +177,8 @@ class Like(APIView):
 @permission_classes([IsAuthenticated])
 class AcceptRequest(APIView):
     def post(self,request):
+        if not request.data.get('like_id'):
+            return customResponse(message="Like ID is required", status=400)
         data = request.data.copy()
         data['receiver'] = request.user.id
         try:
