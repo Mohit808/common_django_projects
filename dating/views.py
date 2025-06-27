@@ -115,11 +115,14 @@ class Onboarding(APIView):
 @permission_classes([IsAuthenticated])
 class Home(APIView):
     def get(self,request):
-
-        current_lat = float(request.query_params.get('latitude'))
-        current_lon = float(request.query_params.get('longitude'))
+        
+        current_lat =request.query_params.get('latitude')
+        current_lon = request.query_params.get('longitude')
         if current_lat or current_lon:
-            user_model = UserModel.objects.annotate(distance=ExpressionWrapper((Abs(F('location_lat') - current_lat) + Abs(F('location_long') - current_lon)),output_field=FloatField())).order_by('distance')
+            user_model = UserModel.objects.annotate(
+                distance=ExpressionWrapper(
+                    (Abs(F('location_lat') - current_lat) + Abs(F('location_long') - current_lon)),
+                    output_field=FloatField())).order_by('distance')
         else:
             user_model = UserModel.objects.all()
 
