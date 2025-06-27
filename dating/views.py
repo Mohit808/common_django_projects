@@ -119,5 +119,6 @@ class Home(APIView):
         paginator = PageNumberPagination()
         paginator.page_size = 10
         paginated_user_model = paginator.paginate_queryset(user_model, request)
-        return customResponse(data=paginated_user_model,message="Logged in successfully",status=200)
+        serialized_users = UserSerializer(paginated_user_model, many=True).data
+        return customResponse(data=serialized_users,message="Logged in successfully",status=200)
 
