@@ -23,5 +23,5 @@ class UserSerializer(serializers.ModelSerializer):
 
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Like
+        model = LikeDating
         fields = "__all__"

@@ -124,7 +124,7 @@ class Photo(models.Model):
     def __str__(self):
         return self.text
 
-class Like(models.Model):
+class LikeDating(models.Model):
     sender=models.ForeignKey(UserModel, related_name='likes_sent', on_delete=models.CASCADE, null=True)
     receiver=models.ForeignKey(UserModel, related_name='likes_received', on_delete=models.CASCADE, null=True)
     date=models.DateTimeField(auto_now_add=True, null=True)
