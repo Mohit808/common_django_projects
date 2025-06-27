@@ -133,3 +133,24 @@ class Home(APIView):
         serialized_users = UserSerializer(paginated_user_model, many=True).data
         return customResponse(data=serialized_users,message="Logged in successfully",status=200)
 
+
+@authentication_classes([DatingTokenAuthentication])
+@permission_classes([IsAuthenticated])
+class Like(APIView):
+    def post(self,request):
+        if not request.data.get('receiver'):
+            return customResponse(message="Receiver is required", status=400)
+        data = request.data.copy()
+        data['sender'] = request.user.id
+        try:
+            receiver = UserModel.objects.get(id=data['receiver'])
+            data['receiver'] = receiver.user.id
+        except UserModel.DoesNotExist:
+            return customResponse(message="Receiver not found", status=404)
+
+        serializer = LikeSerializer(data=data)
+        if serializer.is_valid():
+            like = serializer.save()
+            return customResponse(data=LikeSerializer(like).data, message="Like created successfully", status=201)
+
+        return customResponse(message=f"{serializer.errors}", status=400)

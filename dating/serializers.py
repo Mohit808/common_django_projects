@@ -20,3 +20,8 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
         fields = "__all__"
+
+class LikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Like
+        fields = "__all__"
