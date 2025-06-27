@@ -12,6 +12,7 @@ urlpatterns = [
     path('onboarding', Onboarding.as_view()),
     path('home', Home.as_view()),
     path('like', Like.as_view()),
+    path('acceptRequest', AcceptRequest.as_view()),
     # path('add-business-detail', add_business_detail.AddBusinessDetailFunction.as_view()),
     # path('add-categories', add_categories.AddCategoriesFunction.as_view()),
 ]

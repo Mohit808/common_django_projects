@@ -172,3 +172,21 @@ class Like(APIView):
     
 
 
+
+@authentication_classes([DatingTokenAuthentication])
+@permission_classes([IsAuthenticated])
+class AcceptRequest(APIView):
+    def post(self,request):
+        data = request.data.copy()
+        data['receiver'] = request.user.id
+        try:
+            like = LikeDating.objects.get(id=data['like_id'], receiver=data['receiver'])
+        except LikeDating.DoesNotExist:
+            return customResponse(message="Like not found", status=404)
+
+        if like.sender == data['receiver']:
+            return customResponse(message="You cannot accept your own like", status=400)
+
+        # match = Match.objects.create(sender=like.sender, receiver=like.receiver)
+        like.delete()
+        return customResponse(message="Like accepted successfully", status=200)
