@@ -121,7 +121,7 @@ class Home(APIView):
         if current_lat or current_lon:
             user_model = UserModel.objects.annotate(
                 distance=ExpressionWrapper(
-                    (Abs(F('location_lat') - current_lat) + Abs(F('location_long') - current_lon)),
+                    (Abs(F('location_lat') - float(current_lat)) + Abs(F('location_long') - float(current_lon))),
                     output_field=FloatField())).order_by('distance')
         else:
             user_model = UserModel.objects.all()
