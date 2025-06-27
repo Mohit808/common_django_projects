@@ -113,7 +113,11 @@ class Onboarding(APIView):
 @authentication_classes([DatingTokenAuthentication])
 @permission_classes([IsAuthenticated])
 class Home(APIView):
-    def post(self,request):
-    
-        return customResponse(data="Logged in successfully",message="Logged in successfully",status=200)
+    def get(self,request):
+        user_model = UserModel.objects.all()
+        # user_model = UserModel.objects.exclude(user=request.user)
+        paginator = PageNumberPagination()
+        paginator.page_size = 10
+        paginated_user_model = paginator.paginate_queryset(user_model, request)
+        return customResponse(data=paginated_user_model,message="Logged in successfully",status=200)
 
