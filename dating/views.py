@@ -13,6 +13,8 @@ from .authentication import DatingTokenAuthentication
 from django.db.models import F, FloatField, ExpressionWrapper
 from django.db.models.functions import Abs
 from django.db.models import Q
+from django.utils.timesince import timesince
+
 
 
 
@@ -322,7 +324,7 @@ class SendMessage(APIView):
         message = Message.objects.create(sender=sender, receiver=receiver, text=text)
         return customResponse(data=MessageSerializer(message).data, message="Message sent", status=201)
     
-    
+
 
 @authentication_classes([DatingTokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -351,3 +353,67 @@ class GetUserMessages(APIView):
         serialized_messages = MessageSerializer(messages, many=True).data
 
         return customResponse(data=serialized_messages, message="Conversation fetched successfully", status=200)
+    
+
+
+
+
+@authentication_classes([DatingTokenAuthentication])
+@permission_classes([IsAuthenticated])
+class ChatListView(APIView):
+    def get(self, request):
+        try:
+            current_user = UserModel.objects.get(user=request.user)
+        except UserModel.DoesNotExist:
+            return customResponse(message="Your profile not found", status=404)
+
+        # Fetch all users current_user has exchanged messages with
+        message_partners = Message.objects.filter(
+            Q(sender=current_user) | Q(receiver=current_user)
+        ).values_list('sender', 'receiver')
+
+        # Flatten and deduplicate partner user IDs excluding self
+        partner_ids = set()
+        for sender_id, receiver_id in message_partners:
+            if sender_id and sender_id != current_user.id:
+                partner_ids.add(sender_id)
+            if receiver_id and receiver_id != current_user.id:
+                partner_ids.add(receiver_id)
+
+        chat_list = []
+
+        for partner_id in partner_ids:
+            try:
+                partner = UserModel.objects.get(id=partner_id)
+            except UserModel.DoesNotExist:
+                continue
+
+            # Get last message with this partner
+            last_message = Message.objects.filter(
+                Q(sender=current_user, receiver=partner) | Q(sender=partner, receiver=current_user)
+            ).order_by('-date_sent').first()
+
+            if not last_message:
+                continue
+
+            last_message_time = timesince(last_message.date_sent)
+            is_by_you = last_message.sender == current_user
+
+            unread_count = Message.objects.filter(
+                sender=partner, receiver=current_user, is_read=False
+            ).count()
+
+            chat_list.append({
+                "user_id": partner.id,
+                "name": partner.name,
+                "profile_image": partner.profile_image if partner.profile_image else "",
+                "last_message": last_message.text,
+                "last_message_time": last_message_time,
+                "unread_count": unread_count,
+                "last_message_by_you": is_by_you
+            })
+
+        # Sort by latest message
+        chat_list = sorted(chat_list, key=lambda x: x['last_message_time'])
+
+        return customResponse(data=chat_list, message="Chat list fetched successfully", status=200)
