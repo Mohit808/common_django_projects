@@ -188,7 +188,8 @@ class AcceptRequest(APIView):
 
         if like.sender == data['receiver']:
             return customResponse(message="You cannot accept your own like", status=400)
-
-        # match = Match.objects.create(sender=like.sender, receiver=like.receiver)
+        if Match.objects.filter(sender=like.sender, receiver=like.receiver).exists():
+            return customResponse(message="You have already matched with this user", status=400)
+        match = Match.objects.create(sender=like.sender, receiver=like.receiver)
         like.delete()
         return customResponse(message="Like accepted successfully", status=200)

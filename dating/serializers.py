@@ -26,3 +26,10 @@ class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = LikeDating
         fields = "__all__"
+
+
+class MatchSerializer(serializers.ModelSerializer):
+    sender = UserSerializer()
+    class Meta:
+        model = Match
+        fields = "__all__"

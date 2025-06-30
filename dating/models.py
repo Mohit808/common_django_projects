@@ -134,11 +134,12 @@ class LikeDating(models.Model):
 
 
 class Match(models.Model):
-    text=models.TextField()
-    image=models.TextField(null=True,blank=True)
+    sender=models.ForeignKey(UserModel,related_name='matches_sent', on_delete=models.CASCADE, null=True)
+    receiver=models.ForeignKey(UserModel,related_name='matches_received',on_delete=models.CASCADE, null=True)
+    date=models.DateTimeField(auto_now_add=True, null=True)
 
     def __str__(self):
-        return self.text
+        return self.sender.name + " matched with " + self.receiver.name
 
 class Message(models.Model):
     text=models.TextField()
