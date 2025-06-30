@@ -12,6 +12,8 @@ from rest_framework.permissions import IsAuthenticated
 from .authentication import DatingTokenAuthentication
 from django.db.models import F, FloatField, ExpressionWrapper
 from django.db.models.functions import Abs
+from django.db.models import Q
+
 
 
 
