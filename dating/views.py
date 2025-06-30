@@ -270,17 +270,21 @@ class Unmatch(APIView):
     def post(self, request):
         if not request.data.get('user_id'):
             return customResponse(message="User ID is required", status=400)
-        data = request.data.copy()
+
         try:
             user_model = UserModel.objects.get(user=request.user)
         except UserModel.DoesNotExist:
             return customResponse(message="Your profile not found", status=404)
-        try:
-            match = Match.objects.get(
-                (F('sender') == user_model.id) | (F('receiver') == user_model.id),
-                (F('sender') == data['user_id']) | (F('receiver') == data['user_id'])
-            )
-        except Match.DoesNotExist:
-            return customResponse(message="Match not found", status=404)    
+
+        other_user_id = request.data.get('user_id')
+
+        match = Match.objects.filter(
+            Q(sender=user_model.id, receiver=other_user_id) |
+            Q(sender=other_user_id, receiver=user_model.id)
+        ).first()
+
+        if not match:
+            return customResponse(message="Match not found", status=404)
+
         match.delete()
         return customResponse(message="Unmatched successfully", status=200)
