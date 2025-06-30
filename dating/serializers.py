@@ -22,7 +22,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class LikeSerializer(serializers.ModelSerializer):
-    # sender = UserSerializer()
+    sender = UserSerializer()
     class Meta:
         model = LikeDating
         fields = "__all__"
