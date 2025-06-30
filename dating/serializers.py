@@ -48,6 +48,7 @@ class MessageSerializer(serializers.ModelSerializer):
 
 
 class StandoutSerializer(serializers.ModelSerializer):
+    user_standout = UserSerializer()
     class Meta:
         model = Standout
         fields = '__all__'
