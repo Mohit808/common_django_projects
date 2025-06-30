@@ -3,7 +3,6 @@ from django.conf.urls import include
 from dating.views import *
 
 
-
 urlpatterns = [
     
     path('hello', Hello.as_view()),
