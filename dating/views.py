@@ -143,32 +143,65 @@ class Home(APIView):
         })
 
 
+# @authentication_classes([DatingTokenAuthentication])
+# @permission_classes([IsAuthenticated])
+# class Like(APIView):
+#     def post(self,request):
+#         if not request.data.get('receiver'):
+#             return customResponse(message="Receiver is required", status=400)
+#         data = request.data.copy()
+#         data['sender'] = request.user.id
+#         try:
+#             receiver = UserModel.objects.get(id=data['receiver'])
+#             data['receiver'] = receiver.user.id
+#         except UserModel.DoesNotExist:
+#             return customResponse(message="Receiver not found", status=404)
+        
+#         if data['sender'] == data['receiver']:
+#             return customResponse(message="You cannot like yourself", status=400)
+        
+#         if LikeDating.objects.filter(sender_id=data['sender'], receiver_id=data['receiver']).exists():
+#             return customResponse(message="You have already liked this user", status=400)
+
+#         serializer = LikeSerializer(data=data)
+#         if serializer.is_valid():
+#             like = serializer.save()
+#             return customResponse(data=LikeSerializer(like).data, message="Like created successfully", status=201)
+
+#         return customResponse(message=f"{serializer.errors}", status=400)
+
+
+
 @authentication_classes([DatingTokenAuthentication])
 @permission_classes([IsAuthenticated])
 class Like(APIView):
-    def post(self,request):
-        if not request.data.get('receiver'):
+    def post(self, request):
+        receiver_id = request.data.get('receiver')
+        if not receiver_id:
             return customResponse(message="Receiver is required", status=400)
-        data = request.data.copy()
-        data['sender'] = request.user.id
+
         try:
-            receiver = UserModel.objects.get(id=data['receiver'])
-            data['receiver'] = receiver.user.id
+            UserModel.objects.get(id=receiver_id)
         except UserModel.DoesNotExist:
             return customResponse(message="Receiver not found", status=404)
-        
-        if data['sender'] == data['receiver']:
+
+        if request.user.id == int(receiver_id):
             return customResponse(message="You cannot like yourself", status=400)
-        
-        if LikeDating.objects.filter(sender_id=data['sender'], receiver_id=data['receiver']).exists():
+
+        if LikeDating.objects.filter(sender_id=request.user.id, receiver_id=receiver_id).exists():
             return customResponse(message="You have already liked this user", status=400)
+
+        data = {
+            'sender': request.user.id,
+            'receiver': receiver_id
+        }
 
         serializer = LikeSerializer(data=data)
         if serializer.is_valid():
             like = serializer.save()
             return customResponse(data=LikeSerializer(like).data, message="Like created successfully", status=201)
 
-        return customResponse(message=f"{serializer.errors}", status=400)
+        return customResponse(message=serializer.errors, status=400)
     
 
 
