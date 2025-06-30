@@ -436,7 +436,9 @@ class StandoutView(APIView):
     
     def get(self, request):
         try:
-            standout = Standout.objects.all()
+            
+            standout = Standout.objects.exclude(user_standout=request.user)
+            standout = standout.order_by('-priority')
             if not standout:
                 return customResponse(message="No standout found for this user", status=404)
             
