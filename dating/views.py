@@ -233,3 +233,54 @@ class AcceptRequest(APIView):
         match = Match.objects.create(sender=like.sender, receiver=like.receiver)
         like.delete()
         return customResponse(message="Like accepted successfully", status=200)
+
+
+@authentication_classes([DatingTokenAuthentication])
+@permission_classes([IsAuthenticated])
+class RejectRequest(APIView):
+    def post(self, request):
+        if not request.data.get('like_id'):
+            return customResponse(message="Like ID is required", status=400)
+        data = request.data.copy()
+        try:
+            like = LikeDating.objects.get(id=data['like_id'])
+        except LikeDating.DoesNotExist:
+            return customResponse(message="Like not found", status=404)
+
+        like.delete()
+        return customResponse(message="Like rejected successfully", status=200)
+    
+@authentication_classes([DatingTokenAuthentication])
+@permission_classes([IsAuthenticated])
+class Matches(APIView):
+    def get(self, request):
+        try:
+            user_model = UserModel.objects.get(user=request.user)
+        except UserModel.DoesNotExist:
+            return customResponse(message="Your profile not found", status=404)
+
+        matches = Match.objects.filter(sender=user_model.id) | Match.objects.filter(receiver=user_model.id)
+        serialized_matches = MatchSerializer(matches, many=True).data
+
+        return customResponse(data=serialized_matches, message="Matches fetched successfully", status=200)
+
+@authentication_classes([DatingTokenAuthentication])
+@permission_classes([IsAuthenticated])
+class Unmatch(APIView):
+    def post(self, request):
+        if not request.data.get('user_id'):
+            return customResponse(message="User ID is required", status=400)
+        data = request.data.copy()
+        try:
+            user_model = UserModel.objects.get(user=request.user)
+        except UserModel.DoesNotExist:
+            return customResponse(message="Your profile not found", status=404)
+        try:
+            match = Match.objects.get(
+                (F('sender') == user_model.id) | (F('receiver') == user_model.id),
+                (F('sender') == data['user_id']) | (F('receiver') == data['user_id'])
+            )
+        except Match.DoesNotExist:
+            return customResponse(message="Match not found", status=404)    
+        match.delete()
+        return customResponse(message="Unmatched successfully", status=200)
