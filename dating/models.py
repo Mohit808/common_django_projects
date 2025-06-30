@@ -142,11 +142,14 @@ class Match(models.Model):
         return self.sender.name + " matched with " + self.receiver.name
 
 class Message(models.Model):
-    text=models.TextField()
-    image=models.TextField(null=True,blank=True)
+    sender = models.ForeignKey(UserModel, related_name='messages_sent', on_delete=models.CASCADE,null=True)
+    receiver = models.ForeignKey(UserModel, related_name='messages_received', on_delete=models.CASCADE,null=True)
+    text = models.TextField(null=True)
+    date_sent = models.DateTimeField(auto_now_add=True, null=True)
+    is_read = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.text
+        return f"{self.sender.name} → {self.receiver.name}: {self.text[:30]}"
 
 class Report(models.Model):
     text=models.TextField()

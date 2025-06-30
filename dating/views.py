@@ -290,3 +290,64 @@ class Unmatch(APIView):
 
         match.delete()
         return customResponse(message="Unmatched successfully", status=200)
+
+
+
+    
+
+
+
+
+
+@authentication_classes([DatingTokenAuthentication])
+@permission_classes([IsAuthenticated])
+class SendMessage(APIView):
+    def post(self, request):
+        receiver_id = request.data.get('receiver')
+        text = request.data.get('text')
+
+        if not receiver_id or not text:
+            return customResponse(message="Receiver and text are required", status=400)
+
+        try:
+            sender = UserModel.objects.get(user=request.user)
+        except UserModel.DoesNotExist:
+            return customResponse(message="Your profile not found", status=404)
+
+        try:
+            receiver = UserModel.objects.get(id=receiver_id)
+        except UserModel.DoesNotExist:
+            return customResponse(message="Receiver not found", status=404)
+
+        message = Message.objects.create(sender=sender, receiver=receiver, text=text)
+        return customResponse(data=MessageSerializer(message).data, message="Message sent", status=201)
+    
+    
+
+@authentication_classes([DatingTokenAuthentication])
+@permission_classes([IsAuthenticated])
+class GetUserMessages(APIView):
+    def get(self, request):
+        other_user_id = request.GET.get('user_id')
+        if not other_user_id:
+            return customResponse(message="User ID is required", status=400)
+
+        try:
+            sender = UserModel.objects.get(user=request.user)
+        except UserModel.DoesNotExist:
+            return customResponse(message="Your profile not found", status=404)
+
+        try:
+            receiver = UserModel.objects.get(id=other_user_id)
+        except UserModel.DoesNotExist:
+            return customResponse(message="Other user not found", status=404)
+
+        # fetch conversation thread
+        messages = Message.objects.filter(
+            Q(sender=sender, receiver=receiver) |
+            Q(sender=receiver, receiver=sender)
+        ).order_by('date_sent')
+
+        serialized_messages = MessageSerializer(messages, many=True).data
+
+        return customResponse(data=serialized_messages, message="Conversation fetched successfully", status=200)
