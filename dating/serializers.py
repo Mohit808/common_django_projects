@@ -23,6 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class LikeSerializer(serializers.ModelSerializer):
     # sender = UserSerializer()
+    sender = serializers.PrimaryKeyRelatedField(queryset=UserModel.objects.all())
     class Meta:
         model = LikeDating
         fields = "__all__"
