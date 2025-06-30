@@ -86,7 +86,7 @@ urlpatterns = [
     path('sellerDashboard', SellerDashboard.as_view()),
 
 
-    path('getTrading', GetTrading.as_view()),
+    # path('getTrading', GetTrading.as_view()),
 
 
     path('getTodayAndWeeklyDeliveries', GetTodayAndWeeklyDeliveries.as_view()),
