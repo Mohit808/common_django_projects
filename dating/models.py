@@ -185,5 +185,14 @@ class Device(models.Model):
 
     def __str__(self):
         return self.text
+
+
+
+class Standout(models.Model):
+    user_standout = models.ForeignKey(UserModel, on_delete=models.CASCADE,null=True)
+    priority = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.user_standout.name + " - Priority: " + str(self.priority)
     
 

@@ -417,3 +417,33 @@ class ChatListView(APIView):
         chat_list = sorted(chat_list, key=lambda x: x['last_message_time'])
 
         return customResponse(data=chat_list, message="Chat list fetched successfully", status=200)
+    
+
+
+
+@authentication_classes([DatingTokenAuthentication])
+@permission_classes([IsAuthenticated])
+class StandoutView(APIView):
+    def post(self, request):
+        data = request.data.copy()
+        data['user_standout'] = request.user.id
+        serializer = StandoutSerializer(data=data)
+        if serializer.is_valid():
+            standout = serializer.save()
+            return customResponse(data=StandoutSerializer(standout).data, message="Standout created successfully", status=201)
+
+        return customResponse(message=serializer.errors, status=400)
+    
+    def get(self, request):
+        try:
+            standout = Standout.objects.all()
+            if not standout:
+                return customResponse(message="No standout found for this user", status=404)
+            
+            paginator = PageNumberPagination()
+            paginator.page_size = 10
+            paginated_standout = paginator.paginate_queryset(standout, request) 
+            data = StandoutSerializer(paginated_standout, many=True).data
+            return customResponse(data=data, message="Standout fetched successfully", status=200)
+        except Standout.DoesNotExist:
+            return customResponse(message="Standout not found", status=404)
