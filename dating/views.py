@@ -449,3 +449,34 @@ class StandoutView(APIView):
             return customResponse(data=data, message="Standout fetched successfully", status=200)
         except Standout.DoesNotExist:
             return customResponse(message="Standout not found", status=404)
+
+
+@authentication_classes([DatingTokenAuthentication])
+@permission_classes([IsAuthenticated])
+class SponsoredView(APIView):
+    def post(self, request):
+        data = request.data.copy()
+        data['sender'] = request.user.id
+        serializer = SponsoredOutingSerializer(data=data)
+        if serializer.is_valid():
+            outing = serializer.save()
+            return customResponse(data=SponsoredOutingSerializer(outing).data, message="Sponsored outing created successfully", status=201)
+
+        return customResponse(message=serializer.errors, status=400)
+    
+    def get(self, request):
+        try:
+            current_user = UserModel.objects.get(user=request.user)
+            outings = SponsoredOuting.objects.filter(receiver=current_user)
+            if not outings:
+                return customResponse(message="No sponsored outings found for this user", status=404)
+            
+            paginator = PageNumberPagination()
+            paginator.page_size = 10
+            paginated_outings = paginator.paginate_queryset(outings, request) 
+            data = SponsoredOutingSerializer(paginated_outings, many=True).data
+            return customResponse(data=data, message="Sponsored outings fetched successfully", status=200)
+        except SponsoredOuting.DoesNotExist:
+            return customResponse(message="Sponsored outing not found", status=404)
+        
+

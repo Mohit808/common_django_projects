@@ -19,6 +19,7 @@ urlpatterns = [
     path('getUserMessages', GetUserMessages.as_view()),
     path('chatListView', ChatListView.as_view()),
     path('standouts', StandoutView.as_view()),
+    path('sponsored', SponsoredView.as_view()),
     # path('add-business-detail', add_business_detail.AddBusinessDetailFunction.as_view()),
     # path('add-categories', add_categories.AddCategoriesFunction.as_view()),
 ]

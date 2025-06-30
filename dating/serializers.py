@@ -52,3 +52,11 @@ class StandoutSerializer(serializers.ModelSerializer):
     class Meta:
         model = Standout
         fields = '__all__'
+
+
+class SponsoredOutingSerializer(serializers.ModelSerializer):
+    sender = UserSerializer()
+    receiver = UserSerializer()
+    class Meta:
+        model = SponsoredOuting
+        fields = '__all__'
