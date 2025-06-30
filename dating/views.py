@@ -406,7 +406,7 @@ class ChatListView(APIView):
             chat_list.append({
                 "user_id": partner.id,
                 "name": partner.name,
-                "profile_image": partner.profile_image if partner.profile_image else "",
+                "profile_picture": partner.profile_picture if partner.profile_picture else "",
                 "last_message": last_message.text,
                 "last_message_time": last_message_time,
                 "unread_count": unread_count,
