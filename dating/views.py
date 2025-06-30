@@ -181,18 +181,23 @@ class Like(APIView):
             return customResponse(message="Receiver is required", status=400)
 
         try:
+            sender = UserModel.objects.get(user=request.user)
+        except UserModel.DoesNotExist:
+            return customResponse(message="Your profile not found", status=404)
+
+        try:
             UserModel.objects.get(id=receiver_id)
         except UserModel.DoesNotExist:
             return customResponse(message="Receiver not found", status=404)
 
-        if request.user.id == int(receiver_id):
+        if sender.id == int(receiver_id):
             return customResponse(message="You cannot like yourself", status=400)
 
-        if LikeDating.objects.filter(sender_id=request.user.id, receiver_id=receiver_id).exists():
+        if LikeDating.objects.filter(sender_id=sender.id, receiver_id=receiver_id).exists():
             return customResponse(message="You have already liked this user", status=400)
 
         data = {
-            'sender': request.user.id,
+            'sender': sender.id,
             'receiver': receiver_id
         }
 
