@@ -208,10 +208,10 @@ class Like(APIView):
             'receiver': receiver_id
         }
 
-        serializer = LikeSerializer(data=data)
+        serializer = LikeRequestSerializer(data=data)
         if serializer.is_valid():
             like = serializer.save()
-            return customResponse(data=LikeSerializer(like).data, message="Like created successfully", status=201)
+            return customResponse(data=LikeRequestSerializer(like).data, message="Like created successfully", status=201)
 
         return customResponse(message=serializer.errors, status=400)
     
