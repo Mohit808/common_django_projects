@@ -144,8 +144,7 @@ class Home(APIView):
             "message": "Data fetched successfully",
             "status": 200,
             "data": serialized_users,
-            "match":serialized_like,
-            "user":request.user.id
+            "match":serialized_like
         })
 
 
