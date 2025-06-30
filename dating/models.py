@@ -130,7 +130,7 @@ class LikeDating(models.Model):
     date=models.DateTimeField(auto_now_add=True, null=True)
 
     def __str__(self):
-        return self.sender.name + " likes " + self.receiver.name
+        return self.id+" : "+ self.sender.name + " likes " + self.receiver.name
 
 
 class Match(models.Model):
