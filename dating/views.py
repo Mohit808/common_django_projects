@@ -132,7 +132,12 @@ class Home(APIView):
         paginated_user_model = paginator.paginate_queryset(user_model, request)
         serialized_users = UserSerializer(paginated_user_model, many=True).data
 
-        likes=LikeDating.objects.filter(receiver=request.user)
+        try:
+            current_user_model = UserModel.objects.get(user=request.user)
+        except UserModel.DoesNotExist:
+            pass
+
+        likes=LikeDating.objects.filter(receiver=current_user_model)
         serialized_like=LikeSerializer(likes, many=True).data
 
         return Response({
