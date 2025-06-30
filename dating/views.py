@@ -250,7 +250,7 @@ class RejectRequest(APIView):
             return customResponse(message="Like not found", status=404)
 
         like.delete()
-        return customResponse(message="Like rejected successfully", status=200)
+        return customResponse(message="Request rejected successfully", status=200)
     
 @authentication_classes([DatingTokenAuthentication])
 @permission_classes([IsAuthenticated])
