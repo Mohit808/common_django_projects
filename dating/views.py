@@ -515,7 +515,7 @@ class SponsoredList(APIView):
                     (Abs(F('location_lat') - float(current_lat)) + Abs(F('location_long') - float(current_lon))),
                     output_field=FloatField())).order_by('distance')
         else:
-            user_model = UserModel.objects.all()
+            user_model = UserModel.objects.exclude(user=request.user)
 
         paginator = PageNumberPagination()
         paginator.page_size = 10
