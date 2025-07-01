@@ -214,6 +214,6 @@ class SponsoredOuting(models.Model):
     otp= models.CharField(max_length=6, null=True)
 
     def __str__(self):
-        return f"{self.user.name} - Outing on {self.outing_date.strftime('%Y-%m-%d')}" if self.outing_date else f"{self.user.name} - Outing"
+        return f"{self.sender.name} - Outing on {self.outing_date.strftime('%Y-%m-%d')}" if self.outing_date else f"{self.sender.name} - Outing"
     
 
