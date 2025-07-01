@@ -519,6 +519,35 @@ class SponsoredView(APIView):
             return customResponse(data=data, message="Sponsored outings fetched successfully", status=200)
         except SponsoredOuting.DoesNotExist:
             return customResponse(message="Sponsored outing not found", status=404)
+        
+    def put(self, request):
+        data = request.data.copy()
+        outing_id = data.get('outing_id')
+        if not outing_id:
+            return customResponse(message="Outing ID is required", status=400)
+        
+        status = data.get('status')
+        if status not in ['accepted', 'rejected', 'completed']:
+            return customResponse(message="Invalid status", status=400)
+        
+
+        data['outing_status'] = status
+
+        try:
+            outing = SponsoredOuting.objects.get(id=outing_id)
+        except SponsoredOuting.DoesNotExist:
+            return customResponse(message="Sponsored outing not found", status=404)
+        
+        if status == 'rejected':
+            outing.delete()
+            return customResponse(message="Sponsored outing rejected successfully", status=200)
+
+        serializer = SponsoredOutingSerializer(outing, data=data, partial=True)
+        if serializer.is_valid():
+            updated_outing = serializer.save()
+            return customResponse(data=SponsoredOutingSerializer(updated_outing).data, message="Sponsored outing updated successfully", status=200)
+
+        return customResponse(message=serializer.errors, status=400)
 
 
 
