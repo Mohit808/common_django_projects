@@ -474,12 +474,6 @@ class SponsoredView(APIView):
     def post(self, request):
         data = request.data.copy()
         data['sender'] = request.user.id
-        try:
-            receiver = UserModel.objects.get(id=data['receiver'])
-            data['receiver'] = receiver.user.id
-        except UserModel.DoesNotExist:
-            return customResponse(message="Receiver not found", status=404)
-        
         
         if SponsoredOuting.objects.filter(sender_id=data['sender'], receiver_id=data['receiver']).exists():
             return customResponse(message="You have already sent a sponsored outing to this user", status=400)
