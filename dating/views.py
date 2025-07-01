@@ -14,6 +14,8 @@ from django.db.models import F, FloatField, ExpressionWrapper
 from django.db.models.functions import Abs
 from django.db.models import Q
 from django.utils.timesince import timesince
+from django.utils import timezone
+
 
 
 
@@ -358,6 +360,18 @@ class GetUserMessages(APIView):
 
 
 
+
+def format_message_time(date_sent):
+    now = timezone.now()
+    if date_sent.date() == now.date():
+        return "Today"
+    elif date_sent.date() == (now - timezone.timedelta(days=1)).date():
+        return "Yesterday"
+    else:
+        return date_sent.strftime("%d/%m/%y")
+
+
+
 @authentication_classes([DatingTokenAuthentication])
 @permission_classes([IsAuthenticated])
 class ChatListView(APIView):
@@ -396,7 +410,9 @@ class ChatListView(APIView):
             if not last_message:
                 continue
 
-            last_message_time = timesince(last_message.date_sent)
+            # last_message_time = timesince(last_message.date_sent)
+            last_message_time = format_message_time(last_message.date_sent)
+
             is_by_you = last_message.sender == current_user
 
             unread_count = Message.objects.filter(
