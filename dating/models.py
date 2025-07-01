@@ -199,13 +199,19 @@ class Standout(models.Model):
 class SponsoredOuting(models.Model):
     sender = models.ForeignKey(UserModel,related_name="sender_sponsored", on_delete=models.CASCADE, null=True)
     receiver = models.ForeignKey(UserModel,related_name="receiver_sponsored", on_delete=models.CASCADE, null=True)
-    amount = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     outing_type = models.CharField(max_length=100, null=True)
+    outing_date = models.DateTimeField(null=True)
+    from_time = models.CharField(max_length=20, null=True)
+    to_time = models.CharField(max_length=20, null=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     location = models.CharField(max_length=200, null=True)
     latitude = models.FloatField(null=True)
     longitude = models.FloatField(null=True)
-    outing_date = models.DateTimeField(null=True)
+    avenue_name=models.CharField(max_length=200, null=True)
+    outing_status = models.CharField(max_length=50, null=True)
     description = models.TextField(null=True)
+    payment_status = models.CharField(null=True)
+    otp= models.CharField(max_length=6, null=True)
 
     def __str__(self):
         return f"{self.user.name} - Outing on {self.outing_date.strftime('%Y-%m-%d')}" if self.outing_date else f"{self.user.name} - Outing"

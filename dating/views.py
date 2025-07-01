@@ -15,6 +15,7 @@ from django.db.models.functions import Abs
 from django.db.models import Q
 from django.utils.timesince import timesince
 from django.utils import timezone
+import random
 
 
 
@@ -473,6 +474,10 @@ class SponsoredView(APIView):
     def post(self, request):
         data = request.data.copy()
         data['sender'] = request.user.id
+        data['outing_status'] = 'pending'
+
+        otp = str(random.randint(100000, 999999))
+        data['otp'] = otp
         serializer = SponsoredOutingSerializer(data=data)
         if serializer.is_valid():
             outing = serializer.save()
