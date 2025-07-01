@@ -484,7 +484,8 @@ class SponsoredView(APIView):
         if data['sender'] == data['receiver']:
             return customResponse(message="You cannot send a sponsored outing to yourself", status=400)
         
-        if SponsoredOuting.objects.filter(sender_id=data['sender'], receiver_id=data['receiver']).exists():
+        #outing_status should not pending
+        if SponsoredOuting.objects.filter(sender_id=data['sender'], receiver_id=data['receiver'],outing_status__in=['pending', 'accepted']).exists():
             return customResponse(message="You have already sent a sponsored outing to this user", status=400)
 
         data['outing_status'] = 'pending'
