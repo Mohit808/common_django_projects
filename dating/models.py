@@ -209,7 +209,7 @@ class SponsoredOuting(models.Model):
     longitude = models.FloatField(null=True)
     avenue_name=models.CharField(max_length=200, null=True)
     outing_status = models.CharField(max_length=50, null=True)
-    description = models.TextField(null=True)
+    description = models.TextField(null=True, blank=True)
     payment_status = models.CharField(null=True)
     otp= models.CharField(max_length=6, null=True)
 

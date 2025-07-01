@@ -55,12 +55,12 @@ class StandoutSerializer(serializers.ModelSerializer):
 
 
 class SponsoredOutingSerializer(serializers.ModelSerializer):
-    # sender = UserSerializer()
-    # receiver = UserSerializer()
+    sender = UserSerializer()
+    receiver = UserSerializer()
 
-    sender = serializers.PrimaryKeyRelatedField(queryset=UserModel.objects.all())
-    receiver = serializers.PrimaryKeyRelatedField(queryset=UserModel.objects.all())
-    
+    # sender = serializers.PrimaryKeyRelatedField(queryset=UserModel.objects.all())
+    # receiver = serializers.PrimaryKeyRelatedField(queryset=UserModel.objects.all())
+
     class Meta:
         model = SponsoredOuting
         fields = '__all__'
