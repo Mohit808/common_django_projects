@@ -507,8 +507,12 @@ class SponsoredView(APIView):
     
     def get(self, request):
         try:
+            sent = request.GET.get('sent')
             current_user = UserModel.objects.get(user=request.user)
-            outings = SponsoredOuting.objects.filter(receiver=current_user)
+            if sent:
+                outings = SponsoredOuting.objects.filter(sender=current_user)
+            else:
+                outings = SponsoredOuting.objects.filter(receiver=current_user)
             if not outings:
                 return customResponse(message="No sponsored outings found for this user", status=404)
             
