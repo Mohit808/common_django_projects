@@ -444,6 +444,7 @@ class StandoutView(APIView):
     def post(self, request):
         data = request.data.copy()
         data['user_standout'] = request.user.id
+        
         serializer = StandoutSerializer(data=data)
         if serializer.is_valid():
             standout = serializer.save()
@@ -489,6 +490,21 @@ class SponsoredView(APIView):
         data['outing_status'] = 'pending'
         otp = str(random.randint(100000, 999999))
         data['otp'] = otp
+
+        try:
+            sender = UserModel.objects.get(user=request.user)
+        except UserModel.DoesNotExist:
+            return customResponse(message="Your profile not found", status=404)
+        
+        data['sender'] = sender.id
+
+        try:
+            receiver = UserModel.objects.get(user=data.get('receiver'))
+        except UserModel.DoesNotExist:
+            return customResponse(message="Your profile not found", status=404)
+        
+        data['receiver'] = receiver.id
+
         serializer = SponsoredOutingSerializer(data=data)
         if serializer.is_valid():
             outing = serializer.save()
