@@ -498,17 +498,10 @@ class SponsoredView(APIView):
         
         data['sender'] = sender.id
 
-        try:
-            receiver = UserModel.objects.get(user=data.get('receiver'))
-        except UserModel.DoesNotExist:
-            return customResponse(message="Your profile not found", status=404)
-        
-        data['receiver'] = receiver.id
-
-        serializer = SponsoredOutingSerializer(data=data)
+        serializer = SponsoredOutingSerializerPost(data=data)
         if serializer.is_valid():
             outing = serializer.save()
-            return customResponse(data=SponsoredOutingSerializer(outing).data, message="Sponsored outing created successfully", status=201)
+            return customResponse(data=SponsoredOutingSerializerPost(outing).data, message="Sponsored outing created successfully", status=201)
 
         return customResponse(message=serializer.errors, status=400)
     
