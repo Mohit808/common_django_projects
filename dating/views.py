@@ -499,5 +499,28 @@ class SponsoredView(APIView):
             return customResponse(data=data, message="Sponsored outings fetched successfully", status=200)
         except SponsoredOuting.DoesNotExist:
             return customResponse(message="Sponsored outing not found", status=404)
+
+
+
+@authentication_classes([DatingTokenAuthentication])
+@permission_classes([IsAuthenticated])
+class SponsoredList(APIView):
+    def get(self, request):
         
+        current_lat =request.query_params.get('latitude')
+        current_lon = request.query_params.get('longitude')
+        if current_lat or current_lon:
+            user_model = UserModel.objects.exclude(user=request.user).annotate(
+                distance=ExpressionWrapper(
+                    (Abs(F('location_lat') - float(current_lat)) + Abs(F('location_long') - float(current_lon))),
+                    output_field=FloatField())).order_by('distance')
+        else:
+            user_model = UserModel.objects.all()
+
+        paginator = PageNumberPagination()
+        paginator.page_size = 10
+        paginated_user_model = paginator.paginate_queryset(user_model, request)
+        serialized_users = UserSerializer(paginated_user_model, many=True).data
+        return customResponse(data=serialized_users, message="Sponsored users fetched successfully", status=200)
+
 
