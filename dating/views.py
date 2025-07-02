@@ -629,7 +629,7 @@ class MyGiftView(APIView):
             
             single_data = {
                     'user': request.user.id,
-                    'gift': gift,
+                    'gift': gift.id,
                     'quantity': quantity
                 }
             serializer = MyGiftSerializer(data=single_data)
