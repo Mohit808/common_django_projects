@@ -668,27 +668,24 @@ class GiftToSend(APIView):
             my_gifts_gift_ids = my_gifts.values_list('gift', flat=True)
             gifts = Gift.objects.exclude(id__in=my_gifts_gift_ids)
 
-            # Combine both lists into one
-            all_gifts = list(my_gifts) + list(gifts)
-
-            # Paginate the combined list
+            # Paginate both lists separately
             paginator = PageNumberPagination()
             paginator.page_size = 10
-            paginated_all_gifts = paginator.paginate_queryset(all_gifts, request)
 
-            # Serialize: use MyGiftSerializer2 for MyGift instances, GiftSerializer for Gift instances
-            data = []
-            for item in paginated_all_gifts:
-                if isinstance(item, MyGift):
-                    data.append(MyGiftSerializer2(item).data)
-                else:
-                    data.append(GiftSerializer(item).data)
+            paginated_my_gifts = paginator.paginate_queryset(my_gifts, request)
+            paginated_gifts = paginator.paginate_queryset(gifts, request)
 
-            if not data:
+            my_gifts_data = MyGiftSerializer2(paginated_my_gifts, many=True).data
+            gifts_data = GiftSerializer(paginated_gifts, many=True).data
+
+            if not my_gifts_data and not gifts_data:
                 return customResponse(message="No gifts found", status=404)
 
             return customResponse(
-                data=data,
+                data={
+                    "my_gifts": my_gifts_data,
+                    "gifts": gifts_data
+                },
                 message="Gifts to send fetched successfully",
                 status=200
             )
