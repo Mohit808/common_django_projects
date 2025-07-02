@@ -651,7 +651,7 @@ class MyGiftView(APIView):
             paginator = PageNumberPagination()
             paginator.page_size = 10
             paginated_my_gifts = paginator.paginate_queryset(my_gifts, request) 
-            data = MyGiftSerializer(paginated_my_gifts, many=True).data
+            data = MyGiftSerializer2(paginated_my_gifts, many=True).data
             return customResponse(data=data, message="My gifts fetched successfully", status=200)
         except MyGift.DoesNotExist:
             return customResponse(message="My gifts not found", status=404)
