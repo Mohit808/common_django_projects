@@ -629,7 +629,8 @@ class MyGiftView(APIView):
             
             single_data = {
                     'user': request.user.id,
-                    'gift': gift.id
+                    'gift': gift,
+                    'quantity': quantity
                 }
             serializer = MyGiftSerializer(data=single_data)
             if serializer.is_valid():
