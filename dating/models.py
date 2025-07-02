@@ -218,7 +218,7 @@ class SponsoredOuting(models.Model):
     
 
 class Gift(models.Model):
-    url= models.URLField(max_length=200, null=True, blank=True)
+    url= models.URLField(null=True, blank=True)
 
     def __str__(self):
         return f"Gift URL: {self.url}" if self.url else "Gift without URL"
