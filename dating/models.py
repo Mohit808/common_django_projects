@@ -217,3 +217,8 @@ class SponsoredOuting(models.Model):
         return f"{self.sender.name} - Outing on {self.outing_date.strftime('%Y-%m-%d')}" if self.outing_date else f"{self.sender.name} - Outing"
     
 
+class Gift(models.Model):
+    url= models.URLField(max_length=200, null=True, blank=True)
+
+    def __str__(self):
+        return f"Gift URL: {self.url}" if self.url else "Gift without URL"

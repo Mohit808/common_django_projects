@@ -492,6 +492,8 @@ class SponsoredView(APIView):
         otp = str(random.randint(100000, 999999))
         data['otp'] = otp
 
+        
+
         try:
             sender = UserModel.objects.get(user=request.user)
         except UserModel.DoesNotExist:
