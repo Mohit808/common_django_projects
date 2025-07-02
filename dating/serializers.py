@@ -78,7 +78,7 @@ class GiftSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class MyGiftSerializer(serializers.ModelSerializer):
-
+    gift= GiftSerializer()
     class Meta:
         model = MyGift
         fields = '__all__'
