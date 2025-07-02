@@ -69,3 +69,10 @@ class SponsoredOutingSerializer(serializers.ModelSerializer):
     class Meta:
         model = SponsoredOuting
         fields = '__all__'
+
+
+class GiftSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Gift
+        fields = '__all__'

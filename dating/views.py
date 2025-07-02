@@ -580,3 +580,28 @@ class SponsoredList(APIView):
         return customResponse(data=serialized_users, message="Sponsored users fetched successfully", status=200)
 
 
+
+@authentication_classes([DatingTokenAuthentication])
+@permission_classes([IsAuthenticated])
+class GiftView(APIView):
+    def post(self, request):
+        data = request.data.copy()
+        data['url'] = data.get('url', '').strip()
+        
+        serializer = GiftSerializer(data=data)
+        if serializer.is_valid():
+            gift = serializer.save()
+            return customResponse(data=GiftSerializer(gift).data, message="Gift created successfully", status=201)
+
+        return customResponse(message=serializer.errors, status=400)
+    
+    def get(self, request):
+        gifts = Gift.objects.all()
+        if not gifts:
+            return customResponse(message="No gifts found", status=404)
+        
+        paginator = PageNumberPagination()
+        paginator.page_size = 10
+        paginated_gifts = paginator.paginate_queryset(gifts, request) 
+        data = GiftSerializer(paginated_gifts, many=True).data
+        return customResponse(data=data, message="Gifts fetched successfully", status=200)
