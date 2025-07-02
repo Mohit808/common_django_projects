@@ -614,19 +614,33 @@ class MyGiftView(APIView):
     def post(self, request):
         data = request.data.copy()
         data['user'] = request.user.id
-        
-        try:
-            gift = Gift.objects.get(id=data['gift'])
-            data['gift'] = gift.id
-        except Gift.DoesNotExist:
-            return customResponse(message="Gift not found", status=404)
-        
-        serializer = MyGiftSerializer(data=data)
-        if serializer.is_valid():
-            my_gift = serializer.save()
-            return customResponse(data=MyGiftSerializer(my_gift).data, message="My gift created successfully", status=201)
 
-        return customResponse(message=serializer.errors, status=400)
+        gift_map = request.data.get('gifts')
+        if not gift_map or not isinstance(gift_map, dict):
+            return customResponse(message="Gifts dictionary is required", status=400)
+
+        created_gifts = []
+
+        for gift_id, quantity in gift_map.items():
+            try:
+                gift = Gift.objects.get(id=gift_id)
+            except Gift.DoesNotExist:
+                return customResponse(message=f"Gift with id {gift_id} not found", status=404)
+
+            # Create multiple instances for the quantity
+            for _ in range(quantity):
+                single_data = {
+                    'user': request.user.id,
+                    'gift': gift.id
+                }
+                serializer = MyGiftSerializer(data=single_data)
+                if serializer.is_valid():
+                    my_gift = serializer.save()
+                    created_gifts.append(MyGiftSerializer(my_gift).data)
+                else:
+                    return customResponse(message=serializer.errors, status=400)
+
+        return customResponse(data=created_gifts, message="Gifts sent successfully", status=201)
     
     def get(self, request):
         try:
