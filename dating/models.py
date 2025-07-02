@@ -223,3 +223,12 @@ class Gift(models.Model):
 
     def __str__(self):
         return f"Gift URL: {self.url}" if self.url else "Gift without URL"
+
+
+class MyGift(models.Model):
+    quantity = models.IntegerField(default=1)
+    gift = models.ForeignKey(Gift, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(UserModel, on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user.name} - (x{self.quantity})" if self.gift else f"{self.user.name} - Gift without URL"

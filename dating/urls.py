@@ -22,6 +22,7 @@ urlpatterns = [
     path('sponsored', SponsoredView.as_view()),
     path('sponsoredList', SponsoredList.as_view()),
     path('gift', GiftView.as_view()),
+    path('myGift', MyGiftView.as_view()),
     # path('add-business-detail', add_business_detail.AddBusinessDetailFunction.as_view()),
     # path('add-categories', add_categories.AddCategoriesFunction.as_view()),
 ]

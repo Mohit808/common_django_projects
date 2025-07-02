@@ -605,3 +605,39 @@ class GiftView(APIView):
         paginated_gifts = paginator.paginate_queryset(gifts, request) 
         data = GiftSerializer(paginated_gifts, many=True).data
         return customResponse(data=data, message="Gifts fetched successfully", status=200)
+    
+
+
+@authentication_classes([DatingTokenAuthentication])
+@permission_classes([IsAuthenticated])
+class MyGiftView(APIView):
+    def post(self, request):
+        data = request.data.copy()
+        data['user'] = request.user.id
+        
+        try:
+            gift = Gift.objects.get(id=data['gift'])
+            data['gift'] = gift.id
+        except Gift.DoesNotExist:
+            return customResponse(message="Gift not found", status=404)
+        
+        serializer = MyGiftSerializer(data=data)
+        if serializer.is_valid():
+            my_gift = serializer.save()
+            return customResponse(data=MyGiftSerializer(my_gift).data, message="My gift created successfully", status=201)
+
+        return customResponse(message=serializer.errors, status=400)
+    
+    def get(self, request):
+        try:
+            my_gifts = MyGift.objects.filter(user=request.user.id)
+            if not my_gifts:
+                return customResponse(message="No gifts found for this user", status=404)
+            
+            paginator = PageNumberPagination()
+            paginator.page_size = 10
+            paginated_my_gifts = paginator.paginate_queryset(my_gifts, request) 
+            data = MyGiftSerializer(paginated_my_gifts, many=True).data
+            return customResponse(data=data, message="My gifts fetched successfully", status=200)
+        except MyGift.DoesNotExist:
+            return customResponse(message="My gifts not found", status=404)
