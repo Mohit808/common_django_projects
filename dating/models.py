@@ -210,7 +210,7 @@ class SponsoredOuting(models.Model):
     avenue_name=models.CharField(max_length=200, null=True)
     outing_status = models.CharField(max_length=50, null=True)
     description = models.TextField(null=True, blank=True)
-    payment_status = models.CharField(null=True)
+    payment_status = models.CharField(max_length=20,null=True)
     otp= models.CharField(max_length=6, null=True)
 
     def __str__(self):
