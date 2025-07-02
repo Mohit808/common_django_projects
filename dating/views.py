@@ -627,7 +627,7 @@ class MyGiftView(APIView):
             except Gift.DoesNotExist:
                 return customResponse(message=f"Gift with id {gift_id} not found", status=404)
 
-            # Create multiple instances for the quantity
+    
             for _ in range(quantity):
                 single_data = {
                     'user': request.user.id,
