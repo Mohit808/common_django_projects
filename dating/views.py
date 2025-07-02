@@ -655,3 +655,42 @@ class MyGiftView(APIView):
             return customResponse(data=data, message="My gifts fetched successfully", status=200)
         except MyGift.DoesNotExist:
             return customResponse(message="My gifts not found", status=404)
+
+
+
+@authentication_classes([DatingTokenAuthentication])
+@permission_classes([IsAuthenticated])
+class GiftToSend(APIView):
+    def get(self, request):
+        try:
+        
+            my_gifts = MyGift.objects.filter(user=request.user.id)
+            my_gifts_gift_ids = my_gifts.values_list('gift', flat=True)
+            gifts = Gift.objects.exclude(id__in=my_gifts_gift_ids)
+
+            # Combine both lists into one
+            all_gifts = list(my_gifts) + list(gifts)
+
+            # Paginate the combined list
+            paginator = PageNumberPagination()
+            paginator.page_size = 10
+            paginated_all_gifts = paginator.paginate_queryset(all_gifts, request)
+
+            # Serialize: use MyGiftSerializer2 for MyGift instances, GiftSerializer for Gift instances
+            data = []
+            for item in paginated_all_gifts:
+                if isinstance(item, MyGift):
+                    data.append(MyGiftSerializer2(item).data)
+                else:
+                    data.append(GiftSerializer(item).data)
+
+            if not data:
+                return customResponse(message="No gifts found", status=404)
+
+            return customResponse(
+                data=data,
+                message="Gifts to send fetched successfully",
+                status=200
+            )
+        except Gift.DoesNotExist:
+            return customResponse(message="Gifts not found", status=404)
