@@ -626,19 +626,18 @@ class MyGiftView(APIView):
                 gift = Gift.objects.get(id=gift_id)
             except Gift.DoesNotExist:
                 return customResponse(message=f"Gift with id {gift_id} not found", status=404)
-
-    
-            for _ in range(quantity):
-                single_data = {
+            
+            single_data = {
                     'user': request.user.id,
                     'gift': gift.id
                 }
-                serializer = MyGiftSerializer(data=single_data)
-                if serializer.is_valid():
-                    my_gift = serializer.save()
-                    created_gifts.append(MyGiftSerializer(my_gift).data)
-                else:
-                    return customResponse(message=serializer.errors, status=400)
+            serializer = MyGiftSerializer(data=single_data)
+            if serializer.is_valid():
+                my_gift = serializer.save()
+                created_gifts.append(MyGiftSerializer(my_gift).data)
+            else:
+                return customResponse(message=serializer.errors, status=400)
+                
 
         return customResponse(data=created_gifts, message="Gifts sent successfully", status=201)
     
