@@ -721,3 +721,28 @@ class SupportView(APIView):
         paginated_supports = paginator.paginate_queryset(supports, request) 
         data = SupportSerializer(paginated_supports, many=True).data
         return customResponse(data=data, message="Support messages fetched successfully", status=200)
+    
+
+
+@authentication_classes([DatingTokenAuthentication])
+@permission_classes([IsAuthenticated])  
+class AiMatchView(APIView):
+    def post(self, request):
+        data = request.data.copy()
+        serializer = AiMatchSerializer(data=data)
+        if serializer.is_valid():
+            ai_match = serializer.save()
+            return customResponse(data=AiMatchSerializer(ai_match).data, message="AI Match created successfully", status=201)
+
+        return customResponse(message=serializer.errors, status=400)
+    
+    def get(self, request):
+        ai_matches = AiMatch.objects.filter(user1=request.user.id)
+        if not ai_matches:
+            return customResponse(message="No AI matches found for this user", status=404)
+        
+        paginator = PageNumberPagination()
+        paginator.page_size = 10
+        paginated_ai_matches = paginator.paginate_queryset(ai_matches, request) 
+        data = AiMatchSerializer(paginated_ai_matches, many=True).data
+        return customResponse(data=data, message="AI matches fetched successfully", status=200)
