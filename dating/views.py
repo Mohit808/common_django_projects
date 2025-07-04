@@ -746,3 +746,13 @@ class AiMatchView(APIView):
         paginated_ai_matches = paginator.paginate_queryset(ai_matches, request) 
         data = AiMatchSerializer(paginated_ai_matches, many=True).data
         return customResponse(data=data, message="AI matches fetched successfully", status=200)
+    
+
+
+@authentication_classes([DatingTokenAuthentication])
+@permission_classes([IsAuthenticated])
+class makeDotView(APIView):
+    def get(self, request):
+        userModel=UserModel.objects.all()
+        UserSerializer2=UserSerializer(userModel, many=True)
+        return customResponse(data=UserSerializer2.data, message="Data fetched successfully", status=200)
