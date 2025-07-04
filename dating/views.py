@@ -737,7 +737,7 @@ class AiMatchView(APIView):
         return customResponse(message=serializer.errors, status=400)
     
     def get(self, request):
-        ai_matches = AiMatch.objects.filter(user1=request.user.id)
+        ai_matches = AiMatch.objects.filter(Q(user1=request.user.id) | Q(user2=request.user.id))
         if not ai_matches:
             return customResponse(message="No AI matches found for this user", status=404)
         
