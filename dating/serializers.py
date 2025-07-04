@@ -95,8 +95,8 @@ class SupportSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class AiMatchSerializer(serializers.ModelSerializer):
-    # user1 = UserSerializer()
-    # user2 = UserSerializer()
+    user1 = UserSerializer()
+    user2 = UserSerializer()
 
     class Meta:
         model = AiMatch
