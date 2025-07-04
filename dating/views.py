@@ -744,7 +744,7 @@ class AiMatchView(APIView):
         paginator = PageNumberPagination()
         paginator.page_size = 10
         paginated_ai_matches = paginator.paginate_queryset(ai_matches, request) 
-        data = AiMatchSerializer(paginated_ai_matches, many=True).data
+        data = AiMatchSerializer2(paginated_ai_matches, many=True).data
         return customResponse(data=data, message="AI matches fetched successfully", status=200)
     
 
