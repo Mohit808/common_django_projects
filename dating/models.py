@@ -252,4 +252,4 @@ class AiMatch(models.Model):
     message= models.TextField(null=True, blank=True)
 
     def __str__(self):
-        return f"{self.sender.name} - Support Message" if self.sender else "Support Message without Sender"
+        return f"AI Match between {self.user1.name} and {self.user2.name}" if self.user1 and self.user2 else "AI Match without Users"
