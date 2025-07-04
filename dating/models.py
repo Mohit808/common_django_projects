@@ -232,3 +232,12 @@ class MyGift(models.Model):
 
     def __str__(self):
         return f"{self.user.name} - (x{self.quantity})" if self.gift else f"{self.user.name} - Gift without URL"
+    
+
+
+class Support(models.Model):
+    sender = models.ForeignKey(UserModel,related_name="sender_support", on_delete=models.CASCADE, null=True)
+    message = models.TextField(null=True)
+
+    def __str__(self):
+        return f"{self.sender.name} - Support Message" if self.sender else "Support Message without Sender"

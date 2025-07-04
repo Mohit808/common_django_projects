@@ -691,3 +691,30 @@ class GiftToSend(APIView):
             )
         except Gift.DoesNotExist:
             return customResponse(message="Gifts not found", status=404)
+        
+
+
+@authentication_classes([DatingTokenAuthentication])
+@permission_classes([IsAuthenticated])
+class SupportView(APIView):
+    def post(self, request):
+        data = request.data.copy()
+        data['sender'] = request.user.id
+        
+        serializer = SupportSerializer(data=data)
+        if serializer.is_valid():
+            support = serializer.save()
+            return customResponse(data=SupportSerializer(support).data, message="Support message sent successfully", status=201)
+
+        return customResponse(message=serializer.errors, status=400)
+    
+    def get(self, request):
+        supports = Support.objects.filter(sender=request.user.id)
+        if not supports:
+            return customResponse(message="No support messages found for this user", status=404)
+        
+        paginator = PageNumberPagination()
+        paginator.page_size = 10
+        paginated_supports = paginator.paginate_queryset(supports, request) 
+        data = SupportSerializer(paginated_supports, many=True).data
+        return customResponse(data=data, message="Support messages fetched successfully", status=200)

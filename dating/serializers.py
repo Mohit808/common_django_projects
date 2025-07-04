@@ -88,3 +88,8 @@ class MyGiftSerializer2(serializers.ModelSerializer):
     class Meta:
         model = MyGift
         fields = '__all__'
+
+class SupportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Support
+        fields = '__all__'
