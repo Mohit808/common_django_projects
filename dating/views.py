@@ -188,6 +188,7 @@ class Home(APIView):
 @permission_classes([IsAuthenticated])
 class Like(APIView):
     def post(self, request):
+        data=request.data.copy()
         receiver_id = request.data.get('receiver')
         if not receiver_id:
             return customResponse(message="Receiver is required", status=400)
@@ -208,10 +209,12 @@ class Like(APIView):
         if LikeDating.objects.filter(sender_id=sender.id, receiver_id=receiver_id).exists():
             return customResponse(message="You have already liked this user", status=400)
 
-        data = {
-            'sender': sender.id,
-            'receiver': receiver_id
-        }
+        # data = {
+        #     'sender': sender.id,
+        #     'receiver': receiver_id
+        # }
+        data['sender'] = sender.id
+        data['receiver'] = receiver_id
 
         serializer = LikeRequestSerializer(data=data)
         if serializer.is_valid():
