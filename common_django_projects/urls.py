@@ -24,6 +24,7 @@ from globalStoreApp.auth import login_view
 from globalStoreApp.onboarding import add_email, add_store_name, add_owner_detail, add_business_detail,add_categories,add_address
 from globalStoreApp.orders.orders import *
 from globalStoreApp.seller.seller import *
+from globalStoreApp.privacy_policy import *
 from waterDropApp.auth import login_view as water_login
 from waterDropApp.products import add_product_water, order_water
 from shareWheel.views import *
@@ -38,6 +39,8 @@ from globalStoreApp.trading import *
 urlpatterns = [
     path('admin/', admin.site.urls),    
     path('',index),
+    path('privacy_policy', privacy_policy),
+
     path('api-auth/', include('rest_framework.urls')),
     
     path('chatCompletion', ChatCompletion.as_view()),
