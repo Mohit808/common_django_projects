@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include
 from globalStoreApp.views import *
+from common_function.google_signin import *
 from globalStoreApp.banner.banner import PostBanner, GetBanner, GetMyBanner, DeleteBanner
 # index,GetMainCategories,GetCategory,GetProducts, GetVariants, GetDashboard, GetHotDeals, CreateOrders, GetOrders, MyAddress, GetBanner, GetStore, GetUniqueCategoryByStore, GetBrands, GetFestivalOffer, GetVariantByFestival, GetDeliveryOrders, CreateProduct, OnboardDeliveryPartner, AcceptOrders,GetMyDeliveryOrders 
 from globalStoreApp.auth import login_view
@@ -87,6 +88,7 @@ urlpatterns = [
     path('postStory', PostStory.as_view()),
     path('getStory', GetStory.as_view()),
     path('sellerDashboard', SellerDashboard.as_view()),
+    path('googleLogin', GoogleLoginView.as_view()),
 
 
     # path('getTrading', GetTrading.as_view()),
