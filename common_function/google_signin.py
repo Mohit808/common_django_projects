@@ -10,6 +10,8 @@ from rest_framework.authtoken.models import Token
 from globalStoreApp.my_serializers import CustomerSerializer
 from globalStoreApp.custom_response import customResponse
 from globalStoreApp.models import Customer
+from django.core.exceptions import ObjectDoesNotExist
+
 
 class GoogleLoginView(APIView):
     def post(self, request):
@@ -43,17 +45,26 @@ class GoogleLoginView(APIView):
             
             # return Response({"message": "Login successful", "email": email}, status=200)
             if created:
-                serializer=CustomerSerializer(context={'request': request},data={"id":user.id,"email":email,"name":f"{name}","image":f"{picture_url}"},partial=True)
+                serializer=CustomerSerializer(context={'request': request},data={"id":user.id,"email":email,"name":f"{name}"},partial=True)
                 if serializer.is_valid():
                     serializer.save()
                 else:
                     return customResponse(message=f"{serializer.errors}",status=status.HTTP_400_BAD_REQUEST)
-            queryset =Customer.objects.get(email=email)
+            # queryset =Customer.objects.get(email=email)
+
+            try:
+                customer = Customer.objects.get(email=email)
+            except ObjectDoesNotExist:
+                customer = Customer.objects.create(
+                    id=user.id,
+                email=email,
+                name=name,)
+
             
             # if not queryset.image and picture_url:
             #     queryset.image = picture_url
             #     queryset.save()
-            serializer = CustomerSerializer(queryset)
+            serializer = CustomerSerializer(customer)
             return customResponse(message= 'Signin successfully', status=status.HTTP_200_OK,data={"token":token.key,"user": serializer.data})
             
 
