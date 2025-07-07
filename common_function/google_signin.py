@@ -48,11 +48,13 @@ class GoogleLoginView(APIView):
                     serializer.save()
                 else:
                     return customResponse(message=f"{serializer.errors}",status=status.HTTP_400_BAD_REQUEST)
-            queryset =Customer.objects.get(email=email)
-            if not queryset.image and picture_url:
-                queryset.image = picture_url
-                queryset.save()
-            serializer = CustomerSerializer(queryset)
+            # queryset =Customer.objects.get(email=email)
+            customer, _ = Customer.objects.get_or_create(email=email, defaults={"name": name})
+
+            if not customer.image and picture_url:
+                customer.image = picture_url
+                customer.save()
+            serializer = CustomerSerializer(customer)
             return customResponse(message= 'Signin successfully', status=status.HTTP_200_OK,data={"token":token.key,"user": serializer.data})
             
 
