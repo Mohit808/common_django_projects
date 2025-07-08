@@ -175,8 +175,8 @@ class Subscription(models.Model):
         return self.text
 
 class Notification(models.Model):
-    text=models.TextField()
-    image=models.TextField(null=True,blank=True)
+    user = models.ForeignKey(UserModel, on_delete=models.CASCADE, null=True)
+    message = models.TextField(null=True)
 
     def __str__(self):
         return self.text
