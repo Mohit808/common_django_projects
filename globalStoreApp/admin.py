@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import *
 from social_network.models import *
-from dating.models import UserModel,DatingUser,LikeDating,Match,Standout,SponsoredOuting,Gift,MyGift, AiMatch
+from dating.models import UserModel,DatingUser,LikeDating,Match,Standout,SponsoredOuting,Gift,MyGift, AiMatch,DatingNotification
 
 
 admin.site.register(OtpModel)
@@ -25,6 +25,7 @@ admin.site.register(DeliveryPartner)
 admin.site.register(Transaction)
 admin.site.register(Wallet)
 admin.site.register(WithdrawRequest)
+admin.site.register(Notification)
 admin.site.register(Post)
 admin.site.register(Comment)
 admin.site.register(Like)
@@ -38,7 +39,8 @@ admin.site.register(SponsoredOuting)
 admin.site.register(Gift)
 admin.site.register(MyGift)
 admin.site.register(AiMatch)
-admin.site.register(Notification)
+admin.site.register(DatingNotification)
+
 
 # class OrderAdmin(admin.ModelAdmin):
 #     def formfield_for_manytomany(self, db_field, request, **kwargs):
