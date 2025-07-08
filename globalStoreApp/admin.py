@@ -38,6 +38,7 @@ admin.site.register(SponsoredOuting)
 admin.site.register(Gift)
 admin.site.register(MyGift)
 admin.site.register(AiMatch)
+admin.site.register(Notification)
 
 # class OrderAdmin(admin.ModelAdmin):
 #     def formfield_for_manytomany(self, db_field, request, **kwargs):
