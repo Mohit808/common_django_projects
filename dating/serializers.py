@@ -110,7 +110,6 @@ class AiMatchSerializer2(serializers.ModelSerializer):
 
 
 class DatingNotificationSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
     class Meta:
         model = DatingNotification
         fields = '__all__'

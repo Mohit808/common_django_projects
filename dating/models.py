@@ -182,7 +182,7 @@ class DatingNotification(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.user.id} {self.user.name}: {self.message[:30]}"
+        return f"{self.user.id} : {self.user.name}: {self.message[:30]}"
 
 class Device(models.Model):
     text=models.TextField()
