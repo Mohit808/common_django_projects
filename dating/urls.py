@@ -27,6 +27,7 @@ urlpatterns = [
     path('support', SupportView.as_view()),
     path('aiMatch', AiMatchView.as_view()),
     path('makeDot', makeDotView.as_view()),
+    path('notification', DatingNotificationView.as_view()),
     # path('add-business-detail', add_business_detail.AddBusinessDetailFunction.as_view()),
     # path('add-categories', add_categories.AddCategoriesFunction.as_view()),
 ]

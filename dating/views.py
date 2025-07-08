@@ -219,6 +219,9 @@ class Like(APIView):
         serializer = LikeRequestSerializer(data=data)
         if serializer.is_valid():
             like = serializer.save()
+
+            saveDataToNotification(user=like.receiver,message=f"{like.sender.name} liked you",)
+
             return customResponse(data=LikeRequestSerializer(like).data, message="Like created successfully", status=201)
 
         return customResponse(message=serializer.errors, status=400)
@@ -242,6 +245,8 @@ class AcceptRequest(APIView):
             return customResponse(message="You have already matched with this user", status=400)
         match = Match.objects.create(sender=like.sender, receiver=like.receiver)
         like.delete()
+
+        saveDataToNotification(user=like.receiver,message=f"{like.sender.name} accepted your like",)
         return customResponse(message="Like accepted successfully", status=200)
 
 
@@ -258,6 +263,7 @@ class RejectRequest(APIView):
             return customResponse(message="Like not found", status=404)
 
         like.delete()
+        saveDataToNotification(user=like.receiver,message=f"{like.sender.name} rejected your like",)
         return customResponse(message="Request rejected successfully", status=200)
     
 @authentication_classes([DatingTokenAuthentication])
@@ -297,6 +303,7 @@ class Unmatch(APIView):
             return customResponse(message="Match not found", status=404)
 
         match.delete()
+        saveDataToNotification(user=other_user_id,message=f"{user_model.name} unmatched you",)
         return customResponse(message="Unmatched successfully", status=200)
 
 
@@ -507,6 +514,7 @@ class SponsoredView(APIView):
         serializer = SponsoredOutingSerializerPost(data=data)
         if serializer.is_valid():
             outing = serializer.save()
+            saveDataToNotification(user=receiver,message=f"{sender.name} sent you a sponsored outing request",)
             return customResponse(data=SponsoredOutingSerializerPost(outing).data, message="Sponsored outing created successfully", status=201)
 
         return customResponse(message=serializer.errors, status=400)
@@ -550,11 +558,16 @@ class SponsoredView(APIView):
         
         if status == 'rejected':
             outing.delete()
+            saveDataToNotification(user=outing.sender,message=f"{outing.receiver.name} rejected your sponsored outing request",)
             return customResponse(message="Sponsored outing rejected successfully", status=200)
 
         serializer = SponsoredOutingSerializer(outing, data=data, partial=True)
         if serializer.is_valid():
             updated_outing = serializer.save()
+            if status == 'accepted':
+                saveDataToNotification(user=outing.sender,message=f"{outing.receiver.name} accepted your sponsored outing request",)
+            elif status == 'completed':
+                saveDataToNotification(user=outing.sender,message=f"{outing.receiver.name} completed the sponsored outing",)
             return customResponse(data=SponsoredOutingSerializer(updated_outing).data, message="Sponsored outing updated successfully", status=200)
 
         return customResponse(message=serializer.errors, status=400)
@@ -756,3 +769,41 @@ class makeDotView(APIView):
         userModel=UserModel.objects.all()
         UserSerializer2=UserSerializer(userModel, many=True)
         return customResponse(data=UserSerializer2.data, message="Data fetched successfully", status=200)
+    
+
+
+@authentication_classes([DatingTokenAuthentication])
+@permission_classes([IsAuthenticated])
+class DatingNotificationView(APIView):
+    def post(self, request):
+        data = request.data.copy()
+        data['user'] = request.user.id
+        
+        serializer = DatingNotificationSerializer(data=data)
+        if serializer.is_valid():
+            notification = serializer.save()
+            return customResponse(data=DatingNotificationSerializer(notification).data, message="Notification created successfully", status=201)
+
+        return customResponse(message=serializer.errors, status=400)
+    
+    def get(self, request):
+        notifications = DatingNotification.objects.filter(user=request.user.id)
+        if not notifications:
+            return customResponse(message="No notifications found for this user", status=404)
+        
+        paginator = PageNumberPagination()
+        paginator.page_size = 10
+        paginated_notifications = paginator.paginate_queryset(notifications, request) 
+        data = DatingNotificationSerializer(paginated_notifications, many=True).data
+        return customResponse(data=data, message="Notifications fetched successfully", status=200)
+    
+
+def saveDataToNotification(userId, message):
+    try:
+        user = UserModel.objects.get(user_id=userId)
+        notification = DatingNotification.objects.create(user=user, message=message)
+        return customResponse(data=DatingNotificationSerializer(notification).data, message="Notification created successfully", status=201)
+    except UserModel.DoesNotExist:
+        return customResponse(message="User not found", status=404)
+    except Exception as e:
+        return customResponse(message=str(e), status=500)

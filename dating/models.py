@@ -177,6 +177,9 @@ class Subscription(models.Model):
 class DatingNotification(models.Model):
     user = models.ForeignKey(UserModel, on_delete=models.CASCADE, null=True)
     message = models.TextField(null=True)
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.text
