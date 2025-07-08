@@ -174,7 +174,7 @@ class Subscription(models.Model):
     def __str__(self):
         return self.text
 
-class Notification(models.Model):
+class DatingNotification(models.Model):
     user = models.ForeignKey(UserModel, on_delete=models.CASCADE, null=True)
     message = models.TextField(null=True)
 
