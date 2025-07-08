@@ -76,6 +76,7 @@ urlpatterns = [
     # path('getDeliveryOrders', GetDeliveryOrders.as_view()),
     path('createProduct', CreateProduct.as_view()),
     path('onboardDeliveryPartner', OnboardDeliveryPartner.as_view()),
+    path('onboardCustomer', OnboardCustomer.as_view()),
     path('acceptOrders', AcceptOrders.as_view()),
     path('cancelOrder', CancelOrder.as_view()),
     path('postWithdrawRequest', PostWithdrawRequest.as_view()),

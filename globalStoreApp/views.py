@@ -492,6 +492,26 @@ class OnboardDeliveryPartner(APIView):
             serializer.save()
             return customResponse(message='Data updated sucessfully', status=200, data=serializer.data)
         return customResponse(message='Failed to update data', status=400, data=serializer.errors)
+    
+
+
+
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+class OnboardCustomer(APIView):
+    def post(self,request,pk=None):
+        mutable_data = request.data.copy() 
+        mutable_data['id'] = request.user.id
+        try:
+            partner = Customer.objects.get(id=mutable_data['id']) 
+            serializer = CustomerSerializer(partner, data=mutable_data, partial=True,context={'request': request})
+        except DeliveryPartner.DoesNotExist:
+            serializer = CustomerSerializer(data=mutable_data, partial=True,context={'request': request})
+
+        if(serializer.is_valid()):
+            serializer.save()
+            return customResponse(message='Data updated sucessfully', status=200, data=serializer.data)
+        return customResponse(message='Failed to update data', status=400, data=serializer.errors)
         
 
 
