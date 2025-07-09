@@ -804,7 +804,7 @@ def saveDataToNotification(userId, message):
         notification = DatingNotification.objects.create(user=user, message=message)
 
         send_fcm_message(
-            device_token="cPZbMU7QR_iNx-EDHc8Ss-:APA91bEz2wFtZ6lEqLKk_C1ICnAZZmszjRtvdU4YwUieLZZmkkxYx_lCJE_YTZt6Gh2YFn8dnx5KgHO6kKr8IN46xKIZMQ84WQWm6qBiBZ2ehFdfiLRXIpM",
+            device_token=user.fcm_token,
             title="New Notification",
             body=message
         )
