@@ -220,7 +220,7 @@ class Like(APIView):
         if serializer.is_valid():
             like = serializer.save()
 
-            saveDataToNotification(user=like.receiver,message=f"{like.sender.name} liked you",)
+            saveDataToNotification(user=receiver_id,message=f"{like.sender.name} liked you",)
 
             return customResponse(data=LikeRequestSerializer(like).data, message="Like created successfully", status=201)
 
