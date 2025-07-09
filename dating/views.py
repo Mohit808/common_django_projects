@@ -220,7 +220,7 @@ class Like(APIView):
         if serializer.is_valid():
             like = serializer.save()
 
-            saveDataToNotification(user=receiver_id,message=f"{like.sender.name} liked you",)
+            saveDataToNotification(userId=receiver_id,message=f"{like.sender.name} liked you",)
 
             return customResponse(data=LikeRequestSerializer(like).data, message="Like created successfully", status=201)
 
@@ -246,7 +246,7 @@ class AcceptRequest(APIView):
         match = Match.objects.create(sender=like.sender, receiver=like.receiver)
         like.delete()
 
-        saveDataToNotification(user=like.receiver.id,message=f"{like.sender.name} accepted your like",)
+        saveDataToNotification(userId=like.receiver,message=f"{like.sender.name} accepted your like",)
         return customResponse(message="Like accepted successfully", status=200)
 
 
@@ -263,7 +263,7 @@ class RejectRequest(APIView):
             return customResponse(message="Like not found", status=404)
 
         like.delete()
-        saveDataToNotification(user=like.receiver,message=f"{like.sender.name} rejected your like",)
+        saveDataToNotification(userId=like.receiver,message=f"{like.sender.name} rejected your like",)
         return customResponse(message="Request rejected successfully", status=200)
     
 @authentication_classes([DatingTokenAuthentication])
@@ -303,7 +303,7 @@ class Unmatch(APIView):
             return customResponse(message="Match not found", status=404)
 
         match.delete()
-        saveDataToNotification(user=other_user_id,message=f"{user_model.name} unmatched you",)
+        saveDataToNotification(userId=other_user_id,message=f"{user_model.name} unmatched you",)
         return customResponse(message="Unmatched successfully", status=200)
 
 
@@ -514,7 +514,7 @@ class SponsoredView(APIView):
         serializer = SponsoredOutingSerializerPost(data=data)
         if serializer.is_valid():
             outing = serializer.save()
-            saveDataToNotification(user=receiver,message=f"{sender.name} sent you a sponsored outing request",)
+            saveDataToNotification(userId=receiver,message=f"{sender.name} sent you a sponsored outing request",)
             return customResponse(data=SponsoredOutingSerializerPost(outing).data, message="Sponsored outing created successfully", status=201)
 
         return customResponse(message=serializer.errors, status=400)
@@ -558,16 +558,16 @@ class SponsoredView(APIView):
         
         if status == 'rejected':
             outing.delete()
-            saveDataToNotification(user=outing.sender,message=f"{outing.receiver.name} rejected your sponsored outing request",)
+            saveDataToNotification(userId=outing.sender,message=f"{outing.receiver.name} rejected your sponsored outing request",)
             return customResponse(message="Sponsored outing rejected successfully", status=200)
 
         serializer = SponsoredOutingSerializer(outing, data=data, partial=True)
         if serializer.is_valid():
             updated_outing = serializer.save()
             if status == 'accepted':
-                saveDataToNotification(user=outing.sender,message=f"{outing.receiver.name} accepted your sponsored outing request",)
+                saveDataToNotification(userId=outing.sender,message=f"{outing.receiver.name} accepted your sponsored outing request",)
             elif status == 'completed':
-                saveDataToNotification(user=outing.sender,message=f"{outing.receiver.name} completed the sponsored outing",)
+                saveDataToNotification(userId=outing.sender,message=f"{outing.receiver.name} completed the sponsored outing",)
             return customResponse(data=SponsoredOutingSerializer(updated_outing).data, message="Sponsored outing updated successfully", status=200)
 
         return customResponse(message=serializer.errors, status=400)
