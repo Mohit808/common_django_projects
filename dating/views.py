@@ -800,11 +800,11 @@ class DatingNotificationView(APIView):
 
 def saveDataToNotification(userId, message):
     try:
-        user = UserModel.objects.get(id=userId)
+        user = UserModel.objects.get(user_id=userId)
         notification = DatingNotification.objects.create(user=user, message=message)
 
         send_fcm_message(
-            device_token=user.fcm_token,
+            device_token="cPZbMU7QR_iNx-EDHc8Ss-:APA91bEz2wFtZ6lEqLKk_C1ICnAZZmszjRtvdU4YwUieLZZmkkxYx_lCJE_YTZt6Gh2YFn8dnx5KgHO6kKr8IN46xKIZMQ84WQWm6qBiBZ2ehFdfiLRXIpM",
             title="New Notification",
             body=message
         )
