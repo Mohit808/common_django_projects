@@ -2,13 +2,7 @@ import requests
 import json
 from google.oauth2 import service_account
 import google.auth.transport.requests
-
-
-service_account_file = '/Users/apple/Downloads/myngle-firebase-adminsdk-fbsvc-97a7290361.json'
-credentials = service_account.Credentials.from_service_account_file(
-    service_account_file,
-    scopes=["https://www.googleapis.com/auth/cloud-platform"]
-)
+import time
 
 
 
@@ -18,10 +12,32 @@ PROJECT_ID = 'myngle'
 url = f"https://fcm.googleapis.com/v1/projects/{PROJECT_ID}/messages:send"
 
 
+access_token_cache = {
+    "token": None,
+    "expiry": 0
+}
+
 def get_access_token():
-    request = google.auth.transport.requests.Request()
-    credentials.refresh(request)
-    return credentials.token
+    now = time.time()
+    if access_token_cache["token"] is None or now >= access_token_cache["expiry"]:
+        
+        service_account_file = '/Users/apple/Downloads/myngle-firebase-adminsdk-fbsvc-97a7290361.json'
+        credentials = service_account.Credentials.from_service_account_file(
+            service_account_file,
+            scopes=["https://www.googleapis.com/auth/cloud-platform"]
+        )
+
+
+        request = google.auth.transport.requests.Request()
+        credentials.refresh(request)
+        access_token_cache["token"] = credentials.token
+        access_token_cache["expiry"] = credentials.expiry.timestamp() - 60  # renew 1 min early
+    return access_token_cache["token"]
+
+# def get_access_token():
+#     request = google.auth.transport.requests.Request()
+#     credentials.refresh(request)
+#     return credentials.token
 
 
 
