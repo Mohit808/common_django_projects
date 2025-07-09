@@ -246,7 +246,7 @@ class AcceptRequest(APIView):
         match = Match.objects.create(sender=like.sender, receiver=like.receiver)
         like.delete()
 
-        saveDataToNotification(user=like.receiver,message=f"{like.sender.name} accepted your like",)
+        saveDataToNotification(user=like.receiver.id,message=f"{like.sender.name} accepted your like",)
         return customResponse(message="Like accepted successfully", status=200)
 
 

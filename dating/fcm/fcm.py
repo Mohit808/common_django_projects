@@ -61,7 +61,7 @@ def send_fcm_message(device_token, title, body):
     response = requests.post(url, headers=headers, data=json.dumps(message))
     print("Status Code:", response.status_code)
     print("Response:", response.text)
-    pass
+    
 
 
 
