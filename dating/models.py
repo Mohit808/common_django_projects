@@ -107,6 +107,8 @@ class UserModel(models.Model):
     location_lat=models.CharField(max_length=200)
     location_long=models.CharField(max_length=200)
 
+    fcm_token = models.CharField(max_length=255, null=True, blank=True)
+
     def __str__(self):
         return f"{self.id}"+" : "+f"{self.name}"
 

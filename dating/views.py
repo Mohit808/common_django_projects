@@ -16,6 +16,7 @@ from django.db.models import Q
 from django.utils.timesince import timesince
 from django.utils import timezone
 import random
+from dating.fcm.fcm import send_push_notification
 
 
 
@@ -802,8 +803,17 @@ def saveDataToNotification(userId, message):
     try:
         user = UserModel.objects.get(user_id=userId)
         notification = DatingNotification.objects.create(user=user, message=message)
+
+        send_push_notification(
+            token=user.fcm_token,
+            title="New Notification",
+            body=message
+        )
+
         return customResponse(data=DatingNotificationSerializer(notification).data, message="Notification created successfully", status=201)
     except UserModel.DoesNotExist:
         return customResponse(message="User not found", status=404)
     except Exception as e:
         return customResponse(message=str(e), status=500)
+
+
