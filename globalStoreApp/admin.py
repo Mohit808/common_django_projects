@@ -38,7 +38,7 @@ admin.site.register(Standout)
 admin.site.register(SponsoredOuting)
 admin.site.register(Gift)
 admin.site.register(MyGift)
-# admin.site.register(AiMatch)
+admin.site.register(AiMatch)
 admin.site.register(DatingNotification)
 
 
