@@ -252,8 +252,8 @@ class Support(models.Model):
 
 
 class AiMatch(models.Model):
-    user1 = models.ForeignKey(UserModel,related_name="user1", on_delete=models.CASCADE, null=True)
-    user2 = models.ForeignKey(UserModel,related_name="user2",on_delete=models.CASCADE, null=True)
+    user1 = models.ForeignKey(UserModel,related_name="ai_matches_as_user1", on_delete=models.CASCADE, null=True)
+    user2 = models.ForeignKey(UserModel,related_name="ai_matches_as_user2",on_delete=models.CASCADE, null=True)
     message= models.TextField(null=True, blank=True)
 
     def __str__(self):
