@@ -94,19 +94,19 @@ class SupportSerializer(serializers.ModelSerializer):
         model = Support
         fields = '__all__'
 
-class AiMatchSerializer(serializers.ModelSerializer):
+# class AiMatchSerializer(serializers.ModelSerializer):
    
-    class Meta:
-        model = AiMatch
-        fields = '__all__'
+#     class Meta:
+#         model = AiMatch
+#         fields = '__all__'
 
-class AiMatchSerializer2(serializers.ModelSerializer):
-    user1 = UserSerializer()
-    user2 = UserSerializer()
+# class AiMatchSerializer2(serializers.ModelSerializer):
+#     user1 = UserSerializer()
+#     user2 = UserSerializer()
 
-    class Meta:
-        model = AiMatch
-        fields = '__all__'
+#     class Meta:
+#         model = AiMatch
+#         fields = '__all__'
 
 
 class DatingNotificationSerializer(serializers.ModelSerializer):
