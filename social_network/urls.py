@@ -23,6 +23,7 @@ from social_network.views import *
 urlpatterns = [
     
     path('hello', Hello.as_view()),
+    path('post', PostView.as_view()),
     # path('add-business-detail', add_business_detail.AddBusinessDetailFunction.as_view()),
     # path('add-categories', add_categories.AddCategoriesFunction.as_view()),
 ]
