@@ -172,7 +172,7 @@ class GetDashboard(APIView):
             response_data = []
 
             for feature in paginated_features:
-                querysetStore=Store.objects.filter(id=feature.store.id).annotate(
+                querysetStore=Store.objects.all().annotate(
                 distance=ExpressionWrapper(
                     (Abs(F('lat') - float(current_lat)) + Abs(F('lng') - float(current_lon))),
                     output_field=FloatField())).order_by('distance')
