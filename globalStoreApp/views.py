@@ -182,8 +182,19 @@ class GetDashboard(APIView):
 
                 # products = Product.objects.filter(category=feature.category,store_id__in=store_ids)[:10]
 
-                products = Product.objects.annotate(distance=ExpressionWrapper(Abs(F('store__lat') - current_lat) + Abs(F('store__lng') - current_lon),output_field=FloatField())).filter(category=feature.category).order_by('distance')[:10]
+                products = Product.objects.select_related('store').annotate(distance=ExpressionWrapper(Abs(F('store__lat') - current_lat) + Abs(F('store__lng') - current_lon),output_field=FloatField())).filter(category=feature.category).order_by('distance')[:10]
                 
+#                 products = Product.objects.select_related('store').annotate(  # Optimizes join
+#     lat_float=Cast('store__lat', FloatField()),
+#     lng_float=Cast('store__lng', FloatField()),
+# ).annotate(
+#     distance=ExpressionWrapper(
+#         Abs(F('lat_float') - current_lat) + Abs(F('lng_float') - current_lon),
+#         output_field=FloatField()
+#     )
+# ).filter(
+#     category=feature.category
+# ).order_by('distance')[:10]
 
                 products_data = ProductSerializer(products, many=True,context={'request': request}).data
                 feature_data = {
