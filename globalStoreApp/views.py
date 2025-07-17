@@ -229,7 +229,7 @@ class GetHotDeals(APIView):
         ).filter(discountedPrice__isnull=False).order_by('-discount_percentage')
         # paginate
         paginator = PageNumberPagination()
-        paginator.page_size = int(request.query_params.get('page_size', 2))
+        paginator.page_size = int(request.query_params.get('page_size', 10))
         paginated_query = paginator.paginate_queryset(query, request)
         serializer = ProductSerializer(paginated_query, many=True,context={'request': request})
         return customResponse(message= f'Fetch data successfully', status=200  ,data=serializer.data)
