@@ -352,7 +352,7 @@ class GetStore(APIView):
         paginator = PageNumberPagination()
         paginator.page_size = int(request.query_params.get('page_size', 10))
         paginated_query = paginator.paginate_queryset(query_set, request)
-        serializer=StoreSerializer(paginated_query,many=True)
+        serializer=StoreSerializer(paginated_query,many=True,context={'request': request})
         return customResponse(message="Store fetched successfully",status=200,data=serializer.data)
 
 @authentication_classes([SessionAuthentication, TokenAuthentication])
