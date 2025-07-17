@@ -167,7 +167,7 @@ class GetDashboard(APIView):
         try:
             features = FeatureListModel.objects.all().order_by('-priority')
             paginator = PageNumberPagination()
-            paginator.page_size = int(request.query_params.get('page_size', 10))
+            paginator.page_size = int(request.query_params.get('page_size', 2))
             paginated_features = paginator.paginate_queryset(features, request)
             response_data = []
 
