@@ -45,6 +45,13 @@ class StoreSerializer2(serializers.ModelSerializer):
         model = Store
         fields = "__all__"
 
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        request = self.context.get('request')
+        if request is not None:
+            representation['store_logo'] = request.build_absolute_uri(instance.image.url)
+        return representation
+
 
 class StoreSerializer(serializers.ModelSerializer):
     class Meta:
