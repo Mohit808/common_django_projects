@@ -46,12 +46,18 @@ class StoreSerializer2(serializers.ModelSerializer):
         fields = "__all__"
 
 
-
 class StoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Store
         # fields = "__all__"
         fields = ["id","store_name","store_story","store_logo"]
+    
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        request = self.context.get('request')
+        if request is not None:
+            representation['image'] = request.build_absolute_uri(instance.image.url)
+        return representation
 
     def create(self, validated_data):
         
@@ -65,13 +71,6 @@ class StoreSerializer(serializers.ModelSerializer):
 
         store = Store.objects.create(**validated_data)
         return store
-    
-    def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        request = self.context.get('request')
-        if request is not None:
-            representation['store_logo'] = request.build_absolute_uri(instance.image.url)
-        return representation
     
 
 
