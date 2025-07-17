@@ -168,7 +168,7 @@ class GetDashboard(APIView):
             paginated_features = paginator.paginate_queryset(features, request)
             response_data = []
 
-            for feature in features:
+            for feature in paginated_features:
                 products = Product.objects.filter(category=feature.category)[:10]
                 products_data = ProductSerializer(products, many=True,context={'request': request}).data
                 feature_data = {
