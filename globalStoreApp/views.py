@@ -11,6 +11,8 @@ from rest_framework.authentication import SessionAuthentication, TokenAuthentica
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Sum
+from rest_framework.pagination import PageNumberPagination
+
 
 
 
@@ -157,27 +159,37 @@ class GetVariants(APIView):
     
 @authentication_classes([TokenAuthentication])
 class GetDashboard(APIView):
-    def get(self, request,pk=None):
-
+    def get(self, request, pk=None):
         try:
             querySet = FeatureListModel.objects.all().order_by('-priority')
             response_data = []
 
+            # Get page number and page size from query params
+            page_number = request.query_params.get('page', 1)
+            page_size = request.query_params.get('page_size', 10)
+
             for feature in querySet:
-                products = Product.objects.filter(category=feature.category)[:10]
-                products_data = ProductSerializer(products, many=True,context={'request': request}).data
+                products = Product.objects.filter(category=feature.category)
+                
+                # Create paginator and paginate
+                paginator = PageNumberPagination()
+                paginator.page_size = page_size
+                result_page = paginator.paginate_queryset(products, request)
+
+                products_data = ProductSerializer(result_page, many=True, context={'request': request}).data
                 feature_data = {
                     "name": feature.name,
                     "highlight": feature.highlight,
                     "feature_list": products_data
                 }
                 response_data.append(feature_data)
+
             print(request.user.id)
-            queryDelivery=Order.objects.filter(customer_id=request.user.id).exclude(status=3).values_list('id', flat=True)
-            newList={'delivery':queryDelivery,'featured':response_data}
+            queryDelivery = Order.objects.filter(customer_id=request.user.id).exclude(status=3).values_list('id', flat=True)
+            newList = {'delivery': queryDelivery, 'featured': response_data}
 
+            return customResponse(message='Fetch data successfully', status=200, data=newList)
 
-            return customResponse(message= f'Fetch data successfully', status=200  ,data=newList)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
