@@ -12,7 +12,7 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Sum
 from rest_framework.pagination import PageNumberPagination
-
+from django.db.models.functions import Abs
 
 
 
@@ -161,6 +161,9 @@ class GetVariants(APIView):
 class GetDashboard(APIView):
     def get(self, request,pk=None):
 
+        current_lat = request.query_params.get('latitude', 0)
+        current_lon = request.query_params.get('longitude', 0)
+
         try:
             features = FeatureListModel.objects.all().order_by('-priority')
             paginator = PageNumberPagination()
@@ -169,7 +172,13 @@ class GetDashboard(APIView):
             response_data = []
 
             for feature in paginated_features:
-                products = Product.objects.filter(category=feature.category)[:10]
+                querysetStore=Store.objects.filter(id=feature.store.id).annotate(
+                distance=ExpressionWrapper(
+                    (Abs(F('lat') - float(current_lat)) + Abs(F('lng') - float(current_lon))),
+                    output_field=FloatField())).order_by('distance')
+                
+                store_ids = querysetStore.values_list('id', flat=True)
+                products = Product.objects.filter(category=feature.category,store_id__in=store_ids)[:10]
                 products_data = ProductSerializer(products, many=True,context={'request': request}).data
                 feature_data = {
                     "name": feature.name,
