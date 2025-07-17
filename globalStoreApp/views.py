@@ -172,13 +172,19 @@ class GetDashboard(APIView):
             response_data = []
 
             for feature in paginated_features:
-                querysetStore=Store.objects.all().annotate(
-                distance=ExpressionWrapper(
-                    (Abs(F('lat') - float(current_lat)) + Abs(F('lng') - float(current_lon))),
-                    output_field=FloatField())).order_by('distance')
+                # querysetStore=Store.objects.all().annotate(
+                # distance=ExpressionWrapper(
+                #     (Abs(F('lat') - float(current_lat)) + Abs(F('lng') - float(current_lon))),
+                #     output_field=FloatField())).order_by('distance')
                 
-                store_ids = querysetStore.values_list('id', flat=True)
-                products = Product.objects.filter(category=feature.category,store_id__in=store_ids)[:10]
+                # store_ids = querysetStore.values_list('id', flat=True)
+
+
+                # products = Product.objects.filter(category=feature.category,store_id__in=store_ids)[:10]
+
+                products = Product.objects.annotate(distance=ExpressionWrapper(Abs(F('store__lat') - current_lat) + Abs(F('store__lng') - current_lon),output_field=FloatField())).filter(category=feature.category).order_by('distance')[:10]
+                
+
                 products_data = ProductSerializer(products, many=True,context={'request': request}).data
                 feature_data = {
                     "name": feature.name,
