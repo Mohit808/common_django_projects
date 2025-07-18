@@ -355,7 +355,7 @@ class GetStore(APIView):
                 ( 6371 * acos( cos( radians(%s) ) * cos( radians(lat) ) * 
                   cos( radians(lng) - radians(%s) ) + sin( radians(%s) ) * 
                   sin( radians(lat) ) ) ) AS distance 
-                FROM stores 
+                FROM store
                 WHERE ( 6371 * acos( cos( radians(%s) ) * cos( radians(lat) ) * 
                   cos( radians(lng) - radians(%s) ) + sin( radians(%s) ) * 
                   sin( radians(lat) ) ) ) <= %s 
