@@ -161,8 +161,8 @@ class GetVariants(APIView):
 class GetDashboard(APIView):
     def get(self, request,pk=None):
 
-        current_lat = request.query_params.get('latitude', 0)
-        current_lon = request.query_params.get('longitude', 0)
+        lat = request.query_params.get('lat', 0)
+        lng = request.query_params.get('lng', 0)
 
         try:
             features = FeatureListModel.objects.all().order_by('-priority')
@@ -182,7 +182,7 @@ class GetDashboard(APIView):
 
                 # products = Product.objects.filter(category=feature.category,store_id__in=store_ids)[:10]
 
-                products = Product.objects.select_related('store').annotate(distance=ExpressionWrapper(Abs(F('store__lat') - current_lat) + Abs(F('store__lng') - current_lon),output_field=FloatField())).filter(category=feature.category).order_by('distance')[:10]
+                products = Product.objects.select_related('store').annotate(distance=ExpressionWrapper(Abs(F('store__lat') - lat) + Abs(F('store__lng') - lng),output_field=FloatField())).filter(category=feature.category).order_by('distance')[:10]
                 
 #                 products = Product.objects.select_related('store').annotate(  # Optimizes join
 #     lat_float=Cast('store__lat', FloatField()),
@@ -348,7 +348,10 @@ class MyAddress(APIView):
 
 class GetStore(APIView):
     def get(self,request,pk=None):
-        query_set=Store.objects.all()
+        lat = request.query_params.get('lat', 0)
+        lng = request.query_params.get('lng', 0)
+    
+        query_set=Store.objects.all().annotate(distance=ExpressionWrapper(Abs(F('store__lat') - lat) + Abs(F('store__lng') - lng),output_field=FloatField())).order_by('distance')
         paginator = PageNumberPagination()
         paginator.page_size = int(request.query_params.get('page_size', 10))
         paginated_query = paginator.paginate_queryset(query_set, request)
@@ -384,8 +387,13 @@ class GetCategory(APIView):
 
 class GetBrands(APIView):
     def get(self,request,pk=None):
-        query_set=Brand.objects.all()
-        serializer=BrandSerializer(query_set,many=True,context={'request': request})
+        lat = request.query_params.get('lat', 0)
+        lng = request.query_params.get('lng', 0)
+        query_set=Brand.objects.all().annotate(distance=ExpressionWrapper(Abs(F('store__lat') - lat) + Abs(F('store__lng') - lng),output_field=FloatField())).order_by('distance')
+        paginator = PageNumberPagination()
+        paginator.page_size = int(request.query_params.get('page_size', 10))
+        paginated_query = paginator.paginate_queryset(query_set, request)
+        serializer=BrandSerializer(paginated_query,many=True,context={'request': request})
         return customResponse(message="Brand fetched successfully",status=200,data=serializer.data)
 
 class GetFestivalOffer(APIView):
