@@ -348,33 +348,21 @@ class GetStore(APIView):
     def get(self,request,pk=None):
         lat = request.query_params.get('lat', 0)
         lng = request.query_params.get('lng', 0)
+        km=10
 
-        haversine_inner = (
-                Cos(Radians(lat)) * Cos(Radians(F('lat'))) *
-                Cos(Radians(F('lng')) - Radians(lng)) +
-                Sin(Radians(lat)) * Sin(Radians(F('lat')))
-            )
-        distance = ExpressionWrapper(
-                6371 * ACos(
-                    Func(
-                        haversine_inner,
-                        function='LEAST',
-                        template='%(function)s(%(expressions)s, 1)'  # Cap at 1
-                    ) * Func(
-                        haversine_inner,
-                        function='GREATEST',
-                        template='%(function)s(%(expressions)s, -1)'  # Floor at -1
-                    )
-                ),
-                output_field=FloatField()
-            )
-
-            # Query stores, exclude NULLs, annotate distance, filter by radius, order by distance
-        query_set = Store.objects.filter(
-                lat__isnull=False, lng__isnull=False
-            ).annotate(
-                distance=distance
-            ).order_by('distance')
+        query = """
+                SELECT *, 
+                ( 6371 * acos( cos( radians(%s) ) * cos( radians(lat) ) * 
+                  cos( radians(lng) - radians(%s) ) + sin( radians(%s) ) * 
+                  sin( radians(lat) ) ) ) AS distance 
+                FROM stores 
+                WHERE ( 6371 * acos( cos( radians(%s) ) * cos( radians(lat) ) * 
+                  cos( radians(lng) - radians(%s) ) + sin( radians(%s) ) * 
+                  sin( radians(lat) ) ) ) <= %s 
+                ORDER BY distance ASC
+            """
+        params = [lat, lng, lat, lat, lng, lat, km]
+        query_set = Store.objects.raw(query, params)
         
 
         paginator = PageNumberPagination()
