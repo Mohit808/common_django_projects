@@ -66,7 +66,7 @@ class SellerDashboard(APIView):
         days_of_week = [day.strftime('%a') for day in last_7_days]
         transactions_last_7_days = Transaction.objects.filter(created_at__gte=last_7_days[-1])
         total_per_day = (transactions_last_7_days.annotate(date=TruncDate('created_at')) .values('date').annotate(total_credit=Sum('amount', filter=Q(type=0)), total_debit=Sum('amount', filter=Q(type=1)) ).order_by('date'))
-        result = [{'day': day_name, 'credit': 0, 'debit': 0} for day_name in days_of_week]
+        result = [{'day': day_name, 'credit': 20, 'debit': 10} for day_name in days_of_week]
         for entry in total_per_day:
             day_of_week = entry['date']
             day_index = last_7_days.index(day_of_week)
