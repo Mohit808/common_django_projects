@@ -13,7 +13,7 @@ from django.db.models import Sum
 from rest_framework.pagination import PageNumberPagination
 from django.db.models.functions import Abs
 from django.db.models.functions import Sin, Cos, Radians, ACos
-from django.db.models import F, FloatField, ExpressionWrapper, Value
+from django.db.models import F, FloatField, ExpressionWrapper, Value,Func
 
 
 
@@ -349,23 +349,37 @@ class GetStore(APIView):
         lat = request.query_params.get('lat', 0)
         lng = request.query_params.get('lng', 0)
 
-        distance_expr = ExpressionWrapper(
-            6371 * ACos(
-                Cos(Radians(Value(lat))) *
-                Cos(Radians(F('lat'))) *
-                Cos(Radians(F('lng')) - Radians(Value(lng))) +
-                Sin(Radians(Value(lat))) *
-                Sin(Radians(F('lat')))
-            ),
-            output_field=FloatField()
-        )
+        haversine_inner = (
+                Cos(Radians(lat)) * Cos(Radians(F('lat'))) *
+                Cos(Radians(F('lng')) - Radians(lng)) +
+                Sin(Radians(lat)) * Sin(Radians(F('lat')))
+            )
+        distance = ExpressionWrapper(
+                6371 * ACos(
+                    Func(
+                        haversine_inner,
+                        function='LEAST',
+                        template='%(function)s(%(expressions)s, 1)'  # Cap at 1
+                    ) * Func(
+                        haversine_inner,
+                        function='GREATEST',
+                        template='%(function)s(%(expressions)s, -1)'  # Floor at -1
+                    )
+                ),
+                output_field=FloatField()
+            )
 
-        querySet = Store.objects.annotate(distance=distance_expr).order_by('distance')
+            # Query stores, exclude NULLs, annotate distance, filter by radius, order by distance
+        query_set = Store.objects.filter(
+                lat__isnull=False, lng__isnull=False
+            ).annotate(
+                distance=distance
+            ).order_by('distance')
         
 
         paginator = PageNumberPagination()
         paginator.page_size = int(request.query_params.get('page_size', 10))
-        paginated_query = paginator.paginate_queryset(querySet, request)
+        paginated_query = paginator.paginate_queryset(query_set, request)
         serializer=StoreSerializer(paginated_query,many=True,context={'request': request})
         return customResponse(message="Store fetched successfully",status=200,data=serializer.data)
 
