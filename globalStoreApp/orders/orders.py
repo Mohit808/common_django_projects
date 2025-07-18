@@ -55,7 +55,7 @@ class GetOrders(APIView):
                     data.pop('otp', None)
 
         else:
-            querySet = Order.objects.filter(status=status)
+            querySet = Order.objects.filter(status=status,store=request.user.id)
             serializer=OrderSerializer(querySet,many=True,context={'request': request})
             for data in serializer.data:
                 data.pop('otp', None)
