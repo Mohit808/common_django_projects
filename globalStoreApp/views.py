@@ -206,7 +206,7 @@ class GetDashboard(APIView):
                 }
                 response_data.append(feature_data)
             print(request.user.id)
-            queryDelivery=Order.objects.filter(customer_id=request.user.id).exclude(status=3).values_list('id', flat=True)
+            queryDelivery=Order.objects.filter(customer_id=request.user.id).exclude(status__in=[3, 101]).values_list('id', flat=True)
 
             newList={'delivery':queryDelivery,'featured':response_data}
 
