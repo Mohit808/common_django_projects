@@ -384,9 +384,7 @@ class GetCategory(APIView):
 
 class GetBrands(APIView):
     def get(self,request,pk=None):
-        lat = request.query_params.get('lat', 0)
-        lng = request.query_params.get('lng', 0)
-        query_set=Brand.objects.all().annotate(distance=ExpressionWrapper(Abs(F('store__lat') - lat) + Abs(F('store__lng') - lng),output_field=FloatField())).order_by('distance')
+        query_set=Brand.objects.all()
         paginator = PageNumberPagination()
         paginator.page_size = int(request.query_params.get('page_size', 10))
         paginated_query = paginator.paginate_queryset(query_set, request)
