@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from globalStoreApp.custom_response import *
 from globalStoreApp.models import MainCategory,Category, FeatureListModel, Address, Banner
 from globalStoreApp.my_serializers import *
-from django.db.models import F, FloatField, ExpressionWrapper,Value,Func
+from django.db.models import F, FloatField, ExpressionWrapper
 import random
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
@@ -13,16 +13,13 @@ from rest_framework.permissions import IsAuthenticated
 from django.db.models import Sum
 from rest_framework.pagination import PageNumberPagination
 from django.db.models.functions import Abs
-from django.db.models.functions import Radians, Cos, Sin
+from django.db.models.functions import Sin, Cos, Radians, ACos
 
 
 
 # from django.contrib.gis.db.models.functions import Distance
 # from django.contrib.gis.geos import Point
 
-class ACos(Func):
-    function = 'ACOS'
-    arity = 1
 
 
 
@@ -352,15 +349,16 @@ class GetStore(APIView):
         lat = request.query_params.get('lat', 0)
         lng = request.query_params.get('lng', 0)
 
-        query_set=Store.objects.all().annotate(
-                distance=ExpressionWrapper(
-                    6371 * ACos(
-                    Cos(Radians(Value(lat))) *
-                    Cos(Radians(F('lat'))) *
-                    Cos(Radians(F('lng')) - Radians(Value(lng))) +
-                    Sin(Radians(Value(lat))) * Sin(Radians(F('lat')))
+        distance = ExpressionWrapper(
+                6371 * ACos(
+                    Cos(Radians(float(lat))) * Cos(Radians(F('latitude'))) *
+                    Cos(Radians(F('longitude')) - Radians(float(lng))) +
+                    Sin(Radians(float(lat))) * Sin(Radians(F('latitude')))
                 ),
-                    output_field=FloatField())).order_by('distance')
+                output_field=FloatField()
+            )
+        
+        query_set=Store.objects.all().annotate(distance=distance).order_by('distance')
         
 
         paginator = PageNumberPagination()
