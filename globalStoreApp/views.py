@@ -349,16 +349,22 @@ class GetStore(APIView):
         lat = request.query_params.get('lat', 0)
         lng = request.query_params.get('lng', 0)
 
+        try:
+            lat = float(lat)
+            lng = float(lng)
+        except ValueError:
+            return customResponse(message="Invalid latitude or longitude", status=400)
+
         distance = ExpressionWrapper(
                 6371 * ACos(
-                    Cos(Radians(float(lat))) * Cos(Radians(F('lat'))) *
-                    Cos(Radians(F('lng')) - Radians(float(lng))) +
-                    Sin(Radians(float(lat))) * Sin(Radians(F('lat')))
+                    Cos(Radians(lat)) * Cos(Radians(F('lat'))) *
+                    Cos(Radians(F('lng')) - Radians(lng)) +
+                    Sin(Radians(lat)) * Sin(Radians(F('lat')))
                 ),
                 output_field=FloatField()
             )
         
-        query_set=Store.objects.all().annotate(distance=distance).order_by('distance')
+        query_set = Store.objects.all().annotate(distance=distance).order_by('distance')
         
 
         paginator = PageNumberPagination()
