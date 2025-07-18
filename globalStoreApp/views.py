@@ -348,7 +348,7 @@ class GetStore(APIView):
         lat = request.query_params.get('lat', 0)
         lng = request.query_params.get('lng', 0)
     
-        query_set=Store.objects.all().annotate(distance=ExpressionWrapper(Abs(F('store__lat') - lat) + Abs(F('store__lng') - lng),output_field=FloatField())).order_by('distance')
+        query_set=Store.objects.all().annotate(distance=ExpressionWrapper(Abs(F('lat') - lat) + Abs(F('lng') - lng),output_field=FloatField())).order_by('distance')
         paginator = PageNumberPagination()
         paginator.page_size = int(request.query_params.get('page_size', 10))
         paginated_query = paginator.paginate_queryset(query_set, request)
