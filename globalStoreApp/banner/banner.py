@@ -11,6 +11,7 @@ from rest_framework.authentication import SessionAuthentication, TokenAuthentica
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Sum
+from django.db.models.functions import Abs
 
 
 
@@ -40,8 +41,10 @@ class PostBanner(APIView):
 class GetBanner(APIView):
     def get(self,request):
         storeId=request.GET.get("storeId")
+        lat = request.query_params.get('lat', 0)
+        lng = request.query_params.get('lng', 0)
         if storeId:
-            query_set=Banner.objects.filter(store=storeId).order_by('-priority')
+            query_set=Banner.objects.filter(store=storeId).annotate(distance=ExpressionWrapper(Abs(F('store__lat') - lat) + Abs(F('store__lng') - lng),output_field=FloatField())).order_by('distance','-priority')
         else:
             query_set=Banner.objects.all()
         
