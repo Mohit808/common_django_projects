@@ -220,11 +220,10 @@ class GetHotDeals(APIView):
         lat = request.query_params.get('lat', 0)
         lng = request.query_params.get('lng', 0)
         query = Product.objects.annotate(
-            Product.objects.annotate(
                 discount_difference=ExpressionWrapper(F('price') - F('discountedPrice'),output_field=FloatField()),
                 discount_percentage=ExpressionWrapper((F('price') - F('discountedPrice')) / F('price') * 100,output_field=FloatField()),
                 distance=ExpressionWrapper(Abs(F('store__lat') - lat) + Abs(F('store__lng') - lng),output_field=FloatField())
-                ).filter(discountedPrice__isnull=False).order_by('-discount_percentage'))
+                ).filter(discountedPrice__isnull=False).order_by('-discount_percentage')
         # paginate
         paginator = PageNumberPagination()
         paginator.page_size = int(request.query_params.get('page_size', 10))
