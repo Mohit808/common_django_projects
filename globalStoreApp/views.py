@@ -5,7 +5,6 @@ from rest_framework.views import APIView
 from globalStoreApp.custom_response import *
 from globalStoreApp.models import MainCategory,Category, FeatureListModel, Address, Banner
 from globalStoreApp.my_serializers import *
-from django.db.models import F, FloatField, ExpressionWrapper
 import random
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
@@ -14,6 +13,7 @@ from django.db.models import Sum
 from rest_framework.pagination import PageNumberPagination
 from django.db.models.functions import Abs
 from django.db.models.functions import Sin, Cos, Radians, ACos
+from django.db.models import F, FloatField, ExpressionWrapper, Value
 
 
 
@@ -349,32 +349,25 @@ class GetStore(APIView):
         lat = request.query_params.get('lat', 0)
         lng = request.query_params.get('lng', 0)
 
-        try:
-            from django.contrib.gis.geos import Point
-            from django.contrib.gis.db.models.functions import Distance
-        except ImportError:
-            return customResponse(message="GeoDjango is not properly configured", status=500)
-
-        try:
-            lat = float(lat)
-            lng = float(lng)
-        except ValueError:
-            return customResponse(message="Invalid latitude or longitude", status=400)
-
-        user_location = Point(lng, lat, srid=4326)
-        query_set = Store.objects.annotate(
-            distance=ExpressionWrapper(
-            Abs(F('lat') - lat) + Abs(F('lng') - lng),
+        distance_expr = ExpressionWrapper(
+            6371 * ACos(
+                Cos(Radians(Value(lat))) *
+                Cos(Radians(F('lat'))) *
+                Cos(Radians(F('lng')) - Radians(Value(lng))) +
+                Sin(Radians(Value(lat))) *
+                Sin(Radians(F('lat')))
+            ),
             output_field=FloatField()
-            )
-        ).order_by('distance')
+        )
+
+        queryset = Store.objects.annotate(distance=distance_expr).order_by('distance')
         
 
         paginator = PageNumberPagination()
         paginator.page_size = int(request.query_params.get('page_size', 10))
         paginated_query = paginator.paginate_queryset(query_set, request)
         serializer=StoreSerializer(paginated_query,many=True,context={'request': request})
-        return customResponse(message=f"{user_location}",status=200,data=serializer.data)
+        return customResponse(message="Store fetched successfully",status=200,data=serializer.data)
 
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
