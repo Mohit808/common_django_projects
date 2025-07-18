@@ -348,21 +348,13 @@ class GetStore(APIView):
     def get(self,request,pk=None):
         lat = request.query_params.get('lat', 0)
         lng = request.query_params.get('lng', 0)
-        km=10
-
-        query = """
-                SELECT *, 
-                ( 6371 * acos( cos( radians(%s) ) * cos( radians(lat) ) * 
-                  cos( radians(lng) - radians(%s) ) + sin( radians(%s) ) * 
-                  sin( radians(lat) ) ) ) AS distance 
-                FROM Store
-                WHERE ( 6371 * acos( cos( radians(%s) ) * cos( radians(lat) ) * 
-                  cos( radians(lng) - radians(%s) ) + sin( radians(%s) ) * 
-                  sin( radians(lat) ) ) ) <= %s 
-                ORDER BY distance ASC
-            """
-        params = [lat, lng, lat, lat, lng, lat, km]
-        query_set = Store.objects.raw(query, params)
+        
+        query_set=Store.objects.annotate(
+            distance=ExpressionWrapper(
+                Abs(F('lat') - lat) + Abs(F('lng') - lng),
+                output_field=FloatField()
+            )
+        ).order_by('distance')
         
 
         paginator = PageNumberPagination()
