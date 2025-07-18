@@ -351,9 +351,9 @@ class GetStore(APIView):
 
         distance = ExpressionWrapper(
                 6371 * ACos(
-                    Cos(Radians(float(lat))) * Cos(Radians(F('latitude'))) *
-                    Cos(Radians(F('longitude')) - Radians(float(lng))) +
-                    Sin(Radians(float(lat))) * Sin(Radians(F('latitude')))
+                    Cos(Radians(float(lat))) * Cos(Radians(F('lat'))) *
+                    Cos(Radians(F('lng')) - Radians(float(lng))) +
+                    Sin(Radians(float(lat))) * Sin(Radians(F('lat')))
                 ),
                 output_field=FloatField()
             )
