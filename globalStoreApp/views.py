@@ -14,6 +14,7 @@ from rest_framework.pagination import PageNumberPagination
 from django.db.models.functions import Abs
 from django.db.models.functions import Sin, Cos, Radians, ACos
 from django.db.models import F, FloatField, ExpressionWrapper, Value,Func
+from django.db.models.expressions import RawSQL
 
 
 
@@ -348,13 +349,24 @@ class GetStore(APIView):
     def get(self,request,pk=None):
         lat = request.query_params.get('lat', 0)
         lng = request.query_params.get('lng', 0)
-        
-        query_set=Store.objects.annotate(
-            distance=ExpressionWrapper(
-                Abs(F('lat') - lat) + Abs(F('lng') - lng),
-                output_field=FloatField()
+
+        haversine_sql = """
+            6371 * acos(
+                cos(radians(%s)) * cos(radians(CAST(lat AS float))) *
+                cos(radians(CAST(lng AS float)) - radians(%s)) +
+                sin(radians(%s)) * sin(radians(CAST(lat AS float)))
             )
+        """
+        query_set = Store.objects.annotate(
+            distance=RawSQL(haversine_sql, (lat, lng, lat))
         ).order_by('distance')
+        
+        # query_set=Store.objects.annotate(
+        #     distance=ExpressionWrapper(
+        #         Abs(F('lat') - lat) + Abs(F('lng') - lng),
+        #         output_field=FloatField()
+        #     )
+        # ).order_by('distance')
         
 
         paginator = PageNumberPagination()
