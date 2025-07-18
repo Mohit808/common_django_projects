@@ -48,10 +48,11 @@ class StoreSerializer2(serializers.ModelSerializer):
 
 class StoreSerializer(serializers.ModelSerializer):
     store_logo = serializers.ImageField(use_url=True)
+    distance = serializers.FloatField(read_only=True)
     class Meta:
         model = Store
         # fields = "__all__"
-        fields = ["id","store_name","store_story","store_logo"]
+        fields = ["id","store_name","store_story","store_logo","distance"]
     
 
     def create(self, validated_data):
