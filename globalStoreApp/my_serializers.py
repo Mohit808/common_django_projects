@@ -48,7 +48,7 @@ class StoreSerializer2(serializers.ModelSerializer):
 
 class StoreSerializer(serializers.ModelSerializer):
     store_logo = serializers.ImageField(use_url=True)
-    distance = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+    distance = serializers.FloatField(read_only=True)
     class Meta:
         model = Store
         # fields = "__all__"
