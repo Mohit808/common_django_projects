@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from globalStoreApp.custom_response import *
 from globalStoreApp.models import MainCategory,Category, FeatureListModel, Address, Banner
 from globalStoreApp.my_serializers import *
-from django.db.models import F, FloatField, ExpressionWrapper
+from django.db.models import F, FloatField, ExpressionWrapper,Value,Func
 import random
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
@@ -13,12 +13,16 @@ from rest_framework.permissions import IsAuthenticated
 from django.db.models import Sum
 from rest_framework.pagination import PageNumberPagination
 from django.db.models.functions import Abs
+from django.db.models.functions import Radians, Cos, Sin
 
 
 
 # from django.contrib.gis.db.models.functions import Distance
 # from django.contrib.gis.geos import Point
 
+class ACos(Func):
+    function = 'ACOS'
+    arity = 1
 
 
 
@@ -350,7 +354,12 @@ class GetStore(APIView):
 
         query_set=Store.objects.all().annotate(
                 distance=ExpressionWrapper(
-                    (Abs(F('lat') - float(lat)) + Abs(F('lng') - float(lng))),
+                    6371 * ACos(
+                    Cos(Radians(Value(lat))) *
+                    Cos(Radians(F('lat'))) *
+                    Cos(Radians(F('lng')) - Radians(Value(lng))) +
+                    Sin(Radians(Value(lat))) * Sin(Radians(F('lat')))
+                ),
                     output_field=FloatField())).order_by('distance')
         
 
