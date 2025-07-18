@@ -350,7 +350,7 @@ class GetStore(APIView):
 
         query_set=Store.objects.all().annotate(
                 distance=ExpressionWrapper(
-                    (Abs(F('location_lat') - float(lat)) + Abs(F('location_long') - float(lng))),
+                    (Abs(F('lat') - float(lat)) + Abs(F('long') - float(lng))),
                     output_field=FloatField())).order_by('distance')
         
 
