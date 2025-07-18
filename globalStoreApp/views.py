@@ -350,21 +350,19 @@ class GetStore(APIView):
         lng = request.query_params.get('lng', 0)
 
         try:
+            from django.contrib.gis.geos import Point
+            from django.contrib.gis.db.models.functions import Distance
+        except ImportError:
+            return customResponse(message="GeoDjango is not properly configured", status=500)
+
+        try:
             lat = float(lat)
             lng = float(lng)
         except ValueError:
             return customResponse(message="Invalid latitude or longitude", status=400)
 
-        distance = ExpressionWrapper(
-                6371 * ACos(
-                    Cos(Radians(lat)) * Cos(Radians(F('lat'))) *
-                    Cos(Radians(F('lng')) - Radians(lng)) +
-                    Sin(Radians(lat)) * Sin(Radians(F('lat')))
-                ),
-                output_field=FloatField()
-            )
-        
-        query_set = Store.objects.all().annotate(distance=distance).order_by('distance')
+        user_location = Point(lng, lat, srid=4326)
+        query_set = Store.objects.annotate(distance=Distance('location', user_location)).order_by('distance')
         
 
         paginator = PageNumberPagination()
