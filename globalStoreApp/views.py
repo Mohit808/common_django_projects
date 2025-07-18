@@ -362,7 +362,12 @@ class GetStore(APIView):
             return customResponse(message="Invalid latitude or longitude", status=400)
 
         user_location = Point(lng, lat, srid=4326)
-        query_set = Store.objects.annotate(distance=Distance('location', user_location)).order_by('distance')
+        query_set = Store.objects.annotate(
+            distance=ExpressionWrapper(
+            Abs(F('lat') - lat) + Abs(F('lng') - lng),
+            output_field=FloatField()
+            )
+        ).order_by('distance')
         
 
         paginator = PageNumberPagination()
