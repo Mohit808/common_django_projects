@@ -15,6 +15,7 @@ from django.db.models.functions import Abs
 from django.db.models.functions import Sin, Cos, Radians, ACos
 from django.db.models import F, FloatField, ExpressionWrapper, Value,Func
 from django.db.models.expressions import RawSQL
+from globalStoreApp.fcm.fcm import *
 
 
 
@@ -309,6 +310,10 @@ class CreateOrders(APIView):
             if serializer.is_valid():
                 order = serializer.save()
 
+                # saveDataToNotification(order,request.user.id,order.store.id,order.customer.id)
+                saveDataToNotification(userId=key,title="Got New Order!",body=f"New order received from {request.user.username} with order id {order.id}")
+
+
                 transactionSerializer=TransactionSerializer(data={"orderId":order.id,"amount":order.discountedTotalAmount+order.tip,"remark":"Added during order","type":"0","customer":customer}) # order.totalAmount
                 if transactionSerializer.is_valid():
                     transactionSerializer.save()
@@ -441,6 +446,9 @@ class AcceptOrders(APIView):
             order.statusName = "Accepted by delivery partner"
             order.deliveryPartner_id=request.user.id
             print(order.deliveryPartner_id)
+
+            saveDataToNotification(order.customer.id,title="Order Accepted",body=f"Your order with id {order.id} has been accepted by delivery partner {request.user.username}")
+            saveDataToNotification(order.store.id,title="Order Accepted",body=f"Your order with id {order.id} has been accepted by delivery partner {request.user.username}")
             
         if status==2 or status =="2":
             if not request.data.get("otp"):
@@ -449,6 +457,9 @@ class AcceptOrders(APIView):
                 return customResponse(message= "Otp does not match",status=400)
             order.otp=random.randint(100000, 999999)
             order.statusName="Picked up"
+            saveDataToNotification(order.customer.id,title="Order Picked Up",body=f"Your order with id {order.id} has been picked up by delivery partner {request.user.username}")
+            saveDataToNotification(order.store.id,title="Order Picked Up",body=f"Your order with id {order.id} has been picked up by delivery partner {request.user.username}")
+            saveDataToNotification(order.deliveryPartner.id,title="Order Picked Up",body=f"Your order with id {order.id} has been picked up successfully")
 
         if status==3 or status =="3":
             if not request.data.get("otp"):
@@ -460,7 +471,9 @@ class AcceptOrders(APIView):
             print(order.store.id)
             print(order.tip> 0)
             print(order.tip)
-            
+            saveDataToNotification(order.customer.id,title="Order Delivered",body=f"Your order with id {order.id} has been delivered by delivery partner {request.user.username}")
+            saveDataToNotification(order.store.id,title="Order Delivered",body=f"Your order with id {order.id} has been delivered by delivery partner {request.user.username}")
+            saveDataToNotification(order.deliveryPartner.id,title="Order Delivered",body=f"Your order with id {order.id} has been delivered successfully")
             # #substract from customer wallet
             transactionSerializer=TransactionSerializer(data={"orderId":order_id,"amount":order.discountedTotalAmount+order.tip,"remark":"Delivery success","type":"1","customer":order.customer.id}) # order.totalAmount
             if transactionSerializer.is_valid():
@@ -684,3 +697,24 @@ class GetStory(APIView):
         query_set=Story.objects.all()
         serializer=StorySerializer(query_set,many=True,context={'request': request})
         return customResponse(message="Story fetched successfully",status=200,data=serializer.data)
+    
+
+
+# saveDataToNotification(userId=like.receiver,message=f"{like.sender.name} accepted your like",)
+
+def saveDataToNotification(userId, title,body):
+    try:
+        user = Customer.objects.get(user_id=userId)
+        notification = Notification.objects.create(user=user, title=title,body=body)
+
+        send_fcm_message(
+            device_token=user.fcm_token,
+            title=title,
+            body=body
+        )
+
+        return customResponse(data=NotificationSerializer(notification).data, message="Notification created successfully", status=201)
+    except Customer.DoesNotExist:
+        return customResponse(message="User not found", status=404)
+    except Exception as e:
+        return customResponse(message=str(e), status=500)

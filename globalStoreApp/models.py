@@ -21,9 +21,10 @@ class Customer(models.Model):
     image=models.ImageField(blank=True)
     mobile=models.CharField(max_length=20,blank=True)
     email=models.CharField(max_length=50,blank=True)
+    fcm_token=models.CharField(max_length=100, blank=True, null=True)
     
     def __str__(self) :
-        return self.name
+        return f"{self.id} : {self.name}"
     
     # class Meta:
     #     db_table = "globalStoreApp_customer"
@@ -351,8 +352,8 @@ class WithdrawRequest(models.Model):
 
 class Notification(models.Model):
     customer=models.ForeignKey(Customer,on_delete=models.CASCADE,null=True)
-    heading=models.CharField(max_length=100)
-    description=models.TextField(blank=True)
+    title=models.CharField(max_length=100)
+    body=models.TextField(blank=True)
 
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)

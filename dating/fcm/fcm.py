@@ -25,10 +25,9 @@ def get_access_token():
     now = time.time()
     if access_token_cache["token"] is None or now >= access_token_cache["expiry"]:
         
-        # service_account_file = 'myngle-firebase-adminsdk-fbsvc-97a7290361.json'
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         service_account_file = os.path.join(BASE_DIR, 'fcm', 'myngle-firebase-adminsdk-fbsvc-97a7290361.json')
-        
+
         credentials = service_account.Credentials.from_service_account_file(
             service_account_file,
             scopes=["https://www.googleapis.com/auth/cloud-platform"]
@@ -60,8 +59,12 @@ def send_fcm_message(device_token, title, body):
             "notification": {
                 "title": title,
                 "body": body
+            },
+            "data": {
+                "title": "title",
+                "body": "body"
             }
-        # You can add "data": {...} for custom key-values
+    
         }
     }
 
@@ -73,7 +76,6 @@ def send_fcm_message(device_token, title, body):
 
 class SendNotification(APIView):
 
-    
     def post(self,request):
         access_token=get_access_token()
         device_token=request.data.get("device_token")
