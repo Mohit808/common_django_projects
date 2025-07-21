@@ -16,7 +16,7 @@ from django.db.models import Q
 from django.utils.timesince import timesince
 from django.utils import timezone
 import random
-from dating.fcm.fcm import send_fcm_message
+# from dating.fcm.fcm import send_fcm_message
 
 
 
