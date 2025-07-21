@@ -703,7 +703,7 @@ class GetStory(APIView):
 
 
 
-class Notification(APIView):
+class GetNotification(APIView):
     def get(self, request, pk=None):
         try:
             # user = Customer.objects.get(uid=request.user.id)
