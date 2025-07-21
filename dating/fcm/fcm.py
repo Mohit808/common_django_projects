@@ -75,7 +75,7 @@ class SendNotication(APIView):
         access_token=get_access_token()
         headers = {
             "Authorization": f"Bearer {access_token}",
-            "Content-Type": "application/json; UTF-8",
+           
         }
         message = {
             "message": {
