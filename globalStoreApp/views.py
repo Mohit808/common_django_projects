@@ -720,7 +720,7 @@ class GetNotification(APIView):
 
 def saveDataToNotification(userId, title,body):
     try:
-        user = Customer.objects.get(user_id=userId)
+        user = Customer.objects.get(id=userId)
         notification = Notification.objects.create(user=user, title=title,body=body)
 
         send_fcm_message(
