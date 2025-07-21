@@ -359,7 +359,7 @@ class Notification(models.Model):
     updated_at=models.DateTimeField(auto_now=True)
 
     def __str__(self) :
-        return f"{self.balance}"
+        return f"{self.customer} - {self.title}"
     
 
 
