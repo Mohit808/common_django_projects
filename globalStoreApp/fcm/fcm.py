@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from common_function.custom_response import *
 import os
 
+
 PROJECT_ID = 'common-flutter-apps' 
 url = f"https://fcm.googleapis.com/v1/projects/{PROJECT_ID}/messages:send"
 
