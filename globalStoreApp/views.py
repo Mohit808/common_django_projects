@@ -97,6 +97,7 @@ def index(request):
 
 
 
+
 class GetMainCategories(APIView):
     def get(self, request,pk=None):
         
@@ -718,3 +719,20 @@ def saveDataToNotification(userId, title,body):
         return customResponse(message="User not found", status=404)
     except Exception as e:
         return customResponse(message=str(e), status=500)
+    
+
+class UpdateFcm(APIView):
+    def post(self, request, pk=None):
+        fcm_token = request.data.get('fcm_token')
+        if not fcm_token:
+            return customResponse(message="fcm_token is required", status=400)
+
+        try:
+            customer = Customer.objects.get(user_id=request.user.id)
+            customer.fcm_token = fcm_token
+            customer.save()
+            return customResponse(message="Fcm token updated successfully", status=200)
+        except Customer.DoesNotExist:
+            return customResponse(message="Customer not found", status=404)
+        except Exception as e:
+            return customResponse(message=str(e), status=500)
