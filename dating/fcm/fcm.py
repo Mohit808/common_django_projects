@@ -12,7 +12,7 @@ from django.utils.decorators import method_decorator
 # DEVICE_TOKEN="eeXmsnEpTvmv8qIQAjQvLq:APA91bHGOR6lpYMTgBYEwKoMk7OmwOb3H2w-TMiRJVOgilQeBuvaBPcB9MON8JnAfA8IwVCW4AAu7mn181RXzsEsgHIU_4eqpBfDS6_dWAniCXzEs7qIpAk"
 
 PROJECT_ID = 'myngle' 
-url = f"http://fcm.googleapis.com/v1/projects/{PROJECT_ID}/messages:send"
+url = f"https://fcm.googleapis.com/v1/projects/{PROJECT_ID}/messages:send"
 
 
 access_token_cache = {
