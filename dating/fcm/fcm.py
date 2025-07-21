@@ -4,7 +4,7 @@ from google.oauth2 import service_account
 import google.auth.transport.requests
 import time
 from rest_framework.views import APIView
-
+from common_function.custom_response import *
 
 
 # DEVICE_TOKEN="eeXmsnEpTvmv8qIQAjQvLq:APA91bHGOR6lpYMTgBYEwKoMk7OmwOb3H2w-TMiRJVOgilQeBuvaBPcB9MON8JnAfA8IwVCW4AAu7mn181RXzsEsgHIU_4eqpBfDS6_dWAniCXzEs7qIpAk"
@@ -85,6 +85,12 @@ class SendNotication(APIView):
             }
         }
 
-        response = requests.post(url, headers=headers, data=json.dumps(message))
-        print("Status Code:", response.status_code)
-        print("Response:", response.text)
+        try:
+            response = requests.post(url, headers=headers, data=json.dumps(message))
+            print("Status Code:", response.status_code)
+            print("Response:", response.text)
+
+            return customResponse(data="Hello",message= f'Fetch data successfully', status=200)
+        except requests.exceptions.RequestException as e:
+            print(f"Error sending FCM message: {e}")
+            return customResponse(message=f"Error sending FCM message: {e}", status=500)
