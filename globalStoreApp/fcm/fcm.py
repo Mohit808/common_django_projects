@@ -21,7 +21,7 @@ def get_access_token():
     if access_token_cache["token"] is None or now >= access_token_cache["expiry"]:
         
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        service_account_file = os.path.join(BASE_DIR, 'fcm', 'globalStoreApp/fcm/common-flutter-apps-firebase-adminsdk-ryx6j-f00bbaac4a.json')
+        service_account_file = os.path.join(BASE_DIR, 'fcm', 'common-flutter-apps-firebase-adminsdk-ryx6j-f00bbaac4a.json')
 
         credentials = service_account.Credentials.from_service_account_file(
             service_account_file,
