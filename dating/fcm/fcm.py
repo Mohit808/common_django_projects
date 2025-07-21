@@ -3,6 +3,7 @@ import json
 from google.oauth2 import service_account
 import google.auth.transport.requests
 import time
+from rest_framework.views import APIView
 
 
 
@@ -65,3 +66,25 @@ def send_fcm_message(device_token, title, body):
 
 
 
+class SendNotication(APIView):
+    
+    def send(self,request):
+        device_token=request.data.get("device_token")
+        access_token=get_access_token()
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json; UTF-8",
+        }
+        message = {
+            "message": {
+                "token": device_token,
+                "notification": {
+                    "title": "title",
+                    "body": "body"
+                }
+            }
+        }
+
+        response = requests.post(url, headers=headers, data=json.dumps(message))
+        print("Status Code:", response.status_code)
+        print("Response:", response.text)
