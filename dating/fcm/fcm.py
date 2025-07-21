@@ -68,7 +68,7 @@ def send_fcm_message(device_token, title, body):
 
 class SendNotication(APIView):
     
-    def send(self,request):
+    def post(self,request):
         device_token=request.data.get("device_token")
         access_token=get_access_token()
         headers = {
