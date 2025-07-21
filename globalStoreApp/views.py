@@ -721,6 +721,8 @@ def saveDataToNotification(userId, title,body):
         return customResponse(message=str(e), status=500)
     
 
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class UpdateFcm(APIView):
     def post(self, request, pk=None):
         fcm_token = request.data.get('fcm_token')
