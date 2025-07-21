@@ -311,8 +311,7 @@ class CreateOrders(APIView):
             if serializer.is_valid():
                 order = serializer.save()
 
-                # saveDataToNotification(order,request.user.id,order.store.id,order.customer.id)
-                saveDataToNotification(userId=key,title="Got New Order!",body=f"New order received from {request.user.username} with order id {order.id}")
+                saveDataToNotification(userId=key,title="Got New Order!",body=f"New order received with order id {order.id}")
 
 
                 transactionSerializer=TransactionSerializer(data={"orderId":order.id,"amount":order.discountedTotalAmount+order.tip,"remark":"Added during order","type":"0","customer":customer}) # order.totalAmount
@@ -724,7 +723,7 @@ def saveDataToNotification(userId, title,body):
         notification = Notification.objects.create(user=user, title=title,body=body)
 
         send_fcm_message(
-            device_token=user.fcm_token,
+            device_token="dhW5-2WZQfqcFShnX1jGI2:APA91bEgT1tORrYDkvFv4d64wIMR65qR4nXRWT9USwcfotvyz6CuMSFz3DuG5GLohAlg64ZM03alpSbdLFJXcrR6H7MWONOsWq3_u-VB4FRRf1SOgBIEGzo",
             title=title,
             body=body
         )
