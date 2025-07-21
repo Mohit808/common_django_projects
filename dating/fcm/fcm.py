@@ -66,12 +66,12 @@ def send_fcm_message(device_token, title, body):
     print("Response:", response.text)
     
 
-access_token=get_access_token()
-
 
 class SendNotification(APIView):
+
     
     def post(self,request):
+        access_token=get_access_token()
         device_token=request.data.get("device_token")
         headers = {
             "Authorization": f"Bearer {access_token}",
