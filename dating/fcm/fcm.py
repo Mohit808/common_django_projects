@@ -5,8 +5,8 @@ import google.auth.transport.requests
 import time
 from rest_framework.views import APIView
 from common_function.custom_response import *
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
+# from django.views.decorators.csrf import csrf_exempt
+# from django.utils.decorators import method_decorator
 
 
 # DEVICE_TOKEN="eeXmsnEpTvmv8qIQAjQvLq:APA91bHGOR6lpYMTgBYEwKoMk7OmwOb3H2w-TMiRJVOgilQeBuvaBPcB9MON8JnAfA8IwVCW4AAu7mn181RXzsEsgHIU_4eqpBfDS6_dWAniCXzEs7qIpAk"
@@ -66,13 +66,13 @@ def send_fcm_message(device_token, title, body):
     print("Response:", response.text)
     
 
+access_token=get_access_token()
 
-@method_decorator(csrf_exempt, name='dispatch')
-class SendNotication(APIView):
+
+class SendNotification(APIView):
     
     def post(self,request):
         device_token=request.data.get("device_token")
-        access_token=get_access_token()
         headers = {
             "Authorization": f"Bearer {access_token}",
             "Content-Type": "application/json; UTF-8",
@@ -81,6 +81,10 @@ class SendNotication(APIView):
             "message": {
                 "token": device_token,
                 "notification": {
+                    "title": "title",
+                    "body": "body"
+                },
+                "data": {
                     "title": "title",
                     "body": "body"
                 }
@@ -92,7 +96,7 @@ class SendNotication(APIView):
             print("Status Code:", response.status_code)
             print("Response:", response.text)
 
-            return customResponse(data="Hello",message= f'Fetch data successfully', status=200)
+            return customResponse(data=f"Status code : {response.status_code} , response : {response.text}",message= f'Notification send successfully', status=200)
         except requests.exceptions.RequestException as e:
             print(f"Error sending FCM message: {e}")
             return customResponse(message=f"Error sending FCM message: {e}", status=500)

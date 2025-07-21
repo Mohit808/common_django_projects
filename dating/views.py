@@ -798,6 +798,7 @@ class DatingNotificationView(APIView):
         return customResponse(data=data, message="Notifications fetched successfully", status=200)
     
 
+
 def saveDataToNotification(userId, message):
     try:
         user = UserModel.objects.get(user_id=userId)
@@ -816,3 +817,14 @@ def saveDataToNotification(userId, message):
         return customResponse(message=str(e), status=500)
 
 
+
+
+# class SendNotification(APIView):
+    
+#     def post(self,request):
+#         return customResponse(message="This is a test message", status=200)
+
+
+# class SendNotication(APIView):
+#     def get(self, request,pk=None):
+#        return customResponse(data="Hello",message= f'Fetch data successfully', status=200)

@@ -1,7 +1,7 @@
 from django.urls import path
 from django.conf.urls import include
 from dating.views import *
-from dating.fcm.fcm import SendNotication
+from dating.fcm.fcm import *
 
 
 urlpatterns = [
@@ -29,7 +29,7 @@ urlpatterns = [
     path('aiMatch', AiMatchView.as_view()),
     path('makeDot', makeDotView.as_view()),
     path('notification', DatingNotificationView.as_view()),
-    path('sendNotication', SendNotication.as_view()),
+    path('sendNotification', SendNotification.as_view()),
 
     # path('add-business-detail', add_business_detail.AddBusinessDetailFunction.as_view()),
     # path('add-categories', add_categories.AddCategoriesFunction.as_view()),
