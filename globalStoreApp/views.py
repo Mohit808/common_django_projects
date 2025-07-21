@@ -728,7 +728,7 @@ class UpdateFcm(APIView):
             return customResponse(message="fcm_token is required", status=400)
 
         try:
-            customer = Customer.objects.get(user_id=request.user.id)
+            customer = Customer.objects.get(id=request.user.id)
             customer.fcm_token = fcm_token
             customer.save()
             return customResponse(message="Fcm token updated successfully", status=200)
