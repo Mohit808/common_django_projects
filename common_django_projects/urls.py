@@ -91,6 +91,7 @@ urlpatterns = [
     path('sellerDashboard', SellerDashboard.as_view()),
     path('googleLogin', GoogleLoginView.as_view()),
     path('updateFcm', UpdateFcm.as_view()),
+    path('sendNotificationQuick', SendNotificationQuick.as_view()),
 
 
     # path('getTrading', GetTrading.as_view()),

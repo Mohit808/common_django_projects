@@ -62,35 +62,35 @@ def send_fcm_message(device_token, title, body):
     
 
 
-# class SendNotification(APIView):
+class SendNotificationQuick(APIView):
 
-#     def post(self,request):
-#         access_token=get_access_token()
-#         device_token=request.data.get("device_token")
-#         headers = {
-#             "Authorization": f"Bearer {access_token}",
-#             "Content-Type": "application/json; UTF-8",
-#         }
-#         message = {
-#             "message": {
-#                 "token": device_token,
-#                 "notification": {
-#                     "title": "title",
-#                     "body": "body"
-#                 },
-#                 "data": {
-#                     "title": "title",
-#                     "body": "body"
-#                 }
-#             }
-#         }
+    def post(self,request):
+        access_token=get_access_token()
+        device_token=request.data.get("device_token")
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json; UTF-8",
+        }
+        message = {
+            "message": {
+                "token": device_token,
+                "notification": {
+                    "title": "title",
+                    "body": "body"
+                },
+                "data": {
+                    "title": "title",
+                    "body": "body"
+                }
+            }
+        }
 
-#         try:
-#             response = requests.post(url, headers=headers, data=json.dumps(message))
-#             print("Status Code:", response.status_code)
-#             print("Response:", response.text)
+        try:
+            response = requests.post(url, headers=headers, data=json.dumps(message))
+            print("Status Code:", response.status_code)
+            print("Response:", response.text)
 
-#             return customResponse(data=f"Status code : {response.status_code} , response : {response.text}",message= f'Notification send successfully', status=200)
-#         except requests.exceptions.RequestException as e:
-#             print(f"Error sending FCM message: {e}")
-#             return customResponse(message=f"Error sending FCM message: {e}", status=500)
+            return customResponse(data=f"Status code : {response.status_code} , response : {response.text}",message= f'Notification send successfully', status=200)
+        except requests.exceptions.RequestException as e:
+            print(f"Error sending FCM message: {e}")
+            return customResponse(message=f"Error sending FCM message: {e}", status=500)
