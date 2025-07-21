@@ -701,6 +701,20 @@ class GetStory(APIView):
     
 
 
+
+
+class Notification(APIView):
+    def get(self, request, pk=None):
+        try:
+            # user = Customer.objects.get(uid=request.user.id)
+            notifications = Notification.objects.filter(customer=request.user.id).order_by('-created_at')
+            serializer = NotificationSerializer(notifications, many=True, context={'request': request})
+            return customResponse(message="Notifications fetched successfully", status=200, data=serializer.data)
+        except Customer.DoesNotExist:
+            return customResponse(message="User not found", status=404)
+        except Exception as e:
+            return customResponse(message=str(e), status=500)
+
 # saveDataToNotification(userId=like.receiver,message=f"{like.sender.name} accepted your like",)
 
 def saveDataToNotification(userId, title,body):
