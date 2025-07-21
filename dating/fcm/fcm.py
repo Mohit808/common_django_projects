@@ -5,6 +5,7 @@ import google.auth.transport.requests
 import time
 from rest_framework.views import APIView
 from common_function.custom_response import *
+import os
 # from django.views.decorators.csrf import csrf_exempt
 # from django.utils.decorators import method_decorator
 
@@ -24,7 +25,10 @@ def get_access_token():
     now = time.time()
     if access_token_cache["token"] is None or now >= access_token_cache["expiry"]:
         
-        service_account_file = '/Users/apple/Downloads/myngle-firebase-adminsdk-fbsvc-97a7290361.json'
+        # service_account_file = 'myngle-firebase-adminsdk-fbsvc-97a7290361.json'
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        service_account_file = os.path.join(BASE_DIR, 'fcm', 'myngle-firebase-adminsdk-fbsvc-97a7290361.json')
+        
         credentials = service_account.Credentials.from_service_account_file(
             service_account_file,
             scopes=["https://www.googleapis.com/auth/cloud-platform"]
