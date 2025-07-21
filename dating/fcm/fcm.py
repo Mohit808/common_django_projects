@@ -5,6 +5,8 @@ import google.auth.transport.requests
 import time
 from rest_framework.views import APIView
 from common_function.custom_response import *
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 
 # DEVICE_TOKEN="eeXmsnEpTvmv8qIQAjQvLq:APA91bHGOR6lpYMTgBYEwKoMk7OmwOb3H2w-TMiRJVOgilQeBuvaBPcB9MON8JnAfA8IwVCW4AAu7mn181RXzsEsgHIU_4eqpBfDS6_dWAniCXzEs7qIpAk"
@@ -65,7 +67,7 @@ def send_fcm_message(device_token, title, body):
     
 
 
-
+@method_decorator(csrf_exempt, name='dispatch')
 class SendNotication(APIView):
     
     def post(self,request):
