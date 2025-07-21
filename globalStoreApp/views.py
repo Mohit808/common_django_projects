@@ -321,7 +321,7 @@ class CreateOrders(APIView):
                     wallet, created = Wallet.objects.get_or_create(customer_id=customer, defaults={'balance': 0,'pending_amount':0} )
                     Wallet.objects.filter(customer_id=customer).update(pending_amount=F('pending_amount')+order.discountedTotalAmount+order.tip)
 
-                    serializerNoti=NotificationSerializer(data={"customer":request.user.id,"heading":"Order created successfully","description":f"{order.discountedTotalAmount+order.tip} added as pending amount"})
+                    serializerNoti=NotificationSerializer(data={"customer":request.user.id,"title":"Order created successfully","body":f"{order.discountedTotalAmount+order.tip} added as pending amount"})
                     if serializerNoti.is_valid():
                         serializerNoti.save()
                 else:
