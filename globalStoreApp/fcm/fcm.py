@@ -66,14 +66,14 @@ class SendNotificationQuick(APIView):
 
     def post(self,request):
         access_token=get_access_token()
-        fcm_token=request.data.get("fcm_token")
+        device_token=request.data.get("device_token")
         headers = {
             "Authorization": f"Bearer {access_token}",
             "Content-Type": "application/json; UTF-8",
         }
         message = {
             "message": {
-                "token": fcm_token,
+                "token": device_token,
                 "notification": {
                     "title": "title",
                     "body": "body"
