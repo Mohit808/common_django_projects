@@ -702,7 +702,8 @@ class GetStory(APIView):
 
 
 
-
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 class GetNotification(APIView):
     def get(self, request, pk=None):
         try:
