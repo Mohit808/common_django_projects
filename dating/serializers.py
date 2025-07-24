@@ -36,6 +36,7 @@ class LikeSerializer(serializers.ModelSerializer):
 
 class MatchSerializer(serializers.ModelSerializer):
     sender = UserSerializer()
+    receiver = UserSerializer()
     class Meta:
         model = Match
         fields = "__all__"
