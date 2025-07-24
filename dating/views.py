@@ -819,7 +819,8 @@ def saveDataToNotification(userId, message,title="New Notification"):
         send_fcm_message(
             device_token=user.fcm_token,
             title=title,
-            body=message
+            body=message,
+            user_id=userId
         )
 
         return customResponse(data=DatingNotificationSerializer(notification).data, message="Notification created successfully", status=201)

@@ -47,7 +47,7 @@ def get_access_token():
 
 
 
-def send_fcm_message(device_token, title, body):
+def send_fcm_message(device_token, title, body, user_id=None):
     access_token=get_access_token()
     headers = {
         "Authorization": f"Bearer {access_token}",
@@ -62,7 +62,8 @@ def send_fcm_message(device_token, title, body):
             },
             "data": {
                 "title": title,
-                "body": body
+                "body": body,
+                "user_id":user_id
             }
     
         }
