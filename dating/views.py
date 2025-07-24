@@ -341,7 +341,7 @@ class SendMessage(APIView):
             device_token=receiver.fcm_token,
             title=f"{sender.name} sent you a message",
             body=message,
-            user_id=sender
+            user_id=sender.id
         )
 
         return customResponse(data=MessageSerializer(message).data, message="Message sent", status=201)
