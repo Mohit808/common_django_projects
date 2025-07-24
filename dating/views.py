@@ -465,13 +465,18 @@ class StandoutView(APIView):
     def get(self, request):
         try:
             current_user = UserModel.objects.get(user=request.user)
-            excluded_users = list(
-            Match.objects.filter(Q(sender=current_user) | Q(receiver=current_user)).values_list('sender', 'receiver', flat=True)) + list(LikeDating.objects.filter(Q(sender=current_user) | Q(receiver=current_user)).values_list('sender', 'receiver', flat=True))
+            matched = Match.objects.filter(Q(sender=current_user) | Q(receiver=current_user))\
+                .values_list('sender', 'receiver')
+            liked = LikeDating.objects.filter(Q(sender=current_user) | Q(receiver=current_user))\
+                .values_list('sender', 'receiver')
+
+            # Flatten the tuples and remove duplicates
+            excluded_user_ids = set(user_id for pair in list(matched) + list(liked) for user_id in pair)
 
             # Filter standout users
             standout = Standout.objects.exclude(user_standout=current_user)\
-            .exclude(user_standout__in=excluded_users)\
-            .order_by('-priority')
+                .exclude(user_standout__in=excluded_user_ids)\
+                .order_by('-priority')
 
             if not standout.exists():
                 return customResponse(message="No standout found for this user", status=404)
