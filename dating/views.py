@@ -465,9 +465,15 @@ class StandoutView(APIView):
     def get(self, request):
         try:
             current_user = UserModel.objects.get(user=request.user)
-            standout = Standout.objects.exclude(user_standout=current_user)
-            standout = standout.order_by('-priority')
-            if not standout:
+            excluded_users = list(
+            Match.objects.filter(Q(sender=current_user) | Q(receiver=current_user)).values_list('sender', 'receiver', flat=True)) + list(LikeDating.objects.filter(Q(sender=current_user) | Q(receiver=current_user)).values_list('sender', 'receiver', flat=True))
+
+            # Filter standout users
+            standout = Standout.objects.exclude(user_standout=current_user)\
+            .exclude(user_standout__in=excluded_users)\
+            .order_by('-priority')
+
+            if not standout.exists():
                 return customResponse(message="No standout found for this user", status=404)
             
             paginator = PageNumberPagination()
