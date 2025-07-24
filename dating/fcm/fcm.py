@@ -61,8 +61,8 @@ def send_fcm_message(device_token, title, body):
                 "body": body
             },
             "data": {
-                "title": "title",
-                "body": "body"
+                "title": title,
+                "body": body
             }
     
         }
