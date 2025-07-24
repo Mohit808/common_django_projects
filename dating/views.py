@@ -337,11 +337,8 @@ class SendMessage(APIView):
         message = Message.objects.create(sender=sender, receiver=receiver, text=text)
         # saveDataToNotification(userId=receiver_id,title=f"{sender.name} sent you a message",message=text)
 
-        user = UserModel.objects.get(user_id=receiver_id)
-        notification = DatingNotification.objects.create(user=user, message=message)
-
         send_fcm_message(
-            device_token=user.fcm_token,
+            device_token=receiver.fcm_token,
             title=f"{sender.name} sent you a message",
             body=message,
             user_id=sender
