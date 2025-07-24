@@ -40,6 +40,7 @@ admin.site.register(Gift)
 admin.site.register(MyGift)
 admin.site.register(AiMatch)
 admin.site.register(DatingNotification)
+admin.site.register(Message)
 
 
 # class OrderAdmin(admin.ModelAdmin):
