@@ -72,6 +72,7 @@ class UserModel(models.Model):
     password=models.CharField(max_length=100)
     gender=models.CharField(max_length=10)
     marital_status=models.CharField(max_length=10)
+    date_preference=models.CharField(max_length=10,null=True)
     birth_date=models.CharField(max_length=10)
     bio=models.CharField(max_length=200)
     likes=models.CharField(max_length=500,null=True)
