@@ -129,11 +129,18 @@ class Home(APIView):
         
         current_lat =request.query_params.get('latitude')
         current_lon = request.query_params.get('longitude')
+        looking = request.query_params.get('looking')
+
+        user_model = UserModel.objects.exclude(user=request.user)
+
         if current_lat or current_lon:
-            user_model = UserModel.objects.exclude(user=request.user).annotate(
+            user_model = user_model.annotate(
                 distance=ExpressionWrapper(
                     (Abs(F('location_lat') - float(current_lat)) + Abs(F('location_long') - float(current_lon))),
                     output_field=FloatField())).order_by('distance')
+            
+            if looking and looking.strip():
+                user_model = user_model.filter(gender=looking)
         else:
             user_model = UserModel.objects.all()
 
