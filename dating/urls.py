@@ -2,6 +2,7 @@ from django.urls import path
 from django.conf.urls import include
 from dating.views import *
 from dating.fcm.fcm import *
+from common_function.google_signin_dating import *
 
 
 urlpatterns = [
@@ -29,6 +30,7 @@ urlpatterns = [
     path('aiMatch', AiMatchView.as_view()),
     path('makeDot', makeDotView.as_view()),
     path('notification', DatingNotificationView.as_view()),
+    path('datingGoogleLogin', DatingGoogleLoginView.as_view()),
     # path('sendNotification', SendNotification.as_view()),
 
     # path('add-business-detail', add_business_detail.AddBusinessDetailFunction.as_view()),
