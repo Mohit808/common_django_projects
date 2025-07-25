@@ -45,12 +45,15 @@ class DatingRegisterView(APIView):
             token = DatingToken.objects.create(user=user)
             
             return Response({
+                'status': 200,
                 'message': 'Login successful',
                 'token': token.key,
                 'user': {'id': user.id, 'email': user.email}},status=200)
         
-    
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        error_dict = serializer.errors
+        first_field = next(iter(error_dict))
+        first_error = error_dict[first_field][0]
+        return customResponse(message=first_error, status=400)
 
 
 
@@ -62,22 +65,23 @@ class DatingLoginView(APIView):
         password = request.data.get('password')
 
         if not email or not password:
-            return Response({'error': 'Email and password are required'}, status=400)
+            return customResponse(message="Email and password are required", status=400)
 
         try:
             user = DatingUser.objects.get(email=email)
             user_model = UserModel.objects.get(user=user)
         except DatingUser.DoesNotExist:
-            return Response({'error': 'Invalid credentials'}, status=401)
+            return customResponse(message="Email does not exists", status=404)
         except UserModel.DoesNotExist:
             user_model = None 
 
         if not user.check_password(password):
-            return Response({'error': 'Invalid credentials'}, status=401)
+            return customResponse(message="Invalid credentials", status=400)
 
         token, created = DatingToken.objects.get_or_create(user=user)
 
         return Response({
+            'status': 200,
             'message': 'Login successful',
             'token': token.key,
             # 'user': {'id': user.id, 'email': user.email},
@@ -335,17 +339,13 @@ class SendMessage(APIView):
             return customResponse(message="Receiver not found", status=404)
 
         message = Message.objects.create(sender=sender, receiver=receiver, text=text)
-        # saveDataToNotification(userId=receiver_id,title=f"{sender.name} sent you a message",message=text)
-
         user = UserModel.objects.get(user_id=receiver_id)
-        
-        # notification = DatingNotification.objects.create(user=user, message=message)
 
         send_fcm_message(
             device_token=user.fcm_token,
             title=f"{sender.name} sent you a message",
-            body=message,
-            user_id=receiver_id
+            body=message.text,
+            user_id=f"{request.user.id}"
         )
 
         return customResponse(data=MessageSerializer(message).data, message="Message sent", status=201)
