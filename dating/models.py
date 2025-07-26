@@ -151,7 +151,8 @@ class Message(models.Model):
     receiver = models.ForeignKey(UserModel, related_name='messages_received', on_delete=models.CASCADE,null=True)
     text = models.TextField(null=True)
     date_sent = models.DateTimeField(auto_now_add=True, null=True)
-    is_read = models.BooleanField(default=False)
+    is_read_by_receiver = models.BooleanField(default=False)
+    is_read_by_sender = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.sender.name} → {self.receiver.name}: {self.text[:30]}"
