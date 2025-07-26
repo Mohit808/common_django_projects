@@ -331,8 +331,8 @@ class SendMessage(APIView):
     def post(self, request):
         receiver_id = request.data.get('receiver')
         text = request.data.get('text')
-        is_read_by_receiver = request.data.get('is_read_by_receiver')
-        is_read_by_sender = request.data.get('is_read_by_sender')
+        is_read_by_receiver = bool(request.data.get('is_read_by_receiver'))
+        is_read_by_sender = bool(request.data.get('is_read_by_sender'))
 
         if not receiver_id or not text:
             return customResponse(message="Receiver and text are required", status=400)
