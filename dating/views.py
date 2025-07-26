@@ -447,7 +447,7 @@ class ChatListView(APIView):
             is_by_you = last_message.sender == current_user
 
             unread_count = Message.objects.filter(
-                sender=partner, receiver=current_user, is_read=False
+                sender=partner, receiver=current_user, is_read_by_receiver=False
             ).count()
 
             chat_list.append({
