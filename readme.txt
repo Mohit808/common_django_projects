@@ -20,3 +20,13 @@ pip install google-auth
 
 
 
+python manage.py migrate dating zero
+python manage.py migrate dating zero --fake  ///Fake the initial migration removal
+
+
+
+
+### remove all migration
+
+find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+find . -path "*/migrations/*.pyc" -delete
