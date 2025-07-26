@@ -331,6 +331,8 @@ class SendMessage(APIView):
     def post(self, request):
         receiver_id = request.data.get('receiver')
         text = request.data.get('text')
+        is_read_by_receiver = request.data.get('is_read_by_receiver')
+        is_read_by_sender = request.data.get('is_read_by_sender')
 
         if not receiver_id or not text:
             return customResponse(message="Receiver and text are required", status=400)
@@ -345,7 +347,7 @@ class SendMessage(APIView):
         except UserModel.DoesNotExist:
             return customResponse(message="Receiver not found", status=404)
 
-        message = Message.objects.create(sender=sender, receiver=receiver, text=text)
+        message = Message.objects.create(sender=sender, receiver=receiver, text=text,is_read_by_receiver=is_read_by_receiver,is_read_by_sender=is_read_by_sender)
         user = UserModel.objects.get(user_id=receiver_id)
 
         send_fcm_message(
